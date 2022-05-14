@@ -20,7 +20,7 @@ function theme_dynamic_css()
     $text_color = theme_hex_to_rgba( '#757575' );
     $body_font_family = esc_attr( get_theme_mod( 'body_font_family', 'Nunito' ) );
     $font_size = esc_attr( get_theme_mod( 'font_size', '16px' ) );
-    $body_font_weight = esc_attr( get_theme_mod( 'body_font_weight', 600 ) );
+    $body_font_weight = esc_attr( get_theme_mod( 'body_font_weight', 400 ) );
     $body_line_height = get_theme_mod( 'body_line_height', '1.5' );
     $heading_font_family = esc_attr( get_theme_mod( 'heading_font_family', 'Merriweather' ) );
 

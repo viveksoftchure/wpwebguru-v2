@@ -1,6 +1,6 @@
 <?php
 /**
- * section 3 section
+ * section 5 section
  *
  * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
  *
@@ -9,23 +9,23 @@
 $thumb_size = 'tab-post-thumb';
 ?>
 <?php 
-if( get_theme_mod('theme_section_3_display_option', true )) :
-	$section_title = get_theme_mod('theme_section_3_title', '');
-	$section_title_type = get_theme_mod('theme_section_3_title_type', 'h2');
-	$section_desc = get_theme_mod('theme_section_3_desc', '');
+if( get_theme_mod('theme_section_5_display_option', true )) :
+	$section_title = get_theme_mod('theme_section_5_title', '');
+	$section_title_type = get_theme_mod('theme_section_5_title_type', 'h2');
+	$section_desc = get_theme_mod('theme_section_5_desc', '');
 
-	$bgcolor = get_theme_mod('theme_section_3_background_color', '#fff');
-	$top_padding = get_theme_mod('theme_section_3_top_padding', '0');
-	$bottom_padding = get_theme_mod('theme_section_3_bottom_padding', '0');
-	$item_class = get_theme_mod( 'theme_section_3_item_class', '' );
+	$bgcolor = get_theme_mod('theme_section_5_background_color', '#fff');
+	$top_padding = get_theme_mod('theme_section_5_top_padding', '0');
+	$bottom_padding = get_theme_mod('theme_section_5_bottom_padding', '0');
+	$item_class = get_theme_mod( 'theme_section_5_item_class', '' );
 	
 	$post_details = array('date', 'categories', 'tags') ;
 
     $blog_paged = (get_query_var('page') ) ? get_query_var('page') : 1;
-    $blog_cat = get_theme_mod('theme_section_3_category') ;
-    $posts_per_page = get_theme_mod('theme_section_3_post_count', 4);
-    $posts_style = get_theme_mod('theme_section_3_post_style', 'list');
-    $post_excerpt_length = get_theme_mod('theme_section_3_post_excerpt_length', 80);
+    $blog_cat = get_theme_mod('theme_section_5_category') ;
+    $posts_per_page = get_theme_mod('theme_section_5_post_count', 4);
+    $posts_style = get_theme_mod('theme_section_5_post_style', 'list');
+    $post_excerpt_length = get_theme_mod('theme_section_5_post_excerpt_length', 80);
 
     $args = array(
         'post_type'				=> 'post',

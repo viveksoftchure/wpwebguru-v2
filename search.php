@@ -11,11 +11,10 @@ get_header();
 $theme_blog_sidebar_class = 'col-lg-8 col-md-12 col-12 order-1 order-lg-2';
 ?>
 <!-- Start Blog Area  -->
-<div class="theme-post-list-area theme-section-gap bg-color-white">
+<div class="main">
     <div class="container">
-        <div class="row row--40">
-            <div class="<?php echo esc_attr($theme_blog_sidebar_class); ?>">
-
+        <div class="row">
+            <div class="col-lg-10 offset-lg-1 post-list-wrap">
                 <?php
                 if ( have_posts() ) :
 
@@ -41,14 +40,6 @@ $theme_blog_sidebar_class = 'col-lg-8 col-md-12 col-12 order-1 order-lg-2';
                 endif;
                 ?>
             </div>
-            <?php if ( is_active_sidebar( 'sidebar-1' ) ) 
-            { 
-                ?>
-                <div class="col-lg-4 col-md-12 col-12 mt_md--40 mt_sm--40 order-2 order-lg-2">
-                    <?php dynamic_sidebar(); ?>
-                </div>
-                <?php 
-            } ?>
         </div>
     </div>
 </div>

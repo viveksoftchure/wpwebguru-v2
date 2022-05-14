@@ -47,56 +47,41 @@ if( get_theme_mod( 'categories_display_option', true ) ) :
 				<?php if(!empty($section_title))
 				{ 
 					?>
-					<h2 class="section-title"><?php echo esc_html($section_title); ?></h2>
+                    <h2 class="h4 section-title"><span><?php echo esc_html($section_title); ?></span></h2>
                     <p class="section-desc"><?php echo esc_html($section_desc); ?></p>
 					<?php 
 				} ?>
 			</div>
             <div class="row">
-                <div class="col-lg-12">
-                    <!-- Start List Wrapper  -->
-                    <div class="list-categories categories-activation axil-slick-arrow arrow-between-side">
-                        <?php
+                <?php
 
-                        // echo '<pre>'; print_r($categories); echo '</pre>'; exit;
-                        
-                              
-                        foreach( $categories as $category )
-                        { 
-                        	?>
-                            <!-- Start Single Category  -->
-                            <div class="single-cat">
-                                <div class="inner">
-                                    <a href="<?php echo esc_url( get_category_link( $category->term_id ) ); ?>">
-                                        <?php 
-									    $t_id = $category->term_id;
-									    $cat_meta = get_option("category_$t_id");
+                // echo '<pre>'; print_r($categories); echo '</pre>'; exit;
+                      
+                foreach( $categories as $category )
+                { 
+                	?>
+                    <!-- Start Single Category  -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 tag-card-wrap">
+                        <a href="<?php echo esc_url( get_category_link( $category->term_id ) ); ?>" class="tag-card flex">
+                            <?php 
+                            $t_id = $category->term_id;
+                            $cat_meta = get_option("category_$t_id");
 
-                                        // echo '<pre>'; print_r($cat_meta['color']); echo '</pre>'; //exit;
-                                        
-                                        ?>
-                                        <div class="thumbnail">
-                                        	<img src="<?= $cat_meta['img'] ?>" class="img-responsive">
-                                        </div>
-                                        <?php if ( !empty($category->name) ): ?>
-                                            <div class="content">
-                                                <?php if ( $show_count): ?>
-                                                    <div class="category-count" style="background: <?= $cat_meta['color'] ?>;">
-                                                        <span class="counter"><?php echo wp_kses_post($category->count); ?></span>
-                                                    </div>
-                                                <?php endif ?>
-                                                <h5 class="title"><?php echo esc_html($category->name); ?></h5>
-                                            </div>
-                                        <?php endif ?>
-                                    </a>
-                                </div>
+                            // echo '<pre>'; print_r($cat_meta['color']); echo '</pre>'; //exit;
+                            
+                            ?>
+                            <div class="tag-info-wrap">
+                                <h2 class="tag-name h6"><?php echo esc_html($category->name); ?></h2>
+                                <div class="post-count"><?php echo wp_kses_post($category->count); ?> posts</div>
                             </div>
-                            <!-- End Single Category  -->
-                        	<?php 
-                        } ?>
+                            <div class="tag-image-wrap">
+                                <img src="<?= $cat_meta['img'] ?>" loading="lazy" alt="<?php echo esc_html($category->name); ?>">
+                            </div>
+                        </a>
                     </div>
-                    <!-- Start List Wrapper  -->
-                </div>
+                    <!-- End Single Category  -->
+                	<?php 
+                } ?>
             </div>
         </div>
     </section>

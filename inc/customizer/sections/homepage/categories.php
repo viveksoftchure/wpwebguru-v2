@@ -185,7 +185,7 @@ function theme_customize_register_categories( $wp_customize )
     */
     $wp_customize->add_setting( 'categories_orderby', array(
         'capability' => 'edit_theme_options',
-        'sanitize_callback' => 'themeslug_sanitize_select',
+        'sanitize_callback' => 'theme_sanitize_select',
         'default' => 'Name',
     ) );
 
@@ -206,7 +206,7 @@ function theme_customize_register_categories( $wp_customize )
     */
     $wp_customize->add_setting( 'categories_order', array(
         'capability' => 'edit_theme_options',
-        'sanitize_callback' => 'themeslug_sanitize_select',
+        'sanitize_callback' => 'theme_sanitize_select',
         'default' => 'ASC',
     ) );
 

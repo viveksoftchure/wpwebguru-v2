@@ -10,25 +10,12 @@
 get_header();
 ?>
 <!-- Start Error Area  -->
-<div class="error-area">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="inner">
-                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/others/404.png" alt="Error Images">
-
-                    <h1 class="title">Page not Found</h1>
-                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Enim, recusandae consectetur nesciunt magnam facilis aliquid amet earum alias?</p>
-                    <div class="back-totop-button cerchio d-inline-block">
-                        <a class="theme-button button-rounded hover-flip-item-wrapper" href="<?php echo esc_url( home_url( '/' ) );?>">
-                            <span class="hover-flip-item">
-                                <span data-text="Go back">Go Back</span>
-                            </span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="main">
+    <div class="error-content-wrap text-center">
+        <div class="error-code">404</div>
+        <h1 class="error-message h3">Page not found</h1>
+        <p class="message-manual">Maybe the URL is incorrect, or the page no longer exist.</p>
+        <a href="<?php echo esc_url( home_url( '/' ) );?>" class="btn">Return to home page</a>
     </div>
 </div>
 <!-- End Error Area  -->

@@ -7,8 +7,7 @@
  */
 ?>
 <!doctype html>
-<html <?php language_attributes(); ?> class="h-100">
-
+<html <?php language_attributes(); ?> data-theme="" class="js">
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -48,7 +47,7 @@ endif;
 	                	?>
 		        	</a>
 					<a href="<?php echo esc_url(home_url('/')); ?>" class="logo-img theme-dark-logo" title="<?php bloginfo('name'); ?> - <?php bloginfo('description'); ?>">
-					    <img src="content/images/2021/12/dark-theme-logo.svg" alt="Arun Roy">
+					    <img src="http://localhost/wpwebguru/wp-content/uploads/2022/04/light-logo.png" alt="WpWebGuru">
 					</a>
 				</div>
 		        <input id="mobile-menu-toggle" class="mobile-menu-checkbox" type="checkbox">

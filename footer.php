@@ -61,6 +61,9 @@
                                                 }
                                                 ?>
                                             </a>
+                                            <a href="<?php echo esc_url(home_url('/')); ?>" class="logo-img theme-dark-logo">
+                                                <img src="http://localhost/wpwebguru/wp-content/uploads/2022/04/light-logo.png" alt="wpwebguru">
+                                            </a>
                                         </div>
                                         <div class="site-description">
                                             An architect, software developer, YouTuber and keynote speaker. On this site I write about my learning and experience.
@@ -113,34 +116,66 @@
 
         <div class="search-popup js-search-popup">
             <div class="search-popup-bg"></div>
-        	<a href="javascript:;" class="close-button" id="search-close" aria-label="Close search">
+        	<a href="#" class="close-button" id="search-close" aria-label="Close search">
         		<svg><use xlink:href="#i-close"/></svg>
         	</a>
         	<div class="popup-inner">
                 <div class="inner-container">
-                    <form class="search-form" id="search-form">
-                        <div class="search-form-box flex">
-                            <input type="text" class="search-input" placeholder="Type to search" id="search-input" aria-label="Type to search" role="searchbox">
-                        </div>
-                    </form>
+                    <?= get_search_form(); ?>
                     <div class="search-close-note">Press ESC to close.</div>
                     <div class="search-result" id="search-results"></div>
                     <div class="suggested-tags tag-wrap" id="suggested-tags">
                         <h2 class="h6">See posts by Popular tags</h2>
                         <div class="tag-list">
-                            <a href="tag/inspiration/index.html"  style="background:#9D6805">Inspiration</a>
-                            <a href="tag/lifestyle/index.html" >Lifestyle</a>
-                            <a href="tag/nature/index.html" >Nature</a>
-                            <a href="tag/health/index.html" >Health</a>
-                            <a href="tag/travel/index.html"  style="background:#E10689">Travel</a>
-                            <a href="tag/food/index.html"  style="background:#B43ADF">Food</a>
-                            <a href="tag/technology/index.html"  style="background:#2D841F">Technology</a>
+                            <?php theme_all_category_meta(); ?>
                         </div>
                     </div>
                 </div>
         	</div>
         </div>
-
         <?php wp_footer(); ?>
+        <script>
+            if(typeof(Storage) !== 'undefined') 
+            {
+                let themeMode = document.documentElement.getAttribute('data-theme');
+                if (themeMode !== null && themeMode === 'system') {
+                    setSysPrefColor();
+                }
+                const theme = localStorage.getItem('selected-theme');
+                if (theme == 'light') {
+                    setColorScheme('light');
+                }
+                else if (theme == 'dark') {
+                    setColorScheme('dark');
+                }
+            }
+            function setSysPrefColor() {
+                if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
+                    setColorScheme('dark');
+                }
+                window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+                    if (e.matches) {
+                        setColorScheme('dark');
+                    } else {
+                        setColorScheme('light');
+                    }
+                });
+            }
+            function setColorScheme(scheme) {
+                if (scheme=='dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                }
+            }
+        </script>
+        <script>
+            document.documentElement.classList.add('js');
+            window.onload = function() {
+                setTimeout(function() {
+                    document.body.classList.add('loaded');
+                }, 5000);
+            }
+        </script>
 	</body>
 </html>

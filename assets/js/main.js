@@ -3,12 +3,25 @@
     'use strict';
 
     // Page loading
-    $(window).on('load', function() {
+    $(window).on('load', function() 
+    {
         $('.preloader').delay(450).fadeOut('slow');
+    });
+    
+    var n = document.querySelectorAll(".js-toggle-dark-light"),
+        l = document.documentElement;
+    n.forEach(function (t) 
+    {
+        t.addEventListener("click", function () 
+        {
+            var t = l.getAttribute("data-theme");
+            null !== t && "dark" === t ? (l.setAttribute("data-theme", "light"), localStorage.setItem("selected-theme", "light")) : (l.setAttribute("data-theme", "dark"), localStorage.setItem("selected-theme", "dark"));
+        });
     });
 
     // Scroll progress
-    var scrollProgress = function() {
+    var scrollProgress = function() 
+    {
         var docHeight = $(document).height(),
             windowHeight = $(window).height(),
             scrollPercent;
@@ -33,14 +46,15 @@
     };
 
     // Search form
-    var openSearchForm = function() {
-        $('button.search-icon').on('click', function() {
-            $('body').toggleClass("open-search-form");
-            $('.mega-menu-item').removeClass("open");
-            $("html, body").animate({ scrollTop: 0 }, "slow");
+    var openSearchForm = function() 
+    {
+        $('.js-search-button').on('click', function() 
+        {
+            $('.search-popup').toggleClass("visible");
         });
-        $('.search-close').on('click', function() {
-            $('body').removeClass("open-search-form");
+        $('#search-close').on('click', function() 
+        {
+            $('.search-popup').toggleClass("visible");
         });
     };
 
@@ -179,7 +193,8 @@
     });
 
     //Load functions
-    $(document).ready(function() {
+    $(document).ready(function() 
+    {
         openSearchForm();
         OffCanvas();
         headerSticky();
@@ -190,3 +205,75 @@
     });
 
 })(jQuery);
+
+
+
+
+
+jQuery(document).ready(function()
+{
+    console.log(ajax_posts);
+    var ppp = ajax_posts.js_option.load_more!='' ? parseInt(ajax_posts.js_option.load_more) : parseInt(3); // Post per page
+    var offset = ajax_posts.js_option.posts_per_page!='' ? parseInt(ajax_posts.js_option.posts_per_page) : parseInt(3); // offset
+    // var offset = parseInt(0); // Post per page
+
+    var pageNumber = 1;
+
+    var canBeLoaded = true, // this param allows to initiate the AJAX call only if necessary
+        bottomOffset = 2000; // the distance (in px) from the page bottom when you want to load more posts
+
+    function load_posts(newOffset, postBox, category, author)
+    {
+        pageNumber++;
+        // console.log(offset);
+        var str = '&author='+author+'&category='+category+'&offset='+newOffset+'&pageNumber='+pageNumber+'&ppp='+ppp+'&action=more_post_ajax';
+        jQuery.ajax({
+            type: "POST",
+            dataType: "html",
+            url: ajax_posts.ajaxurl,
+            data: str,
+            success: function(data)
+            {
+                offset = offset+ppp;
+                var $data = jQuery(data);
+                if($data.length)
+                {
+                    jQuery(postBox).append($data);
+                    jQuery("#more_posts").attr("disabled",false);
+                } 
+                else
+                {
+                    jQuery("#more_posts").text('No more posts');
+                    jQuery("#more_posts").attr("disabled",true);
+                    jQuery('.noMorePostsFound').show();
+                }
+            },
+            beforeSend: function() 
+            {
+                jQuery('.dcsLoaderImg').show();
+            },
+            complete: function()
+            {
+                jQuery('.dcsLoaderImg').hide();
+            },
+            error : function(jqXHR, textStatus, errorThrown) 
+            {
+                $loader.html(jqXHR + " :: " + textStatus + " :: " + errorThrown);
+            }
+
+        });
+        return false;
+    }
+
+    jQuery("#more_posts").on("click",function()
+    { 
+        var newOffset = offset;
+        var postBox = jQuery(this).data('post-box');
+        var category = jQuery(this).data('category');
+        var author = jQuery(this).data('author');
+
+        jQuery("#more_posts").attr("disabled",true); // Disable the button, temp.
+        load_posts(newOffset, postBox, category, author);
+        newOffset = offset+ppp;
+    });
+});

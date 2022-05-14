@@ -6,26 +6,25 @@
  *
  * @package wpwebguru
  */
-$thumb_size = 'post-grid-1';
+$thumb_size = 'post-grid-2-big';
+
+// echo '<pre>'; print_r($options); echo '</pre>'; //exit;
 ?>
 
 <!-- Start Post List  -->
-<div id="post-<?php the_ID(); ?>" <?php post_class('post-card post-card-1'); ?>>
-    <div class="post-card-content">
-        <?php theme_post_category_meta(); ?>
-        <h3 class="post-card-title line-clamp-1">
-            <a href="<?php the_permalink(); ?>" title="<?php echo the_title(); ?>"><?php the_title(); ?></a>
-        </h3>
-        <div class="post-card-excerpt line-clamp-1"><?php echo get_excerpt(80); ?></div>
-        <?php theme_card_authormeta(); ?>
-        <?php theme_card_postmeta(); ?>
-    </div>
-    <?php if(has_post_thumbnail()) : ?>
-        <div class="post-card-thumbnail">
-            <a href="<?php the_permalink(); ?>" title="<?php echo the_title(); ?>">
-                <?php the_post_thumbnail($thumb_size) ?>
-            </a>
+<article id="post-<?php the_ID(); ?>" <?php post_class('post-card post-big flex'); ?>>
+    <a href="<?php the_permalink(); ?>" class="post-img-wrap">
+        <?php the_post_thumbnail($thumb_size) ?>
+    </a>
+    <div class="post-info-wrap">
+        <div class="tag-wrap">
+            <?php theme_post_category_meta(); ?>
         </div>
-    <?php endif; ?>
-</div>
+        <h2 class="<?= $options['title_type'] ?> post-title"><a href="<?php the_permalink(); ?>"><?php echo the_title(); ?></a></h2>
+        <div class="post-excerpt"><?php echo get_excerpt($options['post_excerpt_length']); ?></div>
+        <div class="post-meta-wrap flex">
+            <?= theme_card_authormeta() ?>
+        </div>
+    </div>
+</article>
 <!-- End Post List  -->

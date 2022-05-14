@@ -153,6 +153,98 @@ if (!function_exists('theme_the_posts_pagination'))
 }
 
 /**
+ * Blog Pagination
+ */
+if(!function_exists('theme_blog_pagination'))
+{
+    function theme_blog_pagination()
+    {
+        GLOBAL $wp_query;
+        if ($wp_query->post_count < $wp_query->found_posts) {
+            ?>
+            <div class="post-pagination"> <?php
+                the_posts_pagination(array(
+                    'prev_text'          => '<i class="fal fa-arrow-left"></i>',
+                    'next_text'          => '<i class="fal fa-arrow-right"></i>',
+                    'type'               => 'list',
+                    'show_all'  	     => false,
+                    'end_size'           => 1,
+                    'mid_size'           => 8,
+                )); ?>
+            </div>
+            <?php
+        }
+    }
+}
+
+
+/**
+ * Function that defines post navigation.
+ */
+if(!function_exists('theme_posts_block_navigation')) 
+{
+	function theme_posts_block_navigation() 
+	{
+		$next_post = get_next_post();
+	    $previous_post = get_previous_post();
+
+	    // echo '<pre>'; print_r($next_post); echo '</pre>'; exit;
+
+	    ?>
+	    <div class="col-md-6">
+		    <?php
+		    if( !empty( $next_post ) ) 
+		    {
+		    	?>
+		    	<div class="post prev-post">
+	                <a href="<?= esc_url( get_permalink($next_post->ID) ) ?>" class="flex">
+	                    <div class="featured-image">
+	                        <?= get_the_post_thumbnail($next_post->ID, 'thumbnail' ) ?>
+	                    </div>
+	                    <div class="content-wrap">
+	                        <div class="nav-text">Newer article</div>
+	                        <h4 class="title h5"><?= esc_html($next_post->post_title) ?></h4>
+	                        <div class="post-meta">
+	                            <time class="post-date" datetime="2021-05-02"><?= esc_html($next_post->post_date) ?></time>
+	                            <span class="read-time"><?= theme_content_estimated_reading_time($next_post->post_content); ?></span>
+	                        </div>
+	                    </div>
+	                </a>
+	            </div>
+                <?php
+		    }
+		    ?>
+		</div>
+
+		<div class="col-md-6">
+		    <?php
+		    if( !empty( $previous_post ) ) 
+		    {
+		    	?>
+		    	<div class="post next-post">
+                    <a href="<?= esc_url( get_permalink($previous_post->ID) ) ?>" class="flex">
+                        <div class="featured-image">
+                            <?= get_the_post_thumbnail($previous_post->ID, 'thumbnail' ) ?>
+                        </div>
+                        <div class="content-wrap">
+                            <div class="nav-text">Older article</div>
+                            <h4 class="title h5"><?= esc_html($previous_post->post_title) ?></h4>
+                            <div class="post-meta">
+                                <time class="post-date" datetime="2021-05-02">May 02, 2021</time>
+                                <span class="read-time"><?= theme_content_estimated_reading_time($previous_post->post_content); ?></span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            <?php
+		    }
+		    ?>
+		</div>
+		<?php
+	}
+}
+
+/**
  * theme_post_category_meta
  */
 function theme_post_category_meta($show = true)
@@ -160,23 +252,46 @@ function theme_post_category_meta($show = true)
     if (has_category()) 
     {
         $categories = get_the_category();
-        ?>
-        <div class="post-cat">
-            <div class="post-cat-list">
+
+        if (!empty($categories)) 
+        {
+            foreach( $categories as $category ) 
+            { 
+			    $t_id = $category->term_id;
+			    $cat_meta = get_option("category_$t_id");
+            	?>
+                <a class="" href="<?php echo esc_url( get_category_link( $category->term_id ) ) ?>" title="" style="background: <?= $cat_meta['color'] ?>;">
+                    <?php echo esc_html($category->name) ?>
+                </a> 
                 <?php
-                if ( ! empty( $categories ) ) 
-                {
-                    foreach( $categories as $category ) 
-                    { ?>
-                        <a class="hover-flip-item-wrapper" href="<?php echo esc_url( get_category_link( $category->term_id ) ) ?>">
-                            <span class="hover-flip-item"><span data-text="<?php echo esc_html( $category->name ) ?>"><?php echo esc_html( $category->name ) ?></span></span>
-                        </a> <?php
-                    }
-                }
-                ?>
-            </div>
-        </div>
-        <?php
+            }
+        }
+
+    }
+}
+
+/**
+ * theme_post_category_meta
+ */
+function theme_all_category_meta($show = true)
+{
+	$categories = get_terms( array(
+        'taxonomy' 			=> 'category',
+        'hide_empty' 		=> false,
+    ) );
+
+    if (!empty($categories)) 
+    {
+        foreach( $categories as $category ) 
+        { 
+		    $t_id = $category->term_id;
+		    $cat_meta = get_option("category_$t_id");
+        	?>
+            <a class="" href="<?php echo esc_url( get_category_link( $category->term_id ) ) ?>" title="" style="background: <?= $cat_meta['color'] ?>;">
+                <?php echo esc_html($category->name) ?>
+            </a> 
+            <?php
+        }
     }
 }
 
@@ -186,19 +301,9 @@ function theme_post_category_meta($show = true)
 function theme_postmeta()
 {
 	?>
-    <div class="post-meta">
-        <div class="post-author-avatar border-rounded">
-            <?php echo get_avatar(get_the_author_meta('ID'), 50); ?>
-        </div>
-        <div class="content">
-        	<h6 class="post-author-name"><?php printf('<a class="hover-flip-item-wrapper" href="%1$s"><span class="hover-flip-item"><span data-text="%2$s">%2$s</span></span></a>', esc_url(get_author_posts_url(get_the_author_meta('ID', get_the_author_meta( 'ID' ) ))), get_the_author_meta('display_name', get_the_author_meta( 'ID' ))); ?></h6>
-            <ul class="post-meta-list">
-                <li class="post-meta-date"><?php echo get_the_time(get_option('date_format')); ?></li>
-                <li class="post-meta-reading-time"><?php echo theme_content_estimated_reading_time(get_the_content()); ?></li>
-                <li class="post-meta-comments"><?php comments_popup_link(esc_html__('No Comments', 'blogar'), esc_html__('1 Comment', 'blogar'), esc_html__('% Comments', 'blogar'), 'post-comment', esc_html__('Comments off', 'blogar')); ?></li>
-            </ul>
-        </div>
-    </div>
+    <time class="post-date" datetime="2021-05-02"><?php echo get_the_time(get_option('date_format')); ?></time>
+    <span class="read-time"><?php echo theme_content_estimated_reading_time(get_the_content()); ?></span>
+    <span class="post-meta-comments"><?php comments_popup_link(esc_html__('No Comments', 'blogar'), esc_html__('1 Comment', 'blogar'), esc_html__('% Comments', 'blogar'), 'post-comment', esc_html__('Comments off', 'blogar')); ?></span>
     <?php
 }
 
@@ -208,23 +313,14 @@ function theme_postmeta()
 function theme_singlepostmeta()
 {
     ?>
-    <div class="post-meta">
-        <div class="post-author-avatar border-rounded">
-            <?php echo get_avatar(get_the_author_meta('ID'), 50); ?>
-        </div>
-        <div class="content">
-        	<h6 class="post-author-name"><?php printf('<a class="hover-flip-item-wrapper" href="%1$s"><span class="hover-flip-item"><span data-text="%2$s">%2$s</span></span></a>', esc_url(get_author_posts_url(get_the_author_meta('ID', get_the_author_meta( 'ID' ) ))), get_the_author_meta('display_name', get_the_author_meta( 'ID' ))); ?></h6>
-            <ul class="post-meta-list">
-            	<li class="post-meta-date"><?php echo get_the_time(get_option('date_format')); ?></li>
-            	<li class="post-meta-update-date"><?php echo the_modified_time(get_option('date_format')); ?></li>
-            	<li class="post-meta-reading-time"><?php echo theme_content_estimated_reading_time(get_the_content()); ?></li>
-            	<li class="post-meta-comments"><?php comments_popup_link(esc_html__('No Comments', 'wpwebguru'), esc_html__('1 Comment', 'wpwebguru'), esc_html__('% Comments', 'wpwebguru'), 'post-comment', esc_html__('Comments off', 'wpwebguru')); ?></li>
-            	<?php if (has_tag()) { ?>
-                    <li class="post-meta-tags"><?php the_tags(' ', ' '); ?></li>
-                <?php } ?>
-            </ul>
-        </div>
+    <div class="author-list flex">
+    	<a class="author-image" href="<?= esc_url(get_author_posts_url(get_the_author_meta('ID', get_the_author_meta( 'ID' ) ))) ?>" aria-label="Harini Banerjee">
+    		<?php echo get_avatar(get_the_author_meta('ID'), 50); ?>
+    	</a>
+        <a href="<?= esc_url(get_author_posts_url(get_the_author_meta('ID', get_the_author_meta( 'ID' ) ))) ?>" class="author-name"><?= get_the_author_meta('display_name', get_the_author_meta( 'ID' )) ?></a>&nbsp;
     </div>
+    <time class="post-date" datetime="2021-05-02"><?php echo get_the_time(get_option('date_format')); ?></time>
+    <span class="read-time"><?php echo theme_content_estimated_reading_time(get_the_content()); ?></span>
 	<?php 
 }
 
@@ -234,11 +330,19 @@ function theme_singlepostmeta()
 function theme_card_authormeta()
 {
 	?>
-    <div class="post-card-author-meta">
-        <span class="post-author-avatar"><?php echo get_avatar(get_the_author_meta('ID'), 50); ?></span>
-        <?php printf('<a class="post-author-name" href="%1$s"><span data-text="%2$s">%2$s</span></a>', esc_url(get_author_posts_url(get_the_author_meta('ID', get_the_author_meta( 'ID' ) ))), get_the_author_meta('display_name', get_the_author_meta( 'ID' ))); ?>
-        <span class="text-neutral">·</span>
-        <span class="post-meta-date"><?php echo get_the_time(get_option('date_format')); ?></span>
+	<div class="author-avatar-wrap">
+        <a href="<?= esc_url(get_author_posts_url(get_the_author_meta('ID', get_the_author_meta( 'ID' ) ))) ?>" class="author-image">
+            <?php echo get_avatar(get_the_author_meta('ID'), 50); ?>
+        </a>
+    </div>
+    <div class="meta-info">
+        <div class="author-names">
+            <a href="<?= esc_url(get_author_posts_url(get_the_author_meta('ID', get_the_author_meta( 'ID' ) ))) ?>"><?= get_the_author_meta('display_name', get_the_author_meta( 'ID' )) ?></a>
+        </div>
+        <div class="date-time">
+            <time class="post-date" datetime="2021-05-02"><?php echo get_the_time(get_option('date_format')); ?></time>
+            <span class="read-time"><?php echo theme_content_estimated_reading_time(get_the_content()); ?></span>
+        </div>
     </div>
     <?php
 }
@@ -257,6 +361,26 @@ function theme_card_postmeta()
     	<div class="post-meta-reading-time">
         	<span><?php echo theme_content_estimated_reading_time(get_the_content()); ?></span>
     	</div>
+    </div>
+    <?php
+}
+
+/**
+ * theme about author box
+ */
+function theme_author_box()
+{
+	?>
+    <div class="about-author flex">
+        <div class="avatar-wrap">
+            <a href="<?php echo esc_url(get_author_posts_url( get_the_author_meta( 'ID' ))); ?>" title="Harini Banerjee">
+            	<?php echo get_avatar(get_the_author_meta('ID'), 50); ?>
+            </a>
+        </div>
+        <div class="author-info">
+            <h3 class="name h5"><a href="<?php echo esc_url(get_author_posts_url( get_the_author_meta( 'ID' ))); ?>"><?= get_the_author_meta('display_name', get_the_author_meta( 'ID' )) ?></a></h3>
+            <div class="bio"><?php the_author_meta('user_description'); ?></div>
+        </div>
     </div>
     <?php
 }

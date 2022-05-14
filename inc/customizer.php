@@ -20,7 +20,7 @@ $theme_homepage_sections = array(
     'categories',
     'section-3',
     'section-4',
-    'latest-articles',
+    'section-5',
 );
 
 if ( !empty($theme_homepage_sections) ) 

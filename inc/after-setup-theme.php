@@ -209,6 +209,9 @@ function wp_custom_excerpt_length( $length )
 add_filter( 'excerpt_length', 'wp_custom_excerpt_length', 999 );
 
 
+/*
+* Get Excerpt length by count
+*/
 function get_excerpt( $count ) 
 {
     $permalink = get_permalink($post->ID);
@@ -221,11 +224,17 @@ function get_excerpt( $count )
 }
 
 
-function custom_columns( $columns ) {
+/*
+* add custom count to post page
+*/
+function custom_columns($columns) 
+{
     $columns = array(
         'cb' => '<input type="checkbox" />',
         'featured_image' => 'Image',
         'title' => 'Title',
+        'categories' => 'Categories',
+        'tags' => 'Tags',
         'comments' => '<span class="vers"><div title="Comments" class="comment-grey-bubble"></div></span>',
         'date' => 'Date'
      );
@@ -233,8 +242,10 @@ function custom_columns( $columns ) {
 }
 add_filter('manage_posts_columns' , 'custom_columns');
 
-function custom_columns_data( $column, $post_id ) {
-    switch ( $column ) {
+function custom_columns_data( $column, $post_id ) 
+{
+    switch ( $column ) 
+    {
     case 'featured_image':
         the_post_thumbnail( 'thumbnail' );
         break;

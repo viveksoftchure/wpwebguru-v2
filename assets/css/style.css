@@ -2090,9 +2090,15 @@ pre[class*="language-"] {
 ============== Post card styles
 ========================================================*/
 .post-card {
-    margin-bottom: 64px;
+    /*margin-bottom: 64px;*/
     -webkit-animation: slideUp 0.7s ease-out;
     animation: slideUp 0.7s ease-out;
+}
+.post-list-wrap .post-card {
+    margin-bottom: 64px;
+}
+.post-card:last-child {
+    /*margin-bottom: 0px;*/
 }
 .post-card .post-img-wrap {
     width: 240px;
@@ -2136,7 +2142,7 @@ pre[class*="language-"] {
     border-color: var(--c-text-main);
 }
 .post-card .post-excerpt {
-    margin-bottom: 24px;
+    /*margin-bottom: 24px;*/
     height: auto;
     overflow: hidden;
     display: -webkit-box;
@@ -2156,6 +2162,51 @@ pre[class*="language-"] {
     font-weight: 700;
 }
 .post-card .post-meta > :not(:first-child) {
+    margin-left: 18px;
+}
+.post-card .post-meta-wrap {
+    margin-top: 1.5rem;
+    align-items: center;
+}
+.author-image {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 8px;
+    border: 2px solid var(--c-body-bg);
+    background: var(--c-gray-light);
+}
+.author-image img {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    -o-object-fit: cover;
+    object-fit: cover;
+}
+.post-card .meta-info {
+    font-size: .875rem;
+}
+.post-card .meta-info .author-names a {
+    color: var(--c-text-dark);
+    font-weight: 500;
+}
+.post-card .date-time {
+    font-size: .875rem;
+    color: #575861;
+}
+.post-card .date-time>:not(:last-child)::after {
+    content: "•";
+    margin-left: 8px;
+    position: absolute;
+    display: inline-block;
+    font-weight: 700;
+}
+.post-card .date-time>:not(:first-child) {
     margin-left: 18px;
 }
 .tag-wrap a {
@@ -2182,6 +2233,58 @@ pre[class*="language-"] {
         margin-right: 0;
         margin-bottom: 2rem;
     }
+}
+
+
+
+
+
+
+.featured-post-layout-one .post-card .post-img-wrap {
+    padding-bottom: 58%;
+}
+.post-card.post-big .post-img-wrap {
+    width: 100%;
+    padding-bottom: 80%;
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 2rem;
+    margin-right: 0rem;
+}
+
+.featured-post-layout-one .post-card.post-small {
+    flex-wrap: nowrap;
+    margin-bottom: 2.5rem;
+}
+.post-card.post-small:last-child {
+    margin-bottom: 0;
+}
+.featured-post-layout-one .post-card.post-small .post-img-wrap {
+    flex: 0 0 180px;
+    min-width: 180px;
+    padding-bottom: 150px;
+    max-height: 150px;
+    margin: 0;
+    border-radius: var(--size-3);
+}
+.featured-post-layout-one .post-card.post-small .post-info-wrap {
+    margin-left: 24px;
+}
+
+@media (max-width: 575px)
+{
+
+    .featured-post-layout-one .post-card.post-small {
+        flex-wrap: nowrap;
+        margin-bottom: 2.5rem;
+    }
+.featured-post-layout-one .post-card.post-small .post-img-wrap {
+    flex: 0 0 150px;
+    min-width: 150px;
+    height: 100px;
+    padding-bottom: 0;
+}
 }
 /*========================================================
 ============== Email subscribe styles
@@ -4061,5 +4164,92 @@ input[type="text"].search-input {
     }
     100% {
         transform: rotate(360deg);
+    }
+}
+
+
+
+
+
+
+
+
+/*========================================================
+===================== Grid css
+========================================================*/
+.grid {
+    display: grid;
+}
+
+.grid-cols-1 {
+    grid-template-columns: repeat(1,minmax(0,1fr));
+}
+
+.gap-6 {
+    gap: 1.5rem;
+}
+
+
+@media (min-width: 768px)
+{
+    .md-gap-8 {
+        gap: 2rem;
+    }
+    .md-grid-cols-2 {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+    }
+}
+@media (min-width: 1024px)
+{
+    .lg-grid-cols-2 {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+    }
+    .lg-grid-cols-3 {
+        grid-template-columns: repeat(3,minmax(0,1fr));
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 767px) {
+    h1, .h1 {
+        font-size: 2.5rem; //48px
+    }
+    h2, .h2 {
+        font-size: 2rem; //40px
+    }
+    h3, .h3 {
+        font-size: 1.5rem; //32px
+    }
+    h4, .h4 {
+        font-size: 1rem; //24px
+    }
+    h5, .h5 {
+        font-size: 0.875rem; //20px
+    }
+    h6, .h6 {
+        font-size: 0.75rem; //16px
+    }
+    .heading-large {
+        font-size: 2.5rem; //64px
     }
 }
