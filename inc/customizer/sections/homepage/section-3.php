@@ -1,6 +1,6 @@
 <?php
 /**
- * Section 3 Settings
+ * Secction 3 Settings
  *
  * @package wpwebguru
  */
@@ -20,13 +20,13 @@ function theme_customize_register_section_3( $wp_customize )
     * Section display option
     */
     $wp_customize->add_setting( 'theme_section_3_display_option', array(
-        'sanitize_callback'     =>  'theme_sanitize_checkbox',
-        'default'               =>  true
+          'sanitize_callback'     =>  'theme_sanitize_checkbox',
+          'default'               =>  true
     ));
 
-    $wp_customize->add_control( new Theme_Toggle_Control( 
-        $wp_customize, 
-        'theme_section_3_display_option', array(
+    $wp_customize->add_control( new Theme_Toggle_Control( $wp_customize, 
+        'theme_section_3_display_option', 
+        array(
             'label' => esc_html__( 'Hide / Show','wpwebguru' ),
             'section' => 'theme_section_3',
             'settings' => 'theme_section_3_display_option',
@@ -96,54 +96,21 @@ function theme_customize_register_section_3( $wp_customize )
     /*
     * Section post category option
     */
-
     $wp_customize->add_setting( 'theme_section_3_category', array(
-        'capability'  => 'edit_theme_options',        
-        'sanitize_callback' => 'sanitize_text_field',
-        'default'     => '',
-    ) );
+        'capability'  => 'edit_theme_options',       
+        'default'     => array(),
+    ));
 
-    $wp_customize->add_control( new Theme_Customize_Dropdown_Taxonomies_Control( $wp_customize, 'theme_section_3_category', array(
-        'label' => esc_html__( 'Choose Category', 'wpwebguru' ),
-        'section' => 'theme_section_3',
-        'settings' => 'theme_section_3_category',
-        'type'=> 'dropdown-taxonomies',
-        'taxonomy'  =>  'category'
-    ) ) );
-
-    /*
-    * Section post style option
-    */
-    $wp_customize->add_setting( 'theme_section_3_post_style', array(
-        'capability' => 'edit_theme_options',
-        'sanitize_callback' => 'theme_sanitize_select',
-        'default' => 'list',
-    ) );
-
-    $wp_customize->add_control( 'theme_section_3_post_style', array(
-        'type' => 'select',
-        'section' => 'theme_section_3', // Add a default or your own section
-        'settings' => 'theme_section_3_post_style',
-        'label' => __('Post Style', 'wpwebguru'),
-        'choices' => array(
-            'grid' => __( 'Grid', 'wpwebguru' ),
-            'featured' => __( 'Featured', 'wpwebguru' ),
-            'list' => __( 'List', 'wpwebguru' ),
-        ),
-    ) );
-
-    /*
-    * Section post count option
-    */
-    $wp_customize->add_setting( 'theme_section_3_post_count', array(
-        'default'               =>  ''
-    ) );
-
-    $wp_customize->add_control( 'theme_section_3_post_count', array(
-        'label' => esc_html__( 'Post count', 'wpwebguru' ),
-        'section' => 'theme_section_3',
-        'settings' => 'theme_section_3_post_count',
-        'type'=> 'number',
+    $wp_customize->add_control( new Theme_Customize_Control_Multiple_Select( 
+        $wp_customize, 
+        'theme_section_3_category', 
+        array(
+            'label' => esc_html__( 'Choose Category', 'wpwebguru' ),
+            'section' => 'theme_section_3',
+            'settings' => 'theme_section_3_category',
+            'type'=> 'multiple-taxonomies',
+            'taxonomy'  =>  'category'
+        ) 
     ));
 
     /*
@@ -163,30 +130,6 @@ function theme_customize_register_section_3( $wp_customize )
     ) );
 
     /*
-    * Section title type option
-    */
-    $wp_customize->add_setting( 'theme_section_3_title_type', array(
-        'capability' => 'edit_theme_options',
-        'sanitize_callback' => 'theme_sanitize_select',
-        'default' => 'h2',
-    ) );
-
-    $wp_customize->add_control( 'theme_section_3_title_type', array(
-        'type' => 'select',
-        'section' => 'theme_section_3', // Add a default or your own section
-        'settings' => 'theme_section_3_title_type',
-        'label' => __('Title Type', 'wpwebguru'),
-        'choices' => array(
-            'h1' => __( 'H1', 'wpwebguru' ),
-            'h2' => __( 'H2', 'wpwebguru' ),
-            'h3' => __( 'H3', 'wpwebguru' ),
-            'h4' => __( 'H4', 'wpwebguru' ),
-            'h5' => __( 'H5', 'wpwebguru' ),
-            'h6' => __( 'H6', 'wpwebguru' ),
-        ),
-    ) );
-
-    /*
     * Section Description
     */
     $wp_customize->add_setting( 'theme_section_3_desc', array(
@@ -202,21 +145,83 @@ function theme_customize_register_section_3( $wp_customize )
     ));
 
     /*
-    * Section post excerpt length
+    * Section post count show option
     */
-    $wp_customize->add_setting( 'theme_section_3_post_excerpt_length', array(
-        'default'               =>  '80'
+    $wp_customize->add_setting( 'theme_section_3_show_count', array(
+        'sanitize_callback'     =>  'theme_sanitize_checkbox',
+        'default'               =>  true
+    ));
+
+    $wp_customize->add_control( new Theme_Toggle_Control( 
+        $wp_customize, 
+        'theme_section_3_show_count', array(
+        'label' => esc_html__( 'Show count','wpwebguru' ),
+            'section' => 'theme_section_3',
+            'settings' => 'theme_section_3_show_count',
+            'type'=> 'toggle',
+        )
+    ));
+
+    /*
+    * Section hide empty category option
+    */
+    $wp_customize->add_setting( 'theme_section_3_hide_empty_category', array(
+        'sanitize_callback'     =>  'theme_sanitize_checkbox',
+        'default'               =>  true
+    ));
+
+    $wp_customize->add_control( new Theme_Toggle_Control( 
+        $wp_customize, 
+        'theme_section_3_hide_empty_category', array(
+        'label' => esc_html__( 'Hide empty category','wpwebguru' ),
+            'section' => 'theme_section_3',
+            'settings' => 'theme_section_3_hide_empty_category',
+            'type'=> 'toggle',
+        )
+    ));
+
+    /*
+    * Section post orderby option
+    */
+    $wp_customize->add_setting( 'theme_section_3_orderby', array(
+        'capability' => 'edit_theme_options',
+        'sanitize_callback' => 'theme_sanitize_select',
+        'default' => 'Name',
     ) );
 
-    $wp_customize->add_control( 'theme_section_3_post_excerpt_length', array(
-        'label' => esc_html__( 'Post excerpt length', 'wpwebguru' ),
-        'section' => 'theme_section_3',
-        'settings' => 'theme_section_3_post_excerpt_length',
-        'type'=> 'number',
-    ));
+    $wp_customize->add_control( 'theme_section_3_orderby', array(
+        'type' => 'select',
+        'section' => 'theme_section_3', // Add a default or your own section
+        'label' => __('Post Ordering', 'wpwebguru'),
+        'choices' => array(
+            'id' => __( 'ID', 'wpwebguru' ),
+            'Count' => __( 'Count', 'wpwebguru' ),
+            'Name' => __( 'Name', 'wpwebguru' ),
+            'Slug' => __( 'Slug', 'wpwebguru' ),
+        ),
+    ) );
+
+    /*
+    * Section post order option
+    */
+    $wp_customize->add_setting( 'theme_section_3_order', array(
+        'capability' => 'edit_theme_options',
+        'sanitize_callback' => 'theme_sanitize_select',
+        'default' => 'ASC',
+    ) );
+
+    $wp_customize->add_control( 'theme_section_3_order', array(
+        'type' => 'select',
+        'section' => 'theme_section_3', // Add a default or your own section
+        'label' => __('Ordering', 'wpwebguru'),
+        'choices' => array(
+            'ASC' => __( 'ASC', 'wpwebguru' ),
+            'DESC' => __( 'DESC', 'wpwebguru' ),
+        ),
+    ) );
+
 
     $wp_customize->selective_refresh->add_partial( 'theme_section_3_display_option', array(
 	    'selector' => '.blogs > .container',
 	) );
-
 }

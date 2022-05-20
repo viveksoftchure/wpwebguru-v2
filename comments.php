@@ -52,7 +52,7 @@ if( post_password_required() )
 
                 );
                 $args = array(
-                    'class_submit' => 'theme-button btn-large btn-transparent',
+                    'class_submit' => 'theme-button btn',
                     'label_submit' => esc_html__( 'Post Comment', 'wpwebguru' ),
                     'comment_field' =>
                         '<div class="row"><div class="col-md-12"><div class="form-group"><label for="comment">'.esc_attr__('Write your comment here… ', 'wpwebguru').'<span class="required">*</span></label><span class="focus-border"></span><textarea id="comment" name="comment" rows="3"  required aria-required="true"></textarea></div></div></div>',

@@ -43,7 +43,6 @@ function wpwebguru_pingback($comment, $args, $depth)
 							    <?php comment_text(); ?>
 							</div>
 							<div class="reply-edit">
-                                <?php edit_comment_link();?>
                                 <div class="reply">
                                     <?php
                                     $post_id = get_the_ID();
@@ -64,6 +63,7 @@ function wpwebguru_pingback($comment, $args, $depth)
                                     comment_reply_link($default,$comment_id,$post_id);
                                     ?>
                                 </div>
+                                <?php edit_comment_link( __( '<i class="fa-solid fa-pen-to-square"></i>', 'wpwebguru' ));?>
 							</div>
 					    </div>
                         <?php if ( 'div' != $args['style'] ) : ?>
@@ -99,38 +99,13 @@ function wpwebguru_comment($comment, $args, $depth)
                             <?php if ( $args['avatar_size'] != 0 )?>
                             <div class="comment-author-image"><?php echo get_avatar( $comment, 50, '', '', $avt_args = array( 'class' => 'comment-avatar img-fluid' ) ); ?></div>
                             
-					        <div class="theme-comment-content">
-                                <div class="theme-comment-content-top">
+					        <div class="comment-content">
+                                <div class="comment-content-top">
                                     <div class="commenter"><?php comment_author_link(); ?></div>
+                                    <span class="mx-2">·</span>
                                     <div class="time-spent">
-                                        <div class="theme-comment-date">
+                                        <div class="comment-date">
                                             <?php printf( esc_html__('%1$s at %2$s', 'wpwebguru'), get_comment_date(),  get_comment_time()); ?>
-                                        </div>
-                                        <div class="reply-edit">
-                                            <?php edit_comment_link();?>
-                                            <div class="reply comment-reply-link hover-flip-item-wrapper">
-                                                <?php
-                                                $post_id = get_the_ID();
-                                                $comment_id =get_comment_ID();
-                                                //get the setting configured in the admin panel under settings discussions "Enable threaded (nested) comments  levels deep"
-                                                $max_depth = get_option('thread_comments_depth');
-                                                //add max_depth to the array and give it the value from above and set the depth to 1
-
-                                                $allowed_tags = wp_kses_allowed_html( 'post' );
-
-                                                $default = array(
-                                                    'add_below'  => 'comment',
-                                                    'respond_id' => 'respond',
-                                                    'reply_text' => wp_kses(' <span class=""><span data-text="Reply">Reply</span></span>', $allowed_tags),
-                                                    'login_text' => esc_html__('Log in to Reply', 'wpwebguru'),
-                                                    'depth'      => 1,
-                                                    'before'     => '',
-                                                    'after'      => '',
-                                                    'max_depth'  => $max_depth
-                                                );
-                                                comment_reply_link($default,$comment_id,$post_id);
-                                                ?>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -139,6 +114,32 @@ function wpwebguru_comment($comment, $args, $depth)
                                 <?php endif; ?>
                                 <div class="comment-text">
                                     <?php comment_text(); ?>
+                                </div>
+                                <div class="reply-edit">
+                                    <div class="reply">
+                                        <?php
+                                        $post_id = get_the_ID();
+                                        $comment_id =get_comment_ID();
+                                        //get the setting configured in the admin panel under settings discussions "Enable threaded (nested) comments  levels deep"
+                                        $max_depth = get_option('thread_comments_depth');
+                                        //add max_depth to the array and give it the value from above and set the depth to 1
+
+                                        $allowed_tags = wp_kses_allowed_html( 'post' );
+
+                                        $default = array(
+                                            'add_below'  => 'comment',
+                                            'respond_id' => 'respond',
+                                            'reply_text' => wp_kses('<i class="fa-solid fa-reply"></i><span class=""><span data-text="Reply">Reply</span></span>', $allowed_tags),
+                                            'login_text' => esc_html__('Log in to Reply', 'wpwebguru'),
+                                            'depth'      => 1,
+                                            'before'     => '',
+                                            'after'      => '',
+                                            'max_depth'  => $max_depth
+                                        );
+                                        comment_reply_link($default,$comment_id,$post_id);
+                                        ?>
+                                    </div>
+                                    <?php edit_comment_link( __( '<i class="fa-solid fa-pen-to-square"></i>', 'wpwebguru' ));?>
                                 </div>
                             </div>
                         </div>

@@ -14,7 +14,7 @@ function theme_customize_register_section_4( $wp_customize )
 	    'description'    => esc_html__( 'Section 4 :', 'wpwebguru' ),
 	    'panel'          => 'theme_homepage_panel',
 	    'priority'       => 160,
-	) );
+	));
 
     /*
     * Section display option
@@ -96,6 +96,7 @@ function theme_customize_register_section_4( $wp_customize )
     /*
     * Section post category option
     */
+
     $wp_customize->add_setting( 'theme_section_4_category', array(
         'capability'  => 'edit_theme_options',        
         'sanitize_callback' => 'sanitize_text_field',
@@ -146,7 +147,7 @@ function theme_customize_register_section_4( $wp_customize )
     ));
 
     /*
-    * Section section title option
+    * Section title option
     */
     $wp_customize->add_setting( 'theme_section_4_title', array(
         'transport' => 'postMessage',

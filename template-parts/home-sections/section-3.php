@@ -9,94 +9,81 @@
 $thumb_size = 'tab-post-thumb';
 ?>
 <?php 
-if( get_theme_mod('theme_section_3_display_option', true )) :
-	$section_title = get_theme_mod('theme_section_3_title', '');
-	$section_title_type = get_theme_mod('theme_section_3_title_type', 'h2');
-	$section_desc = get_theme_mod('theme_section_3_desc', '');
+if( get_theme_mod( 'theme_section_3_display_option', true ) ) :
 
-	$bgcolor = get_theme_mod('theme_section_3_background_color', '#fff');
-	$top_padding = get_theme_mod('theme_section_3_top_padding', '0');
-	$bottom_padding = get_theme_mod('theme_section_3_bottom_padding', '0');
-	$item_class = get_theme_mod( 'theme_section_3_item_class', '' );
-	
-	$post_details = array('date', 'categories', 'tags') ;
+    $section_title = get_theme_mod( 'theme_section_3_title', '' );
+    $section_desc = get_theme_mod( 'theme_section_3_desc', '' );
 
-    $blog_paged = (get_query_var('page') ) ? get_query_var('page') : 1;
-    $blog_cat = get_theme_mod('theme_section_3_category') ;
-    $posts_per_page = get_theme_mod('theme_section_3_post_count', 4);
-    $posts_style = get_theme_mod('theme_section_3_post_style', 'list');
-    $post_excerpt_length = get_theme_mod('theme_section_3_post_excerpt_length', 80);
+	$bgcolor = get_theme_mod( 'theme_section_3_background_color', '' );
+    $top_padding = get_theme_mod( 'theme_section_3_top_padding', '' );
+	$bottom_padding = get_theme_mod( 'theme_section_3_bottom_padding', '' );
 
-    $args = array(
-        'post_type'				=> 'post',
-        'category_name'			=>  $blog_cat ,
-        'posts_per_page'		=>  $posts_per_page,
-        'ignore_sticky_posts'	=> 1,
-        'paged'					=> $blog_paged
-    );
-    $query = new WP_Query( $args );
-    $max_pages = $query->max_num_pages;
+	$catsArray = get_theme_mod( 'theme_section_3_category', '' );
+    $blog_section_title = get_theme_mod( 'theme_section_3_title', '' );
+	$blog_section_desc = get_theme_mod( 'theme_section_3_desc', '' );
+	$show_count = get_theme_mod( 'theme_section_3_show_count', '' );
+	$hide_empty_category = get_theme_mod( 'theme_section_3_hide_empty_category', '' );
+	$orderby = get_theme_mod( 'theme_section_3_orderby', '' );
+	$order = get_theme_mod( 'theme_section_3_order', '' );
 
-    $options = [
-    	'item_class' => $item_class,
-    	'title_type' => $section_title_type,
-    	'post_excerpt_length' => $post_excerpt_length,
-    ];
+    $show_count 		  	= isset($show_count) && $show_count == 'yes' ? true : false;
+    $hide_empty_category  	= isset($hide_empty_category) && $hide_empty_category == 'yes' ? true : false;
+    $orderby  				= isset($orderby) ? $orderby : 'name';
+    $order  				= isset($order) ? $order : 'ASC';
 
-    if ( $query->have_posts() ) 
-    {
-    	$i = 1;
-		?>
-    	<section class="blog-category-posts featured-post-layout-one" style="background-color: <?= $bgcolor ?>;padding: <?= $top_padding ?>px 0px <?= $bottom_padding ?>px;">
-			<div class="container">
-				<div class="row">
-					<div class="blog-category-posts-head col-xl-12">
-						<?php if(!empty($section_title))
-						{ 
-							global $_wp_additional_image_sizes; 
-							// echo '<pre>'; print_r($_wp_additional_image_sizes); echo '</pre>'; //exit;
-							?>
-							<h2 class="h4 section-title"><span><?php echo esc_html($section_title); ?></span></h2>
-		                    <p class="section-desc"><?php echo esc_html($section_desc); ?></p>
-							<?php 
-						} ?>
-					</div>
-					<?php if ($posts_style=='grid'): ?>
-						<div class="grid gap-6 md-gap-8 md-grid-cols-2 lg-grid-cols-3">
-							<?php while ( $query->have_posts() ) : $query->the_post(); ?>
-								<?php include(locate_template('template-parts/post-card/post-card-1.php', false, false)); ?>
-							<?php endwhile; ?>  
-						</div>
-					<?php elseif ($posts_style=='featured'): ?>
-						<div class="grid grid-cols-1 lg-grid-cols-2 gap-6 md-gap-8">
-							<div class="overflow-hidden h-full">
-								<?php while ( $query->have_posts() ) : $query->the_post(); ?>
-									<?php if($i==1): ?>
-										<?php include(locate_template('template-parts/post-card/post-card-1.php', false, false)); ?>
-									<?php endif; ?>
-									<?php $i++; ?>
-								<?php endwhile; ?>
-							</div>
-							<div class="grid gap-6 md-gap-8 small-posts-wrap">
-								<?php $i=1; ?>
-								<?php while ( $query->have_posts() ) : $query->the_post(); ?>
-									<?php if($i!=1): ?>
-										<?php include(locate_template('template-parts/post-card/post-card-2.php', false, false)); ?>
-									<?php endif; ?>
-									<?php $i++; ?>
-								<?php endwhile; ?>
-							</div>
-						</div>
-					<?php else: ?>
-						<div class="col-xs-12">
-							<?php while ( $query->have_posts() ) : $query->the_post(); ?>
-								<?php get_template_part( 'template-parts/post/content', get_post_format()); ?>
-							<?php endwhile; ?>  
-						</div>
-					<?php endif; ?>
-				</div>
+    $categories = get_terms( array(
+        'taxonomy' 			=> 'category',
+        'hide_empty' 		=> $hide_empty_category,
+        'slug'              => $catsArray,
+        'orderby'           => $orderby,
+        'order'             => $order,
+    ) );
+
+    ?>
+
+    <section class="blog-category-posts" style="background-color: <?= $bgcolor ?>;padding: <?= $top_padding ?>px 0px <?= $bottom_padding ?>px;">
+        <div class="container">
+			<div class="blog-category-posts-head col-xs-12">
+				<?php if(!empty($section_title))
+				{ 
+					?>
+                    <h2 class="h4 section-title"><span><?php echo esc_html($section_title); ?></span></h2>
+                    <p class="section-desc"><?php echo esc_html($section_desc); ?></p>
+					<?php 
+				} ?>
 			</div>
-		</section>
-		<?php 
-	} 
+            <div class="row">
+                <?php
+
+                // echo '<pre>'; print_r($categories); echo '</pre>'; exit;
+                      
+                foreach( $categories as $category )
+                { 
+                	?>
+                    <!-- Start Single Category  -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 tag-card-wrap">
+                        <a href="<?php echo esc_url( get_category_link( $category->term_id ) ); ?>" class="tag-card flex">
+                            <?php 
+                            $t_id = $category->term_id;
+                            $cat_meta = get_option("category_$t_id");
+
+                            // echo '<pre>'; print_r($cat_meta['color']); echo '</pre>'; //exit;
+                            
+                            ?>
+                            <div class="tag-info-wrap">
+                                <h2 class="tag-name h6"><?php echo esc_html($category->name); ?></h2>
+                                <div class="post-count"><?php echo wp_kses_post($category->count); ?> posts</div>
+                            </div>
+                            <div class="tag-image-wrap">
+                                <img src="<?= $cat_meta['img'] ?>" loading="lazy" alt="<?php echo esc_html($category->name); ?>">
+                            </div>
+                        </a>
+                    </div>
+                    <!-- End Single Category  -->
+                	<?php 
+                } ?>
+            </div>
+        </div>
+    </section>
+   <?php
 endif; 

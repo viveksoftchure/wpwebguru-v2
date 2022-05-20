@@ -7,17 +7,22 @@
     {
         $('.preloader').delay(450).fadeOut('slow');
     });
-    
-    var n = document.querySelectorAll(".js-toggle-dark-light"),
-        l = document.documentElement;
-    n.forEach(function (t) 
+
+    // toggle dark/light
+    var toggleLight = function() 
     {
-        t.addEventListener("click", function () 
+        var n = document.querySelectorAll(".js-toggle-dark-light"),
+            l = document.documentElement;
+        n.forEach(function (t) 
         {
-            var t = l.getAttribute("data-theme");
-            null !== t && "dark" === t ? (l.setAttribute("data-theme", "light"), localStorage.setItem("selected-theme", "light")) : (l.setAttribute("data-theme", "dark"), localStorage.setItem("selected-theme", "dark"));
+            t.addEventListener("click", function (e) 
+            {
+                e.preventDefault();
+                var t = l.getAttribute("data-theme");
+                null !== t && "dark" === t ? (l.setAttribute("data-theme", "light"), localStorage.setItem("selected-theme", "light")) : (l.setAttribute("data-theme", "dark"), localStorage.setItem("selected-theme", "dark"));
+            });
         });
-    });
+    };
 
     // Scroll progress
     var scrollProgress = function() 
@@ -55,6 +60,15 @@
         $('#search-close').on('click', function() 
         {
             $('.search-popup').toggleClass("visible");
+        });
+        $(document).keydown(function(e){
+            if(e.keyCode == 27) {
+                if ($('.search-popup').hasClass('visible')) {
+                    $('.search-popup').removeClass('visible');
+                } else {
+                    $('.search-popup').addClass('visible');
+                }
+            }
         });
     };
 
@@ -102,85 +116,45 @@
     };
 
     //Mega menu
-    var megaMenu = function() {
-        $('.sub-mega-menu .nav-pills > a').on('mouseover', function(event) {
+    var megaMenu = function() 
+    {
+        $('.sub-mega-menu .nav-pills > a').on('mouseover', function(event) 
+        {
             $(this).tab('show');
         });
     };
 
-    /* More articles*/
-    var moreArticles = function() {
-        $.fn.vwScroller = function(options) {
-            var default_options = {
-                delay: 500,
-                /* Milliseconds */
-                position: 0.7,
-                /* Multiplier for document height */
-                visibleClass: '',
-                invisibleClass: '',
+    //Copy to clipboard
+    var coptToClipboard = function() {
+        $('.js-copy-link').on('click', function(event) {
+            var copyText = $(this).data("clipboard-text");
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val(copyText).select();
+            document.execCommand("copy");
+            $temp.remove();
+
+            $('#copied-success').fadeIn(800);
+            $('#copied-success').fadeOut(1200);
+        });
+    }
+
+    // Back to top
+    var scrollToTop = function() {
+        $(window).scroll(function() {
+            var height = $(window).scrollTop();
+
+            if (height > 400) {
+                $('#backto-top').fadeIn('slow');
+            } else {
+                $('#backto-top').fadeOut('slow');
             }
+        });
 
-            var isVisible = false;
-            var $document = $(document);
-            var $window = $(window);
-
-            options = $.extend(default_options, options);
-
-            var observer = $.proxy(function() {
-                var isInViewPort = $document.scrollTop() > (($document.height() - $window.height()) * options.position);
-
-                if (!isVisible && isInViewPort) {
-                    onVisible();
-                } else if (isVisible && !isInViewPort) {
-                    onInvisible();
-                }
-            }, this);
-
-            var onVisible = $.proxy(function() {
-                isVisible = true;
-
-                /* Add visible class */
-                if (options.visibleClass) {
-                    this.addClass(options.visibleClass);
-                }
-
-                /* Remove invisible class */
-                if (options.invisibleClass) {
-                    this.removeClass(options.invisibleClass);
-                }
-
-            }, this);
-
-            var onInvisible = $.proxy(function() {
-                isVisible = false;
-
-                /* Remove visible class */
-                if (options.visibleClass) {
-                    this.removeClass(options.visibleClass);
-                }
-
-                /* Add invisible class */
-                if (options.invisibleClass) {
-                    this.addClass(options.invisibleClass);
-                }
-            }, this);
-
-            /* Start observe*/
-            setInterval(observer, options.delay);
-
-            return this;
-        }
-
-        if ($.fn.vwScroller) {
-            var $more_articles = $('.single-more-articles');
-            $more_articles.vwScroller({ visibleClass: 'single-more-articles--visible', position: 0.55 })
-            $more_articles.find('.single-more-articles-close-button').on('click', function() {
-                $more_articles.hide();
-            });
-        }
-
-        $('button.single-more-articles-close').on('click', function() {
-            $('.single-more-articles').removeClass('single-more-articles--visible');
+        $("#backto-top").on('click', function(event) {
+            event.preventDefault();
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+            return false;
         });
     }
 
@@ -195,13 +169,15 @@
     //Load functions
     $(document).ready(function() 
     {
+        toggleLight();
         openSearchForm();
         OffCanvas();
         headerSticky();
         megaMenu();
         WidgetSubMenu();
         scrollProgress();
-        moreArticles();
+        coptToClipboard();
+        scrollToTop();
     });
 
 })(jQuery);
@@ -227,6 +203,7 @@ jQuery(document).ready(function()
         pageNumber++;
         // console.log(offset);
         var str = '&author='+author+'&category='+category+'&offset='+newOffset+'&pageNumber='+pageNumber+'&ppp='+ppp+'&action=more_post_ajax';
+        
         jQuery.ajax({
             type: "POST",
             dataType: "html",
@@ -272,7 +249,9 @@ jQuery(document).ready(function()
         var category = jQuery(this).data('category');
         var author = jQuery(this).data('author');
 
+        jQuery(this).html('<svg class="animate-spin" width="50px" height="50px" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg"><path d="M41.9 23.9c-.3-6.1-4-11.8-9.5-14.4-6-2.7-13.3-1.6-18.3 2.6-4.8 4-7 10.5-5.6 16.6 1.3 6 6 10.9 11.9 12.5 7.1 2 13.6-1.4 17.6-7.2-3.6 4.8-9.1 8-15.2 6.9-6.1-1.1-11.1-5.7-12.5-11.7-1.5-6.4 1.5-13.1 7.2-16.4 5.9-3.4 14.2-2.1 18.1 3.7 1 1.4 1.7 3.1 2 4.8.3 1.4.2 2.9.4 4.3.2 1.3 1.3 3 2.8 2.1 1.3-.8 1.2-2.5 1.1-3.8 0-.4.1.7 0 0z"/></svg>Show me more');
         jQuery("#more_posts").attr("disabled",true); // Disable the button, temp.
+        jQuery(this).html('Show me more');
         load_posts(newOffset, postBox, category, author);
         newOffset = offset+ppp;
     });

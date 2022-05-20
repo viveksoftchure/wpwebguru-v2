@@ -17,10 +17,11 @@ if ( !empty($panels) )
 
 $theme_homepage_sections = array(
     'section-1',
-    'categories',
+    'section-2',
     'section-3',
     'section-4',
     'section-5',
+    'section-6',
 );
 
 if ( !empty($theme_homepage_sections) ) 
@@ -33,18 +34,20 @@ if ( !empty($theme_homepage_sections) )
 
 $theme_panel_sections = array(
     'header-panel',
+    'social-panel',
 );
 
 if ( !empty($theme_panel_sections) ) 
 {
     foreach ( $theme_panel_sections as $section ) 
     {
-        require get_template_directory() . '/inc/customizer/sections/header/' . $section . '.php';
+        require get_template_directory() . '/inc/customizer/sections/theme/' . $section . '.php';
     }
 }
 
 require get_template_directory() . '/inc/customizer/sections/sort-homepage-section.php';
 require get_template_directory() . '/inc/customizer/sections/colors-fonts.php';
+require get_template_directory() . '/inc/customizer/sections/site-identity.php';
 /**
  * Binds JS handlers to make Theme Customizer preview reload changes asynchronously.
  */

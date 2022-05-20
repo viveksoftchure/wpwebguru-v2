@@ -47,7 +47,7 @@ endif;
 	                	?>
 		        	</a>
 					<a href="<?php echo esc_url(home_url('/')); ?>" class="logo-img theme-dark-logo" title="<?php bloginfo('name'); ?> - <?php bloginfo('description'); ?>">
-					    <img src="http://localhost/wpwebguru/wp-content/uploads/2022/04/light-logo.png" alt="WpWebGuru">
+					    <img src="<?= get_theme_mod('dark_logo') ?>" alt="WpWebGuru">
 					</a>
 				</div>
 		        <input id="mobile-menu-toggle" class="mobile-menu-checkbox" type="checkbox">

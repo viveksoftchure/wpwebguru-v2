@@ -94,59 +94,6 @@ function theme_customize_register_section_1( $wp_customize )
     ));
 
     /*
-    * Section post category option
-    */
-
-    $wp_customize->add_setting( 'theme_section_1_category', array(
-        'capability'  => 'edit_theme_options',        
-        'sanitize_callback' => 'sanitize_text_field',
-        'default'     => '',
-    ) );
-
-    $wp_customize->add_control( new Theme_Customize_Dropdown_Taxonomies_Control( $wp_customize, 'theme_section_1_category', array(
-        'label' => esc_html__( 'Choose Category', 'wpwebguru' ),
-        'section' => 'theme_section_1',
-        'settings' => 'theme_section_1_category',
-        'type'=> 'dropdown-taxonomies',
-        'taxonomy'  =>  'category'
-    ) ) );
-
-    /*
-    * Section post style option
-    */
-    $wp_customize->add_setting( 'theme_section_1_post_style', array(
-        'capability' => 'edit_theme_options',
-        'sanitize_callback' => 'theme_sanitize_select',
-        'default' => 'list',
-    ) );
-
-    $wp_customize->add_control( 'theme_section_1_post_style', array(
-        'type' => 'select',
-        'section' => 'theme_section_1', // Add a default or your own section
-        'settings' => 'theme_section_1_post_style',
-        'label' => __('Post Style', 'wpwebguru'),
-        'choices' => array(
-            'grid' => __( 'Grid', 'wpwebguru' ),
-            'featured' => __( 'Featured', 'wpwebguru' ),
-            'list' => __( 'List', 'wpwebguru' ),
-        ),
-    ) );
-
-    /*
-    * Section post count option
-    */
-    $wp_customize->add_setting( 'theme_section_1_post_count', array(
-        'default'               =>  ''
-    ) );
-
-    $wp_customize->add_control( 'theme_section_1_post_count', array(
-        'label' => esc_html__( 'Post count', 'wpwebguru' ),
-        'section' => 'theme_section_1',
-        'settings' => 'theme_section_1_post_count',
-        'type'=> 'number',
-    ));
-
-    /*
     * Section title option
     */
     $wp_customize->add_setting( 'theme_section_1_title', array(
@@ -198,22 +145,28 @@ function theme_customize_register_section_1( $wp_customize )
         'label' => esc_html__( 'Section Description', 'wpwebguru' ),
         'section' => 'theme_section_1',
         'settings' => 'theme_section_1_desc',
-        'type'=> 'text',
+        'type'=> 'textarea',
     ));
 
     /*
-    * Section post excerpt length
+    * Section Image
     */
-    $wp_customize->add_setting( 'theme_section_1_post_excerpt_length', array(
-        'default'               =>  '80'
-    ) );
-
-    $wp_customize->add_control( 'theme_section_1_post_excerpt_length', array(
-        'label' => esc_html__( 'Post excerpt length', 'wpwebguru' ),
-        'section' => 'theme_section_1',
-        'settings' => 'theme_section_1_post_excerpt_length',
-        'type'=> 'number',
+    $wp_customize->add_setting('theme_section_1_img', array(
+        'default' => get_theme_file_uri('assets/images/logo-light.png'), // Add Default Image URL 
+        'sanitize_callback' => 'esc_url_raw'
     ));
+ 
+    $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'theme_section_1_img_control', array(
+        'label' => 'Circle Image',
+        'priority' => 8,
+        'section' => 'theme_section_1',
+        'settings' => 'theme_section_1_img',
+        'button_labels' => array(// All These labels are optional
+                    'select' => 'Select Image',
+                    'remove' => 'Remove Image',
+                    'change' => 'Change Image',
+                    )
+    )));
 
     $wp_customize->selective_refresh->add_partial( 'theme_section_1_display_option', array(
         'selector' => '.blogs > .container',

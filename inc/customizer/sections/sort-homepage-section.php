@@ -16,17 +16,19 @@ function theme_sort_homepage_sections( $wp_customize )
     
     $default = array(
         'section-1',
-        'categories',
+        'section-2',
         'section-3',
         'section-4',
         'section-5',
+        'section-6',
     );
     $choices = array(
         'section-1'         => esc_html__( 'Section 1', 'wpwebguru' ),
-        'categories'        => esc_html__( 'Categories', 'wpwebguru' ),
+        'section-2'         => esc_html__( 'Section 2', 'wpwebguru' ),
         'section-3'         => esc_html__( 'Section 3', 'wpwebguru' ),
         'section-4'         => esc_html__( 'Section 4', 'wpwebguru' ),
         'section-5'         => esc_html__( 'Section 5', 'wpwebguru' ),
+        'section-6'         => esc_html__( 'Section 6', 'wpwebguru' ),
     );
     
     
