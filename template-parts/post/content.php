@@ -17,7 +17,6 @@ $thumb_size = 'blog-thumb';
     <div class="post-info-wrap">
         <div class="flex post-top-meta">
             <div class="tag-wrap"><?php theme_post_category_meta(); ?></div>
-            <div class="featured-icon" aria-label="Featured post icon"><svg><use xlink:href="#i-star"/></svg></div>
         </div>
         <h2 class="h3 post-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
         <div class="post-excerpt"><?php the_excerpt(); ?></div>
