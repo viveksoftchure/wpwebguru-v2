@@ -7,12 +7,13 @@
  * @package wpwebguru
  */
 $thumb_size = 'post-grid-2-big';
+$article_class = 'post-card flex '.$options['post_card_class'];
 
 // echo '<pre>'; print_r($options); echo '</pre>'; //exit;
 ?>
 
 <!-- Start Post List  -->
-<article id="post-<?php the_ID(); ?>" <?php post_class('post-card post-big flex'); ?>>
+<article id="post-<?php the_ID(); ?>" <?php post_class($article_class); ?>>
     <a href="<?php the_permalink(); ?>" class="post-img-wrap">
         <?php the_post_thumbnail($thumb_size) ?>
     </a>

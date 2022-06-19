@@ -2262,6 +2262,10 @@ svg {
     -moz-box-shadow: 0 3px 15px #b8c6db;
     -webkit-box-shadow: 0 3px 15px #b8c6db;
 }
+
+section {
+    display: flex;
+}
 /*========================================================
 ============== Button styles
 ========================================================*/
@@ -3433,14 +3437,16 @@ pre[class*="language-"] {
     /*margin-bottom: 0px;*/
 }
 .post-card .post-img-wrap {
-    width: 240px;
-    height: 240px;
-    border-radius: var(--size-2);
+    width: 100%;
+    height: 230px;
+    border-radius: var(--size-3);
     overflow: hidden;
-    margin-right: 32px;
+    margin-bottom: 2rem;
+    margin-right: 0rem;
     position: relative;
     background-color: var(--c-gray-lighter);
 }
+
 .post-card .post-img-wrap img {
     position: absolute;
     height: 100%;
@@ -3449,6 +3455,12 @@ pre[class*="language-"] {
     left: 0;
     -o-object-fit: cover;
     object-fit: cover;
+    -webkit-transition: all 0.9s ease-in-out;
+    transition: all 0.9s ease-in-out;
+}
+.post-card .post-img-wrap img:hover {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
 }
 .post-card .post-info-wrap {
     flex: 1 1 300px;
@@ -3570,14 +3582,20 @@ pre[class*="language-"] {
 
 
 
+.post-card.post-list .post-img-wrap {
+    width: 240px;
+    height: 230px;
+    margin-right: 32px;
+}
 
 
 .featured-post-layout-one .post-card .post-img-wrap {
-    padding-bottom: 58%;
+    /*padding-bottom: 58%;*/
 }
 .post-card.post-big .post-img-wrap {
     width: 100%;
-    padding-bottom: 80%;
+    height: 360px;
+    /*padding-bottom: 80%;*/
     border-radius: 24px;
     overflow: hidden;
     position: relative;
@@ -3587,7 +3605,7 @@ pre[class*="language-"] {
 
 .featured-post-layout-one .post-card.post-small {
     flex-wrap: nowrap;
-    margin-bottom: 2.5rem;
+    margin-bottom: 1rem;
 }
 .post-card.post-small:last-child {
     margin-bottom: 0;
@@ -3611,12 +3629,12 @@ pre[class*="language-"] {
         flex-wrap: nowrap;
         margin-bottom: 2.5rem;
     }
-.featured-post-layout-one .post-card.post-small .post-img-wrap {
-    flex: 0 0 150px;
-    min-width: 150px;
-    height: 100px;
-    padding-bottom: 0;
-}
+    .featured-post-layout-one .post-card.post-small .post-img-wrap {
+        flex: 0 0 150px;
+        min-width: 150px;
+        height: 100px;
+        padding-bottom: 0;
+    }
 }
 /*========================================================
 ============== Email subscribe styles
@@ -5464,21 +5482,32 @@ pre[class*="language-"] {
 ========================================================*/
 .search-popup {
     position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100vh;
-    background: var(--c-body-bg);
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--c-body-bg);
+    -webkit-transform: translate(0%, 100%) scale(0, 0);
+    transform: translate(0%, 100%) scale(0, 0);
     opacity: 0;
     visibility: hidden;
-    transition: all 0.1s ease-in-out;
-    z-index: -2;
+    z-index: 999999;
+    padding: 30px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
 }
 .search-popup.visible {
+    -webkit-transform: translate(0px, 0px) scale(1, 1);
+    transform: translate(0px, 0px) scale(1, 1);
     opacity: 1;
     visibility: visible;
-    z-index: 4000002;
+    overflow: hidden;
 }
 .search-popup .close-button {
     position: absolute;

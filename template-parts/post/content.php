@@ -7,10 +7,11 @@
  * @package wpwebguru
  */
 $thumb_size = 'blog-thumb';
+$article_class = 'post-card flex post-list';
 ?>
 
 <!-- Start Post List  -->
-<article id="post-<?php the_ID(); ?>" <?php post_class('post-card flex'); ?>>
+<article id="post-<?php the_ID(); ?>" <?php post_class($article_class); ?>>
     <a href="<?php the_permalink(); ?>" class="post-img-wrap" title="<?php echo the_title(); ?>">
         <?php the_post_thumbnail($thumb_size) ?>
     </a>

@@ -41,6 +41,7 @@ if( get_theme_mod('theme_section_4_display_option', true )) :
     	'item_class' => $item_class,
     	'title_type' => $section_title_type,
     	'post_excerpt_length' => $post_excerpt_length,
+    	'post_card_class' => '',
     ];
 
     if ( $query->have_posts() ) 
@@ -71,6 +72,7 @@ if( get_theme_mod('theme_section_4_display_option', true )) :
 						<div class="grid grid-cols-1 lg-grid-cols-2 gap-6 md-gap-8">
 							<div class="overflow-hidden h-full">
 								<?php while ( $query->have_posts() ) : $query->the_post(); ?>
+									<?php $options['post_card_class'] = 'post-big big-thumbnail'; ?>
 									<?php if($i==1): ?>
 										<?php include(locate_template('template-parts/post-card/post-card-1.php', false, false)); ?>
 									<?php endif; ?>
@@ -89,6 +91,7 @@ if( get_theme_mod('theme_section_4_display_option', true )) :
 						</div>
 					<?php else: ?>
 						<div class="col-xs-12">
+							<?php $options['post_card_class'] = 'post-list'; ?>
 							<?php while ( $query->have_posts() ) : $query->the_post(); ?>
 								<?php get_template_part( 'template-parts/post/content', get_post_format()); ?>
 							<?php endwhile; ?>  
