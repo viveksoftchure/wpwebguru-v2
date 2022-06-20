@@ -2266,6 +2266,10 @@ svg {
 section {
     display: flex;
 }
+
+.width-100 {
+    width: 100%;
+}
 /*========================================================
 ============== Button styles
 ========================================================*/
@@ -4806,8 +4810,8 @@ pre[class*="language-"] {
 ========================================================*/
 .tag-card {
     padding: 1.25rem;
-    margin-bottom: 2rem;
-    height: calc(100% - 2rem);
+    /*margin-bottom: 2rem;*/
+    /*height: calc(100% - 2rem);*/
     border: 1px solid var(--c-border-light);
     border-radius: var(--size-2);
     align-items: center;

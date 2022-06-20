@@ -51,7 +51,7 @@ if( get_theme_mod('theme_section_6_display_option', true )) :
     	<section class="blog-category-posts featured-post-layout-one" style="background-color: <?= $bgcolor ?>;padding: <?= $top_padding ?>px 0px <?= $bottom_padding ?>px;">
 			<div class="container">
 				<div class="row">
-					<div class="blog-category-posts-head col-xl-12">
+					<div class="blog-category-posts-head width-100">
 						<?php if(!empty($section_title))
 						{ 
 							global $_wp_additional_image_sizes; 

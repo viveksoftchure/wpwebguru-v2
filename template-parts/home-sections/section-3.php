@@ -43,7 +43,7 @@ if( get_theme_mod( 'theme_section_3_display_option', true ) ) :
 
     <section class="blog-category-posts" style="background-color: <?= $bgcolor ?>;padding: <?= $top_padding ?>px 0px <?= $bottom_padding ?>px;">
         <div class="container">
-			<div class="blog-category-posts-head col-xs-12">
+			<div class="blog-category-posts-head width-100">
 				<?php if(!empty($section_title))
 				{ 
 					?>
@@ -53,35 +53,31 @@ if( get_theme_mod( 'theme_section_3_display_option', true ) ) :
 				} ?>
 			</div>
             <div class="row">
-                <?php
-
-                // echo '<pre>'; print_r($categories); echo '</pre>'; exit;
-                      
-                foreach( $categories as $category )
-                { 
-                	?>
-                    <!-- Start Single Category  -->
-                    <div class="col-xl-4 col-lg-6 col-md-6 tag-card-wrap">
-                        <a href="<?php echo esc_url( get_category_link( $category->term_id ) ); ?>" class="tag-card flex">
-                            <?php 
-                            $t_id = $category->term_id;
-                            $cat_meta = get_option("category_$t_id");
-
-                            // echo '<pre>'; print_r($cat_meta['color']); echo '</pre>'; //exit;
-                            
-                            ?>
-                            <div class="tag-info-wrap">
-                                <h2 class="tag-name h6"><?php echo esc_html($category->name); ?></h2>
-                                <div class="post-count"><?php echo wp_kses_post($category->count); ?> posts</div>
-                            </div>
-                            <div class="tag-image-wrap">
-                                <img src="<?= $cat_meta['img'] ?>" loading="lazy" alt="<?php echo esc_html($category->name); ?>">
-                            </div>
-                        </a>
-                    </div>
-                    <!-- End Single Category  -->
-                	<?php 
-                } ?>
+                <div class="grid gap-6 md-gap-8 md-grid-cols-2 lg-grid-cols-3 width-100">
+                    <?php
+                    foreach( $categories as $category )
+                    { 
+                    	?>
+                        <!-- Start Single Category  -->
+                        <div class="tag-card-wrap">
+                            <a href="<?php echo esc_url( get_category_link( $category->term_id ) ); ?>" class="tag-card flex">
+                                <?php 
+                                $t_id = $category->term_id;
+                                $cat_meta = get_option("category_$t_id");
+                                ?>
+                                <div class="tag-info-wrap">
+                                    <h2 class="tag-name h6"><?php echo esc_html($category->name); ?></h2>
+                                    <div class="post-count"><?php echo wp_kses_post($category->count); ?> posts</div>
+                                </div>
+                                <div class="tag-image-wrap">
+                                    <img src="<?= $cat_meta['img'] ?>" loading="lazy" alt="<?php echo esc_html($category->name); ?>">
+                                </div>
+                            </a>
+                        </div>
+                        <!-- End Single Category  -->
+                    	<?php 
+                    } ?>
+                </div>
             </div>
         </div>
     </section>

@@ -11,41 +11,44 @@ $twitter_link = get_theme_mod('social_link_twitter', '');
 $instagram_link = get_theme_mod('social_link_instagram', '');
 $git_link = get_theme_mod('social_link_git', '');
 $youtube_link = get_theme_mod('social_link_youtube', '');
-?>
 
-            <section class="email-subs">
-                <div class="container">
-                    <div class="email-subs-wrap text-center">
-                        <div class="icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 122 55"><path d="M80.265 5.637a1.563 1.563 0 000 3.125h.045a1.563 1.563 0 000-3.125h-.045zM59.345 43.791a1.563 1.563 0 000 3.126h24.623a1.563 1.563 0 100-3.126H59.345z"/><path fill-rule="evenodd" d="M44.922 0h72.763a4.172 4.172 0 014.159 4.158v45.737a4.17 4.17 0 01-4.158 4.158H44.922a4.17 4.17 0 01-4.158-4.158V4.158A4.17 4.17 0 0144.922 0zm38.774 27.442l16.523-12.393h-5.43a1.563 1.563 0 010-3.126h9.597l4.215-3.161H86.715a1.563 1.563 0 010-3.125h25.328c.204 0 .399.039.578.11l3.504-2.629H46.482l32.43 24.324c.583.444 1.478.722 2.392.718.913.004 1.808-.274 2.392-.718zm6.451-.942l-4.582 3.437c-1.247.929-2.765 1.338-4.262 1.34-1.498-.003-3.015-.412-4.261-1.34L72.46 26.5 46.134 50.876a.2.2 0 01-.01.012l-.01.01-.01.009-.014.013-.006.006-.008.009h70.456l-.023-.023a.337.337 0 01-.035-.035L90.147 26.5zM69.95 24.617L43.883 5.067v43.634l26.066-24.084zm22.71 0l26.065-19.55V48.7L92.658 24.617z" clip-rule="evenodd"/><path d="M2.654 23.901a1.563 1.563 0 000 3.125h15.383a1.563 1.563 0 100-3.125H2.654zM24.288 25.464c0-.863.7-1.563 1.563-1.563h9.99a1.563 1.563 0 010 3.125h-9.99c-.863 0-1.563-.7-1.563-1.562zM5.373 17.876c0-.863.7-1.563 1.563-1.563h25.328a1.563 1.563 0 110 3.126H6.936c-.863 0-1.563-.7-1.563-1.563zM22.599 39.077a1.563 1.563 0 000 3.125h14.353a1.563 1.563 0 000-3.125H22.6zM.157 40.64c0-.864.7-1.563 1.562-1.563h14.354a1.563 1.563 0 010 3.125H1.719c-.863 0-1.562-.7-1.562-1.563zM15.662 31.489a1.563 1.563 0 000 3.125h16.602a1.563 1.563 0 100-3.125H15.662zM7.162 33.052c0-.864.7-1.563 1.562-1.563h.344a1.563 1.563 0 110 3.125h-.344c-.863 0-1.562-.7-1.562-1.562z"/></svg>            </div>
-                        <h2 class="h1 email-subs-section-title">Subscribe to newsletter</h2>
-                        <div class="email-subs-section-description">
-                            Stay up to date! Get all the latest posts delivered straight to your inbox.
-                        </div>
-                        <div class="form-wrap">
-                            <form class="subscribe-form text-left" data-members-form="subscribe">
-                                <div class="form-field-wrap field-group-inline">
-                                    <label for="name" class="sr-only">Name</label>
-                                    <input data-members-name="" type="text" class="name form-field input-field" id="name" placeholder="Your name" required="" autocomplete="off">
-                                    <label for="email" class="sr-only">Email</label>
-                                    <input data-members-email="" type="email" class="email form-field input-field" id="email" placeholder="Your email address" required="" autocomplete="off">
-                                    <button class="btn form-field" type="submit"><span>Subscribe</span></button>
-                                </div>
-                                <div class="message-container">
-                                    <div class="notification success form-notification">
-                                        <a class="notification-close" href="javascript:;" aria-label="close notification"><span class="close-icon"><svg><use xlink:href="#i-close"/></svg></span></a>
-                                        <strong>Great!</strong> Check your inbox and click the link to confirm your subscription.
+$subscribe = false;
+?>
+            <?php if($subscribe==true): ?>
+                <section class="email-subs">
+                    <div class="container">
+                        <div class="email-subs-wrap text-center">
+                            <div class="icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 122 55"><path d="M80.265 5.637a1.563 1.563 0 000 3.125h.045a1.563 1.563 0 000-3.125h-.045zM59.345 43.791a1.563 1.563 0 000 3.126h24.623a1.563 1.563 0 100-3.126H59.345z"/><path fill-rule="evenodd" d="M44.922 0h72.763a4.172 4.172 0 014.159 4.158v45.737a4.17 4.17 0 01-4.158 4.158H44.922a4.17 4.17 0 01-4.158-4.158V4.158A4.17 4.17 0 0144.922 0zm38.774 27.442l16.523-12.393h-5.43a1.563 1.563 0 010-3.126h9.597l4.215-3.161H86.715a1.563 1.563 0 010-3.125h25.328c.204 0 .399.039.578.11l3.504-2.629H46.482l32.43 24.324c.583.444 1.478.722 2.392.718.913.004 1.808-.274 2.392-.718zm6.451-.942l-4.582 3.437c-1.247.929-2.765 1.338-4.262 1.34-1.498-.003-3.015-.412-4.261-1.34L72.46 26.5 46.134 50.876a.2.2 0 01-.01.012l-.01.01-.01.009-.014.013-.006.006-.008.009h70.456l-.023-.023a.337.337 0 01-.035-.035L90.147 26.5zM69.95 24.617L43.883 5.067v43.634l26.066-24.084zm22.71 0l26.065-19.55V48.7L92.658 24.617z" clip-rule="evenodd"/><path d="M2.654 23.901a1.563 1.563 0 000 3.125h15.383a1.563 1.563 0 100-3.125H2.654zM24.288 25.464c0-.863.7-1.563 1.563-1.563h9.99a1.563 1.563 0 010 3.125h-9.99c-.863 0-1.563-.7-1.563-1.562zM5.373 17.876c0-.863.7-1.563 1.563-1.563h25.328a1.563 1.563 0 110 3.126H6.936c-.863 0-1.563-.7-1.563-1.563zM22.599 39.077a1.563 1.563 0 000 3.125h14.353a1.563 1.563 0 000-3.125H22.6zM.157 40.64c0-.864.7-1.563 1.562-1.563h14.354a1.563 1.563 0 010 3.125H1.719c-.863 0-1.562-.7-1.562-1.563zM15.662 31.489a1.563 1.563 0 000 3.125h16.602a1.563 1.563 0 100-3.125H15.662zM7.162 33.052c0-.864.7-1.563 1.562-1.563h.344a1.563 1.563 0 110 3.125h-.344c-.863 0-1.562-.7-1.562-1.562z"/></svg>            </div>
+                            <h2 class="h1 email-subs-section-title">Subscribe to newsletter</h2>
+                            <div class="email-subs-section-description">
+                                Stay up to date! Get all the latest posts delivered straight to your inbox.
+                            </div>
+                            <div class="form-wrap">
+                                <form class="subscribe-form text-left" data-members-form="subscribe">
+                                    <div class="form-field-wrap field-group-inline">
+                                        <label for="name" class="sr-only">Name</label>
+                                        <input data-members-name="" type="text" class="name form-field input-field" id="name" placeholder="Your name" required="" autocomplete="off">
+                                        <label for="email" class="sr-only">Email</label>
+                                        <input data-members-email="" type="email" class="email form-field input-field" id="email" placeholder="Your email address" required="" autocomplete="off">
+                                        <button class="btn form-field" type="submit"><span>Subscribe</span></button>
                                     </div>
-                                    <div class="notification error form-notification">
-                                        <a class="notification-close" href="javascript:;" aria-label="close notification"><span class="close-icon"><svg><use xlink:href="#i-close"/></svg></span></a>
-                                        <strong>Error!</strong> Please enter a valid email address!
+                                    <div class="message-container">
+                                        <div class="notification success form-notification">
+                                            <a class="notification-close" href="javascript:;" aria-label="close notification"><span class="close-icon"><svg><use xlink:href="#i-close"/></svg></span></a>
+                                            <strong>Great!</strong> Check your inbox and click the link to confirm your subscription.
+                                        </div>
+                                        <div class="notification error form-notification">
+                                            <a class="notification-close" href="javascript:;" aria-label="close notification"><span class="close-icon"><svg><use xlink:href="#i-close"/></svg></span></a>
+                                            <strong>Error!</strong> Please enter a valid email address!
+                                        </div>
                                     </div>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            <?php endif; ?>
             <footer class="site-footer">
                 <div class="container">
                     <div class="footer-top">
