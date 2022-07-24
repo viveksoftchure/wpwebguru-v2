@@ -38,7 +38,7 @@
         <div class="share-wrap">
             <div class="share-title h5 text-center">Share this article:</div>
             <div class="share-links flex">
-                <?= post_sharing_icon_links() ?>
+                <?= post_sharing_icon_links2() ?>
             </div>
         </div>
         <?= theme_author_box() ?>

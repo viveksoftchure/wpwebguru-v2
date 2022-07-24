@@ -32,7 +32,8 @@ if( get_theme_mod('theme_section_6_display_option', true )) :
         'category_name'			=>  $blog_cat ,
         'posts_per_page'		=>  $posts_per_page,
         'ignore_sticky_posts'	=> 1,
-        'paged'					=> $blog_paged
+        'paged'					=> $blog_paged,
+		'post_status' => 'publish',
     );
     $query = new WP_Query( $args );
     $max_pages = $query->max_num_pages;

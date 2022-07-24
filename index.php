@@ -19,8 +19,7 @@ $theme_blog_sidebar_class = 'col-lg-8 col-md-12 col-12 order-1 order-lg-2';
 <div class="main">
     <div class="container">
         <div class="row">
-            <div class="col-lg-10 offset-lg-1 post-list-wrap">
-                <h2 class="h4 section-title"><span>Featured posts</span></h2>
+            <div class="col-lg-10 offset-lg-1 post-list-wrap" id="default-posts">
                 <?php
                 if ( have_posts() ) :
 
@@ -37,7 +36,7 @@ $theme_blog_sidebar_class = 'col-lg-8 col-md-12 col-12 order-1 order-lg-2';
 
                     endwhile;
 
-                    theme_blog_pagination();
+                    // theme_blog_pagination();
 
                 else :
 
@@ -51,7 +50,7 @@ $theme_blog_sidebar_class = 'col-lg-8 col-md-12 col-12 order-1 order-lg-2';
     <div class="row">
         <div class="col">
             <div class="pagination-wrap text-center" id="pagination-wrap">
-                <button class="btn" id="load-more"><span>Show more posts</span></button>
+                <button class="btn" id="more_posts" data-post-box="#default-posts" data-category="<?= $category->slug ?>"><span>Show more posts</span></button>
             </div>
         </div>
     </div>

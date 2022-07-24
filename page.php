@@ -18,7 +18,6 @@ get_header();
     <div class="container">
         <div class="row">
             <div class="col-lg-10 offset-lg-1">
-                <h2 class="h4 section-title"><span>Featured posts</span></h2>
                 <?php
                 if ( have_posts() ) :
 

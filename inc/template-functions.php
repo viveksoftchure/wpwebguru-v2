@@ -172,6 +172,76 @@ if ( ! function_exists('post_sharing_icon_links') )
 }
 
 /**
+* Social sharing icons
+*/
+if ( ! function_exists('post_sharing_icon_links2') ) 
+{
+    function post_sharing_icon_links2( ) 
+    {
+        $image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'single-blog-thumb' );
+        $html = '';
+        $facebook_url = 'https://www.facebook.com/sharer/sharer.php?u='. get_the_permalink();
+        $twitter_url = 'https://twitter.com/share?'. esc_url(get_permalink()) .'&amp;text='. get_the_title();
+        $pinterest_url = 'http://pinterest.com/pin/create/button/?url='. esc_url(get_permalink()) .'&amp;media='.$image[0].'&amp;description='. get_the_excerpt();
+        $whatsapp_url = 'whatsapp://send?text='. esc_url(get_permalink());$twitter_url = 'https://twitter.com/share?'. esc_url(get_permalink()) .'&amp;text='. get_the_title();
+        $linkedin_url = 'http://www.linkedin.com/shareArticle?url='. esc_url(get_permalink()) .'&amp;title='. get_the_title();
+        $mail_url = 'mailto:?subject='. get_the_title().'&amp;body='. esc_url(get_permalink());
+        $instagram_url = '';
+        $github_url = '';
+        $youtube_url = '';
+        ?>
+
+        <ul class="social-wrapper">
+            <li class="icon social-link facebook" data-link="<?= esc_url( $facebook_url ) ?>" data-target="_blank">
+                <span class="tooltip">Facebook</span>
+                <span><i class="fab fa-facebook-f"></i></span>
+            </li>
+            <li class="icon social-link twitter" data-link="<?= esc_url( $twitter_url ) ?>" data-target="_blank">
+                <span class="tooltip">Twitter</span>
+                <span><i class="fab fa-twitter"></i></span>
+            </li>
+            <li class="icon social-link pinterest" data-link="<?= esc_url( $pinterest_url ) ?>" data-target="_blank">
+                <span class="tooltip">Pinterest</span>
+                <span><i class="fa-brands fa-pinterest"></i></span>
+            </li>
+            <li class="icon social-link whatsapp" data-link="<?= esc_url( $whatsapp_url ) ?>" data-target="_blank">
+                <span class="tooltip">Whatsapp</span>
+                <span><i class="fa-brands fa-whatsapp"></i></span>
+            </li>
+            <li class="icon social-link linkedin" data-link="<?= esc_url( $linkedin_url ) ?>" data-target="_blank">
+                <span class="tooltip">Linkdin</span>
+                <span><i class="fa-brands fa-linkedin-in"></i></span>
+            </li>
+            <li class="icon social-link email" data-link="<?= esc_url( $mail_url ) ?>" data-target="_blank">
+                <span class="tooltip">Email</span>
+                <span><i class="fa-regular fa-envelope"></i></span>
+            </li>
+            <li class="icon copy js-copy-link" data-clipboard-text="<?= esc_url(get_permalink()) ?>">
+                <span class="tooltip">Copy</span>
+                <span><i class="fa-solid fa-copy"></i></span>
+            </li>
+            <!-- <li class="icon instagram">
+                <span class="tooltip">Instagram</span>
+                <span><i class="fab fa-instagram"></i></span>
+            </li>
+            <li class="icon github">
+                <span class="tooltip">Github</span>
+                <span><i class="fab fa-github"></i></span>
+            </li>
+            <li class="icon youtube">
+                <span class="tooltip">Youtube</span>
+                <span><i class="fab fa-youtube"></i></span>
+            </li> -->
+        </ul>
+        <div class="js-notification-copy-link text-center">
+            <span>The link has been Copied to clipboard!</span>
+        </div>
+        <?php
+        // echo wp_kses_post($html);
+    }
+}
+
+/**
 * Comment navigation
 */
 function theme_get_post_navigation()

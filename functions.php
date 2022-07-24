@@ -333,6 +333,7 @@ function more_post_ajax()
         'offset' => $offset,
         'author' => $author,
         'category_name' => $category,
+        'post_status' => 'publish',
     );
 
     $loop = new WP_Query($args);

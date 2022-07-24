@@ -53,53 +53,27 @@ $subscribe = false;
                 <div class="container">
                     <div class="footer-top">
                         <div class="row">
-                            <div class="col-lg-5">
+                            <div class="col-lg-4">
                                 <div class="footer-widget widget-about">
-                                    <div class="widget-content">
-                                        <div class="footer-logo-wrap">
-                                            <a href="<?php echo esc_url(home_url('/')); ?>" class="logo-img theme-light-logo">
-                                                <?php
-                                                $logo = get_theme_mod( 'custom_logo' );
-                                                $logo_url = wp_get_attachment_image_src( $logo , 'full' );
-                                                if ( has_custom_logo() )
-                                                {
-                                                    echo '<img src="' . esc_url( $logo_url[0] ) . '" alt="' . get_bloginfo( 'name' ) . '">';
-                                                } else {
-                                                    echo '<img src="'.get_template_directory_uri().'/assets/images/logo-blue.svg" >';
-                                                }
-                                                ?>
-                                            </a>
-                                            <a href="<?php echo esc_url(home_url('/')); ?>" class="logo-img theme-dark-logo">
-                                                <img src="<?= get_theme_mod('dark_logo') ?>" alt="wpwebguru">
-                                            </a>
-                                        </div>
-                                        <div class="site-description">
-                                            An architect, software developer, YouTuber and keynote speaker. On this site I write about my learning and experience.
-                                        </div>
-                                    </div>
+                                    <?php if (is_active_sidebar('footer-1')) : ?>
+                                        <?php dynamic_sidebar('footer-1'); ?>
+                                    <?php endif; ?>
                                 </div>
                             </div>
-                            <div class="col-lg-7">
-                                <div class="widget secondary-nav flex">
-                                    <div class="nav-col">
-                                        <?php if (is_active_sidebar('footer-2')) : ?>
-                                            <?php dynamic_sidebar('footer-2'); ?>
-                                        <?php endif; ?>
-                                    </div>
-
-                                    <div class="nav-col">
-                                        <?php if (is_active_sidebar('footer-3')) : ?>
-                                            <?php dynamic_sidebar('footer-3'); ?>
-                                        <?php endif; ?>
-                                    </div>
-
-                                    <div class="nav-col">
-                                        <?php if (is_active_sidebar('footer-4')) : ?>
-                                            <?php dynamic_sidebar('footer-4'); ?>
-                                        <?php endif; ?>
-                                    </div>
-
-                                </div>
+                            <div class="col-lg-2 col-md-3 col-6">
+                                <?php if (is_active_sidebar('footer-2')) : ?>
+                                    <?php dynamic_sidebar('footer-2'); ?>
+                                <?php endif; ?>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-6">
+                                <?php if (is_active_sidebar('footer-3')) : ?>
+                                    <?php dynamic_sidebar('footer-3'); ?>
+                                <?php endif; ?>
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <?php if (is_active_sidebar('footer-4')) : ?>
+                                    <?php dynamic_sidebar('footer-4'); ?>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

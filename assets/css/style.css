@@ -16,6 +16,9 @@ h1 {
     font-size: 2em;
     margin: 0.67em 0;
 }
+p {
+    margin: 0;
+}
 hr {
     box-sizing: content-box;
     height: 0;
@@ -2328,15 +2331,97 @@ section {
     background-color: var(--c-body-bg);
     color: var(--c-primary-main);
 }
-.btn-flat.loading::after {
-    content: none !important;
-}
 .btn-sm {
     height: 40px;
     line-height: 40px;
 }
 .btn-block {
     width: 100%;
+}
+
+
+
+
+@-webkit-keyframes loading {
+    to {
+        transform: rotate(360deg);
+    }
+}
+@keyframes loading {
+    to {
+        transform: rotate(360deg);
+    }
+}
+.loading .btn,
+.loading button,
+.loading input[type="submit"],
+.loading.btn,
+.loading.button,
+.loadinginput[type="submit"] {
+    position: relative;
+    pointer-events: none;
+}
+.loading .btn:after,
+.loading button:after,
+.loading input[type="submit"]:after,
+.loading.btn:after,
+.loading.button:after,
+.loadinginput[type="submit"]:after {
+    content: "";
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: calc(50% - 10px);
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    border-radius: 50%;
+    border: 3px solid var(--c-white);
+    border-top-color: transparent;
+    -webkit-animation: loading 0.8s linear infinite;
+    animation: loading 0.8s linear infinite;
+}
+.loading .btn span,
+.loading button span,
+.loading input[type="submit"] span,
+.loading.btn span,
+.loading.button span,
+.loadinginput[type="submit"] span {
+    visibility: hidden;
+}
+.success .btn,
+.success button,
+.success input[type="submit"],
+.success.btn,
+.success.button,
+.successinput[type="submit"] {
+    position: relative;
+}
+.success .btn::before,
+.success button::before,
+.success input[type="submit"]::before,
+.success.btn::before,
+.success.button::before,
+.successinput[type="submit"]::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: inline-block;
+    height: 10px;
+    width: 20px;
+    border: 3px solid var(--c-white);
+    border-top-width: 0;
+    border-right-width: 0;
+    transform: translate(-50%, -75%) rotate(-45deg);
+}
+.success .btn span,
+.success button span,
+.success input[type="submit"] span,
+.success.btn span,
+.success.button span,
+.successinput[type="submit"] span {
+    visibility: hidden;
 }
 /*========================================================
 ============== input styles
@@ -3435,7 +3520,7 @@ pre[class*="language-"] {
     animation: slideUp 0.7s ease-out;
 }
 .post-list-wrap .post-card {
-    margin-bottom: 64px;
+    margin-bottom: 30px;
 }
 .post-card:last-child {
     /*margin-bottom: 0px;*/
@@ -3573,18 +3658,6 @@ pre[class*="language-"] {
 .tag-wrap a:hover {
     opacity: 1;
 }
-@media screen and (max-width: 767px) {
-    .post-card .post-img-wrap {
-        width: 100%;
-        height: 0;
-        padding-top: 57%;
-        margin-right: 0;
-        margin-bottom: 2rem;
-    }
-}
-
-
-
 
 .post-card.post-list .post-img-wrap {
     width: 240px;
@@ -3625,6 +3698,21 @@ pre[class*="language-"] {
 .featured-post-layout-one .post-card.post-small .post-info-wrap {
     margin-left: 24px;
 }
+
+
+@media screen and (max-width: 767px) {
+    .post-card.post-list .post-img-wrap {
+        width: 100%;
+        height: 0;
+        padding-top: 57%;
+        margin-right: 0;
+        margin-bottom: 2rem;
+    }
+}
+
+
+
+
 
 @media (max-width: 575px)
 {
@@ -3782,7 +3870,7 @@ pre[class*="language-"] {
 }
 .widget-about {
     flex: 1 1 360px;
-    margin-right: 4rem;
+    /*margin-right: 4rem;*/
     max-width: 360px;
 }
 .secondary-nav {
@@ -3795,16 +3883,16 @@ pre[class*="language-"] {
 .secondary-nav .nav-col:not(:last-child) {
     padding-right: 16px;
 }
-.secondary-nav .title {
+.site-footer .title {
     margin-top: 0;
     font-weight: 400;
     color: var(--c-text-light);
     font-size: 0.875rem;
 }
-.secondary-nav .menu-item {
+.site-footer .menu-item {
     margin-bottom: 0.75rem;
 }
-.secondary-nav a {
+.site-footer a {
     font-weight: 500;
 }
 .footer-bottom {
@@ -5779,4 +5867,242 @@ input[type="text"].search-input {
     .heading-large {
         font-size: 2.5rem; //64px
     }
+}
+
+
+
+
+
+
+
+
+
+
+
+/*========================================================
+===================== Screen reader css
+========================================================*/
+.screen-reader-text {
+    border: 0;
+    clip: rect(1px,1px,1px,1px);
+    -webkit-clip-path: inset(50%);
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    word-wrap: normal!important;
+}
+.screen-reader-text {
+    clip: rect(1px, 1px, 1px, 1px);
+    position: absolute !important;
+}
+ul.page-numbers {
+    list-style: none;
+    display: inline-flex;
+}
+ul.page-numbers li a,
+ul.page-numbers li span {
+    display: inline-block;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 400;
+    margin: 3px;
+    line-height: 40px;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    -ms-border-radius: 100%;
+    background: var(--color-primary);
+    color: #fff;
+}
+ul.page-numbers li .page-numbers:hover,
+ul.page-numbers li .page-numbers.current {
+    background: var(--color-secondary);
+}
+
+
+
+/*========================================================
+===================== Recent posts widget
+========================================================*/
+.recent-posts {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+.recent-posts .post-thumbnail {
+    width: 72px;
+    height: 72px;
+    border-radius: var(--size-2);
+    overflow: hidden;
+    background-color: var(--c-gray-lighter);
+    margin-right: 15px;
+}
+.recent-posts .content-wrap {
+    flex-basis: 0;
+    flex-grow: 999;
+}
+.recent-posts .content-wrap .title {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--c-text-light);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+.recent-posts .content-wrap .post-meta {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--c-text-light);
+}
+
+/*========================================================
+===================== No results page css
+========================================================*/
+.no-results {
+    display: block;
+    text-align: center;
+}
+
+
+
+/*========================================================
+===================== Social icons css
+========================================================*/
+.social-wrapper {
+    display: inline-flex;
+    list-style: none;
+    margin: auto;
+    padding: 0;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.social-wrapper .icon {
+    position: relative;
+    background: var(--c-gray-light);
+    color: var(--c-text-main);
+    border-radius: 50%;
+    padding: 15px;
+    margin: 10px;
+    width: 45px;
+    height: 45px;
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.social-wrapper .tooltip {
+  position: absolute;
+  top: 0;
+  font-size: 14px;
+  background: #ffffff;
+  color: #ffffff;
+  padding: 5px 8px;
+  border-radius: 5px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.social-wrapper .tooltip::before {
+  position: absolute;
+  content: "";
+  height: 8px;
+  width: 8px;
+  background: #ffffff;
+  bottom: -3px;
+  left: 50%;
+  transform: translate(-50%) rotate(45deg);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.social-wrapper .icon:hover .tooltip {
+  top: -45px;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.social-wrapper .icon:hover span,
+.social-wrapper .icon:hover .tooltip {
+  text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
+}
+
+.social-wrapper .facebook:hover,
+.social-wrapper .facebook:hover .tooltip,
+.social-wrapper .facebook:hover .tooltip::before {
+  background: #1877F2;
+  color: #ffffff;
+}
+
+.social-wrapper .twitter:hover,
+.social-wrapper .twitter:hover .tooltip,
+.social-wrapper .twitter:hover .tooltip::before {
+  background: #1DA1F2;
+  color: #ffffff;
+}
+
+.social-wrapper .pinterest:hover,
+.social-wrapper .pinterest:hover .tooltip,
+.social-wrapper .pinterest:hover .tooltip::before {
+  background: #bd081c;
+  color: #ffffff;
+}
+
+.social-wrapper .whatsapp:hover,
+.social-wrapper .whatsapp:hover .tooltip,
+.social-wrapper .whatsapp:hover .tooltip::before {
+  background: #43d854;
+  color: #ffffff;
+}
+
+.social-wrapper .linkedin:hover,
+.social-wrapper .linkedin:hover .tooltip,
+.social-wrapper .linkedin:hover .tooltip::before {
+  background: #0077b5;
+  color: #ffffff;
+}
+
+.social-wrapper .email:hover,
+.social-wrapper .email:hover .tooltip,
+.social-wrapper .email:hover .tooltip::before {
+  background: #ea4335;
+  color: #ffffff;
+}
+
+.social-wrapper .instagram:hover,
+.social-wrapper .instagram:hover .tooltip,
+.social-wrapper .instagram:hover .tooltip::before {
+  background: #E4405F;
+  color: #ffffff;
+}
+
+.social-wrapper .github:hover,
+.social-wrapper .github:hover .tooltip,
+.social-wrapper .github:hover .tooltip::before,
+.social-wrapper .copy:hover,
+.social-wrapper .copy:hover .tooltip,
+.social-wrapper .copy:hover .tooltip::before {
+  background: #333333;
+  color: #ffffff;
+}
+
+.social-wrapper .youtube:hover,
+.social-wrapper .youtube:hover .tooltip,
+.social-wrapper .youtube:hover .tooltip::before {
+  background: #CD201F;
+  color: #ffffff;
 }

@@ -34,20 +34,21 @@ if( !class_exists('wpwebguru_Info_Widget') )
             {
         		echo wp_kses_post( $args['before_title'] ) . apply_filters( 'widget_title', esc_html( $instance['title'] ) ) . wp_kses_post( $args['after_title'] );
         	}
-        	$logo = isset( $instance['logo'] ) ? $instance['logo'] : '';
+            $light_logo = isset( $instance['light_logo'] ) ? $instance['light_logo'] : '';
+        	$dark_logo = isset( $instance['dark_logo'] ) ? $instance['dark_logo'] : '';
         	$content = isset( $instance['content'] ) ? $instance['content'] : '';
         	?>
             
             <div class="widget-content">
-                <div class="logo-wrap">
-                    <?php
-                        if ( !empty($logo) ) 
-                        {
-                            ?>
-                            <a href="<?php echo esc_url(home_url('/')); ?>" class="logo-img "><img src="<?php echo esc_url( $logo ) ; ?>" alt="<?php echo esc_attr('Logo'); ?>"></a>
-                            <?php
-                        }
-                    ?>
+                <div class="footer-logo-wrap">
+                    <?php if (!empty($light_logo)): ?>
+                        <a href="<?php echo esc_url(home_url('/')); ?>" class="logo-img theme-light-logo"><img src="<?php echo esc_url( $light_logo ) ; ?>" alt="<?php echo esc_attr('Logo'); ?>"></a>
+                    <?php endif; ?>
+                    <?php if (!empty($dark_logo)): ?>
+                        <a href="<?php echo esc_url(home_url('/')); ?>" class="logo-img theme-dark-logo">
+                            <img src="<?php echo esc_url( $dark_logo ) ; ?>" alt="<?php echo esc_attr('Logo'); ?>">
+                        </a>
+                    <?php endif; ?>
                 </div>
                 <div class="site-description">
                     <?php if ( !empty($content) ): ?>
@@ -71,17 +72,18 @@ if( !class_exists('wpwebguru_Info_Widget') )
          */
         public function update( $new_instance, $old_instance )
         {
-        	$instance              = array();
-        	$instance['title']     = ( ! empty( $new_instance['title'] ) ) ? sanitize_text_field( $new_instance['title'] ) : '';
-        	$instance['logo'] 	   = ( ! empty( $new_instance['logo'] ) ) ? strip_tags ( $new_instance['logo'] ) : '';
-        	$instance['content']   = ( ! empty( $new_instance['content'] ) ) ? strip_tags ( $new_instance['content'] ) : '';
+        	$instance                  = array();
+        	$instance['title']         = (!empty( $new_instance['title'] ) ) ? sanitize_text_field( $new_instance['title'] ) : '';
+            $instance['light_logo']     = (!empty( $new_instance['light_logo'] ) ) ? strip_tags ( $new_instance['light_logo'] ) : '';
+        	$instance['dark_logo']     = (!empty( $new_instance['dark_logo'] ) ) ? strip_tags ( $new_instance['dark_logo'] ) : '';
+        	$instance['content']       = (!empty( $new_instance['content'] ) ) ? strip_tags ( $new_instance['content'] ) : '';
         	if ( current_user_can( 'unfiltered_html' ) ) 
             {
-			        $instance['content'] = $new_instance['content'];
+                $instance['content'] = $new_instance['content'];
 			} 
             else 
             {
-			        $instance['content'] = wp_kses_post( $new_instance['content'] );
+                $instance['content'] = wp_kses_post( $new_instance['content'] );
 			}
         	return $instance;
         }
@@ -95,7 +97,8 @@ if( !class_exists('wpwebguru_Info_Widget') )
          */
         public function form($instance)
         { 
-        	$logo = !empty( $instance['logo'] ) ? $instance['logo'] : '';
+            $light_logo = !empty( $instance['light_logo'] ) ? $instance['light_logo'] : '';
+        	$dark_logo = !empty( $instance['dark_logo'] ) ? $instance['dark_logo'] : '';
         	$title = !empty( $instance['title'] ) ? $instance['title'] : '';
         	$content = !empty( $instance['content'] ) ? $instance['content'] : ''; 
         	?>
@@ -104,13 +107,16 @@ if( !class_exists('wpwebguru_Info_Widget') )
 				<input id="<?php echo esc_attr($this->get_field_id('title')); ?>" name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" class="widefat" value="<?php echo esc_textarea( $title ); ?>">
 			</p>
 			<div class="image_box_wrap" style="margin:20px 0 15px 0; width: 100%;">
-				<button class="button button-primary author_info_image">
-					<?php esc_html_e('Upload Logo', 'wpwebguru'); ?>
-				</button>
+                <label for="<?php echo esc_attr($this->get_field_id('light_logo')); ?>"><?php echo esc_html__('Light Logo:' ,'wpwebguru') ?></label>
 				<div class="image_box widefat">
-					<img src="<?php if( !empty($logo)){echo esc_html($logo);} ?>" style="margin:15px 0 0 0;padding:0;max-width: 100%;display:inline-block; height: auto;" alt="<?php echo esc_attr(''); ?>" />
+					<img src="<?php if( !empty($light_logo)){echo esc_html($light_logo);} ?>" style="margin:15px 0 0 0;padding:0;max-width: 100%;display:inline-block; height: auto;" alt="<?php echo esc_attr(''); ?>" />
 				</div>
-				<input type="text" class="widefat image_link" name="<?php echo esc_attr($this->get_field_name('logo')); ?>" id="<?php echo esc_attr($this->get_field_id('logo')); ?>" value="<?php echo esc_attr($logo); ?>" style="margin:15px 0 0 0;">
+				<input type="text" class="widefat image_link" name="<?php echo esc_attr($this->get_field_name('light_logo')); ?>" id="<?php echo esc_attr($this->get_field_id('light_logo')); ?>" value="<?php echo esc_attr($light_logo); ?>" style="margin:15px 0 0 0;">
+                <label for="<?php echo esc_attr($this->get_field_id('content')); ?>"><?php echo esc_html__('Dark Logo:' ,'wpwebguru') ?></label>
+                <div class="image_box widefat">
+                    <img src="<?php if( !empty($dark_logo)){echo esc_html($dark_logo);} ?>" style="margin:15px 0 0 0;padding:0;max-width: 100%;display:inline-block; height: auto;" alt="<?php echo esc_attr(''); ?>" />
+                </div>
+                <input type="text" class="widefat image_link" name="<?php echo esc_attr($this->get_field_name('dark_logo')); ?>" id="<?php echo esc_attr($this->get_field_id('dark_logo')); ?>" value="<?php echo esc_attr($dark_logo); ?>" style="margin:15px 0 0 0;">
 			</div>
 			<p>
 				<label for="<?php echo esc_attr($this->get_field_id('content')); ?>"><?php echo esc_html__('Content:' ,'wpwebguru') ?></label>

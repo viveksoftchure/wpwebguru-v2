@@ -55,27 +55,23 @@ if( !class_exists('wpwebguru_Recent_Post') )
                     'posts_per_page' => $show_item,
                 ));
                 while($posts->have_posts()) : $posts->the_post();  ?>
-                    <div class="content-block post-medium">
+                    <div class="recent-posts">
                         <?php if ( has_post_thumbnail()): ?>
                             <div class="post-thumbnail">
                                 <a href="<?php the_permalink(); ?>"><?php the_post_thumbnail( 'thumbnail' ); ?></a>
                             </div>
                         <?php endif ?>
-                        <div class="post-content">
+                        <div class="content-wrap">
                             <h6 class="title"><a href="<?php the_permalink(); ?>"><?php echo wp_trim_words( get_the_title(), $num_title_word,' '); ?></a></h6>
                             <?php
-                            if($show_date && $show_read_time){ ?>
+                            if($show_date || $show_read_time){ ?>
                                 <div class="post-meta">
-                                    <ul class="post-meta-list">
-                                        <?php if ($show_date): ?>
-                                            <li><?php echo get_the_time(get_option('date_format')); ?></li>
-                                        <?php endif ?>
-                                        <?php if ($show_read_time):
-                                            if (function_exists('wpwebguru_content_estimated_reading_time')){ ?>
-                                                <li><?php echo wpwebguru_content_estimated_reading_time(get_the_content()); ?></li>
-                                            <?php  } ?>
-                                        <?php endif ?>
-                                    </ul>
+                                    <?php if ($show_date): ?>
+                                        <time class="post-date" datetime="<?= get_the_time('Y-m-d') ?>"><?= get_the_time(get_option('date_format')) ?></time>
+                                    <?php endif ?>
+                                    <?php if ($show_read_time): ?>
+                                        <span class="read-time"><?= theme_content_estimated_reading_time(get_the_content()); ?></span>
+                                    <?php endif ?>
                                 </div>
                             <?php }  ?>
                         </div>

@@ -164,8 +164,8 @@ if(!function_exists('theme_blog_pagination'))
             ?>
             <div class="post-pagination"> <?php
                 the_posts_pagination(array(
-                    'prev_text'          => '<i class="fal fa-arrow-left"></i>',
-                    'next_text'          => '<i class="fal fa-arrow-right"></i>',
+                    'prev_text'          => '<i class="fa-solid fa-chevron-left"></i>',
+                    'next_text'          => '<i class="fa-solid fa-chevron-right"></i>',
                     'type'               => 'list',
                     'show_all'  	     => false,
                     'end_size'           => 1,
