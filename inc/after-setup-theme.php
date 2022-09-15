@@ -252,3 +252,42 @@ function custom_columns_data( $column, $post_id )
     }
 }
 add_action( 'manage_posts_custom_column' , 'custom_columns_data', 10, 2 ); 
+
+
+
+
+/*
+* add login and logout to menu
+*/
+add_filter( 'wp_nav_menu_items', 'my_account_loginout_link', 10, 2 );
+function my_account_loginout_link( $items, $args ) {
+    if (is_user_logged_in() && $args->theme_location == 'menu-1') { 
+        $items .= '<li><a class="nav-link" href="'. wp_logout_url(get_permalink()) .'">Logout</a></li>'; 
+    } elseif (!is_user_logged_in() && $args->theme_location == 'menu-1') {
+        $items .= '<li><a class="nav-link" id="site-login" href="#">Login</a></li>';
+    }
+
+    return $items;
+}
+
+add_action( 'wp_ajax_nopriv_ajaxlogin', 'ajax_login' );
+function ajax_login(){
+
+    // First check the nonce, if it fails the function will break
+    check_ajax_referer( 'ajax-login-nonce', 'security' );
+
+    // Nonce is checked, get the POST data and sign user on
+    $info = array();
+    $info['user_login'] = $_POST['username'];
+    $info['user_password'] = $_POST['password'];
+    $info['remember'] = true;
+
+    $user_signon = wp_signon( $info, false );
+    if ( is_wp_error($user_signon) ){
+        echo json_encode(array('loggedin'=>false, 'message'=>__('Wrong username or password.')));
+    } else {
+        echo json_encode(array('loggedin'=>true, 'message'=>__('Login successful, redirecting...')));
+    }
+
+    die();
+}

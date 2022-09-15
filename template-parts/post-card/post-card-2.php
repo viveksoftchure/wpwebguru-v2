@@ -13,7 +13,7 @@ $list_class = 'post-card post-small flex '.$item_class;
 <!-- Start Post List  -->
 <article id="post-<?php the_ID(); ?>" <?php post_class($list_class); ?>>
     <a href="<?php the_permalink(); ?>" class="post-img-wrap">
-        <?php the_post_thumbnail($thumb_size) ?>
+        <?php the_post_thumbnail() ?>
     </a>
     <div class="post-info-wrap">
         <div class="tag-wrap">

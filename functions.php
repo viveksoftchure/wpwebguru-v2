@@ -338,7 +338,7 @@ function more_post_ajax()
 
     $loop = new WP_Query($args);
 
-    $path = get_template_directory() .'/template-parts/post/content.php';
+    $path = get_template_directory() .'/template-parts/post-card/post-card-2.php';
 
     if ($loop -> have_posts()) : 
 

@@ -168,13 +168,44 @@
         //return false;
     });
 
-   
-    $(".social-link").on("click", function(e) {
-        var url = $(this).data('link');
-        var target = $(this).data('target');
+    //Copy to clipboard
+    var loginBox = function() {
+        $('#site-login').on('click', function(event) {
+            event.preventDefault();
 
-        window.open(url, target);
-    });
+            $('.login-container').toggleClass('hidden');
+        });
+    }
+
+    //Copy to clipboard
+    var loginSlide = function() {
+
+        $('#signUp').on('click', function(event) {
+            $('.account-box').addClass('right-panel-active');
+        });
+        $('#signIn').on('click', function(event) {
+            $('.account-box').removeClass('right-panel-active');
+        });
+        $('.close-form').on('click', function(event) {
+            $('.login-container').toggleClass('hidden');
+        });
+
+    }
+
+	/*
+	* add prettyprint on pre
+	*/
+	jQuery(".prettyprint").each(function(){
+		jQuery(this).html( PR.prettyPrintOne(jQuery(this).html()) );
+	});
+
+   
+    // $(".social-link").on("click", function(e) {
+    //     var url = $(this).data('link');
+    //     var target = $(this).data('target');
+
+    //     window.open(url, target);
+    // });
 
     //Load functions
     $(document).ready(function() 
@@ -188,6 +219,8 @@
         scrollProgress();
         coptToClipboard();
         scrollToTop();
+        loginBox();
+        loginSlide();
     });
 
 })(jQuery);
@@ -198,9 +231,9 @@
 
 jQuery(document).ready(function()
 {
-    console.log(ajax_posts);
-    var ppp = ajax_posts.js_option.load_more!='' ? parseInt(ajax_posts.js_option.load_more) : parseInt(3); // Post per page
-    var offset = ajax_posts.js_option.posts_per_page!='' ? parseInt(ajax_posts.js_option.posts_per_page) : parseInt(3); // offset
+    console.log(ajax_options);
+    var ppp = ajax_options.js_option.load_more!='' ? parseInt(ajax_options.js_option.load_more) : parseInt(3); // Post per page
+    var offset = ajax_options.js_option.posts_per_page!='' ? parseInt(ajax_options.js_option.posts_per_page) : parseInt(3); // offset
     // var offset = parseInt(0); // Post per page
 
     var pageNumber = 1;
@@ -208,16 +241,17 @@ jQuery(document).ready(function()
     var canBeLoaded = true, // this param allows to initiate the AJAX call only if necessary
         bottomOffset = 2000; // the distance (in px) from the page bottom when you want to load more posts
 
-    function load_posts(newOffset, postBox, category, author)
+    function load_posts(button, newOffset, postBox, category, author)
     {
         pageNumber++;
         // console.log(offset);
         var str = '&author='+author+'&category='+category+'&offset='+newOffset+'&pageNumber='+pageNumber+'&ppp='+ppp+'&action=more_post_ajax';
         
+        button.addClass('loading');
         jQuery.ajax({
             type: "POST",
             dataType: "html",
-            url: ajax_posts.ajaxurl,
+            url: ajax_options.ajaxurl,
             data: str,
             success: function(data)
             {
@@ -234,6 +268,7 @@ jQuery(document).ready(function()
                     jQuery("#more_posts").attr("disabled",true);
                     jQuery('#more_posts').hide();
                 }
+                button.removeClass('loading');
             },
             beforeSend: function() 
             {
@@ -252,16 +287,34 @@ jQuery(document).ready(function()
         return false;
     }
 
-    jQuery("#more_posts").on("click",function()
-    { 
+    jQuery("#more_posts").on("click",function() { 
         var newOffset = offset;
         var postBox = jQuery(this).data('post-box');
         var category = jQuery(this).data('category');
         var author = jQuery(this).data('author');
-
-        jQuery(this).addClass('loading');
-        load_posts(newOffset, postBox, category, author);
+        
+        load_posts(jQuery(this), newOffset, postBox, category, author);
         newOffset = offset+ppp;
-        jQuery(this).removeClass('loading');
+    });
+
+    jQuery('form#login').on('submit', function(e){
+        jQuery('form#login p.status').show().text(ajax_options.loadingmessage);
+        jQuery.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: ajax_options.ajaxurl,
+            data: { 
+                'action': 'ajaxlogin', //calls wp_ajax_nopriv_ajaxlogin
+                'username': jQuery('form#login #username').val(), 
+                'password': jQuery('form#login #password').val(), 
+                'security': jQuery('form#login #security').val() },
+            success: function(data){
+                jQuery('form#login p.status').text(data.message);
+                if (data.loggedin == true){
+                    document.location.href = ajax_options.redirecturl;
+                }
+            }
+        });
+        e.preventDefault();
     });
 });

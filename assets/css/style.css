@@ -235,6 +235,9 @@ html {
 ::before {
     box-sizing: inherit;
 }
+.hidden {
+    display: none !important;
+}
 /*========================================================
 ============== Bootstrap style
 ========================================================*/
@@ -2842,6 +2845,7 @@ pre[class*="language-"] {
 .site-header {
     padding: 24px 0;
     margin-bottom: 40px;
+    background: var(--c-body-bg);
 }
 [data-nav="sticky"] .site-header {
     width: 100%;
@@ -3520,28 +3524,25 @@ pre[class*="language-"] {
     animation: slideUp 0.7s ease-out;
 }
 .post-list-wrap .post-card {
-    margin-bottom: 30px;
+    /*margin-bottom: 30px;*/
 }
 .post-card:last-child {
     /*margin-bottom: 0px;*/
 }
 .post-card .post-img-wrap {
     width: 100%;
-    height: 230px;
-    border-radius: var(--size-3);
+    border-radius: var(--size-2);
     overflow: hidden;
-    margin-bottom: 2rem;
+    margin-bottom: 24px;
     margin-right: 0rem;
     position: relative;
     background-color: var(--c-gray-lighter);
 }
 
 .post-card .post-img-wrap img {
-    position: absolute;
+    /*position: absolute;*/
     height: 100%;
     width: 100%;
-    top: 0;
-    left: 0;
     -o-object-fit: cover;
     object-fit: cover;
     -webkit-transition: all 0.9s ease-in-out;
@@ -3566,6 +3567,7 @@ pre[class*="language-"] {
 }
 .post-card .post-title {
     margin-top: 8px;
+    min-height: 72px;
 }
 .post-card .post-title a {
     color: var(--c-text-main);
@@ -3726,6 +3728,73 @@ pre[class*="language-"] {
         min-width: 150px;
         height: 100px;
         padding-bottom: 0;
+    }
+}
+
+
+
+
+
+/*========================================================
+============== post list styles
+========================================================*/
+.post-list {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+.post-list .post-img-wrap,
+.post-list .post-info-wrap {
+    width: calc(50% - 20px);
+}
+.post-list .post-img-wrap img {
+    display: block;
+    width: 100%;
+    border-radius: 6px;
+    /*height: 360px;*/
+    object-fit: cover;
+    transition: all .3s ease-in-out;
+}
+.post-list .post-title {
+    position: relative;
+    font-size: 36px;
+    line-height: 1.2;
+    color: var(--c-text-main);
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+.post-list .post-title a {
+    color: var(--c-text-main);
+}
+.post-list .post-excerpt {
+    color: var(--c-text-main);
+    font-size: 20px;
+    line-height: 1.4;
+}
+.post-list .post-meta-wrap {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+}
+
+@media (max-width: 1024px) {
+    .post-list .post-title {
+        font-size: 28px;
+    }
+    .post-list .post-excerpt {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 991px) {
+    .post-list .post-img-wrap,
+    .post-list .post-info-wrap {
+        width: 100%;
+    }
+    .post-list .post-info-wrap {
+        margin-top: 30px;
     }
 }
 /*========================================================
@@ -4171,7 +4240,7 @@ pre[class*="language-"] {
     border-color: var(--c-primary-main);
 }
 .post-content > * {
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
 }
 .post-content h2,
 .post-content h3,
@@ -5258,7 +5327,6 @@ pre[class*="language-"] {
 .related-post-card .post-img-wrap {
     display: block;
     width: 100%;
-    padding-bottom: 57%;
     border-radius: var(--size-2);
     overflow: hidden;
     margin-bottom: 1.5rem;
@@ -5266,11 +5334,8 @@ pre[class*="language-"] {
     background-color: var(--c-gray-lighter);
 }
 .related-post-card .post-img-wrap img {
-    position: absolute;
     height: 100%;
     width: 100%;
-    top: 0;
-    left: 0;
     -o-object-fit: cover;
     object-fit: cover;
 }
@@ -6105,4 +6170,234 @@ ul.page-numbers li .page-numbers.current {
 .social-wrapper .youtube:hover .tooltip::before {
   background: #CD201F;
   color: #ffffff;
+}
+
+
+
+
+
+
+
+/*========================================================
+===================== login form css
+========================================================*/
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
+
+
+button {
+    border-radius: 20px;
+    border: 1px solid #0057ff;
+    background-color: #0057ff;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 12px 45px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: transform 80ms ease-in;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+button:focus {
+    outline: none;
+}
+
+button.ghost {
+    background-color: transparent;
+    border-color: #FFFFFF;
+}
+
+form {
+    background-color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 50px;
+    height: 100%;
+    text-align: center;
+}
+
+input {
+    background-color: #eee;
+    border: none;
+    padding: 12px 15px;
+    margin: 8px 0;
+    width: 100%;
+}
+
+
+
+.login-container {
+    width: 100%;
+    height: 100vh;
+    background: rgb(255 255 255 / 85%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+   position: fixed; 
+   overflow-y: scroll;
+   overscroll-behavior: contain;
+   top: 0; right: 0; bottom: 0; left: 0; 
+}
+.login-container .account-box {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
+            0 10px 10px rgba(0,0,0,0.22);
+    overflow: hidden;
+    width: 100%;
+    max-width: 768px;
+    min-height: 480px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+}
+
+.login-container .form-container {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+}
+
+.login-container .account-box h1 {
+    font-size: 28px;
+}
+.login-container .account-box p {
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: 0.5px;
+    margin: 20px 0 30px;
+}
+
+.login-container .sign-in-container {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+}
+.login-container .account-box.right-panel-active .sign-in-container {
+    transform: translateX(100%);
+}
+
+.login-container .sign-up-container {
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+}
+.login-container .account-box.right-panel-active .sign-up-container {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+    animation: show 0.6s;
+}
+
+.login-container .overlay-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: transform 0.6s ease-in-out;
+    z-index: 100;
+}
+.login-container .account-box.right-panel-active .overlay-container{
+    transform: translateX(-100%);
+}
+.login-container .overlay {
+    background: #0057ff;
+    background: -webkit-linear-gradient(to right, #0057ff, #2196f3);
+    background: linear-gradient(to right, #0057ff, #2196f3);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 0 0;
+    color: #FFFFFF;
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+}
+.login-container .close-form {
+    position: absolute;
+    top: 15px;
+    background: #fff;
+    color: #000;
+    padding: 6px 30px;
+    cursor: pointer;
+    z-index: 99999999;
+}
+.login-container .close-form.left-btn {
+    left: 15px;
+}
+.login-container .close-form.right-btn {
+    right: 15px;
+}
+.login-container .account-box .overlay h1 {
+    color: #fff;
+}
+.login-container .account-box.right-panel-active .overlay {
+    transform: translateX(50%);
+}
+.login-container .overlay-panel {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 40px;
+    text-align: center;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+}
+.login-container .overlay-left {
+    transform: translateX(-20%);
+}
+.login-container .account-box.right-panel-active .overlay-left {
+    transform: translateX(0);
+}
+.login-container .overlay-right {
+    right: 0;
+    transform: translateX(0);
+}
+.login-container .account-box.right-panel-active .overlay-right {
+    transform: translateX(20%);
+}
+
+.login-container .social-container {
+    margin: 20px 0;
+}
+.login-container .social-container a {
+    border: 1px solid #DDDDDD;
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 5px;
+    height: 40px;
+    width: 40px;
+}
+
+@keyframes show {
+    0%, 49.99% {
+        opacity: 0;
+        z-index: 1;
+    }
+    
+    50%, 100% {
+        opacity: 1;
+        z-index: 5;
+    }
 }
