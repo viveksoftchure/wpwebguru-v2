@@ -31,8 +31,12 @@ function wpwebguru_enqueue_scripts()
 	wp_enqueue_script('main_js', get_template_directory_uri() . '/assets/js/main.js', array('jquery'), time(), true);
     wp_localize_script( 'main_js', 'ajax_options', array(
 		'js_option' => ['load_more' => '6','posts_per_page' => '10'],
-		'ajaxurl' => admin_url( 'admin-ajax.php' ), // WordPress AJAX
+		'ajax_url' => admin_url( 'admin-ajax.php' ), // WordPress AJAX
 		'loadingmessage' => __('Sending user info, please wait...'),
+		'required_message' => __('Please fill all required fields.','woocommerce-ajax-login-register'), 
+		'valid_email' => __('Please Enter valid email.','woocommerce-ajax-login-register'),
+		'loading_text' => __('Loading...','woocommerce-ajax-login-register'),
+		'plugin_dir_url' => plugin_dir_url( __FILE__ ),	
 		'redirecturl' => home_url(),
 	));
 

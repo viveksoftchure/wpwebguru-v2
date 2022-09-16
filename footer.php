@@ -135,7 +135,7 @@ $subscribe = false;
         <div class="login-container hidden" id="login-container">
             <div class="account-box">
                 <div class="form-container sign-up-container">
-                    <form action="#">
+                    <form id="register" action="login" method="post">
                         <h1>Create Account</h1>
                         <div class="social-container">
                             <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -143,10 +143,13 @@ $subscribe = false;
                             <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
                         </div>
                         <span>or use your email for registration</span>
-                        <input type="text" placeholder="Name" />
-                        <input type="email" placeholder="Email" />
-                        <input type="password" placeholder="Password" />
+                        <input type="text" id="reg_username" name="reg_username" placeholder="username">
+                        <input type="text" id="reg_email" name="reg_email" placeholder="Email">
+                        <input type="password" name="reg_password" id="reg_password" placeholder="Password" />
                         <button>Sign Up</button>
+                        <?php wp_nonce_field( 'ajax-register-nonce', 'security' ); ?>
+            <div class="register_msg success" style="display:none"></div>
+            <div class="register_msg fail" style="display:none"></div>
                     </form>
                 </div>
                 <div class="form-container sign-in-container">
@@ -164,7 +167,8 @@ $subscribe = false;
                         <a href="<?php echo wp_lostpassword_url(); ?>">Forgot your password?</a>
                         <button>Sign In</button>
                         <?php wp_nonce_field( 'ajax-login-nonce', 'security' ); ?>
-                            <p class="status"></p>
+                        <div class="login_msg success" style="display:none"></div>
+                        <div class="login_msg fail" style="display:none"></div>
 
                     </form>
                 </div>

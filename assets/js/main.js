@@ -251,7 +251,7 @@ jQuery(document).ready(function()
         jQuery.ajax({
             type: "POST",
             dataType: "html",
-            url: ajax_options.ajaxurl,
+            url: ajax_options.ajax_url,
             data: str,
             success: function(data)
             {
@@ -298,23 +298,179 @@ jQuery(document).ready(function()
     });
 
     jQuery('form#login').on('submit', function(e){
-        jQuery('form#login p.status').show().text(ajax_options.loadingmessage);
+        e.preventDefault();
+        var form = jQuery(this);
+        var error;
+        var username = form.find("#username");
+        var password = form.find("#password");
+        var security = form.find("#security");
+
+        form.find(".login_loader").show();
+        form.find(".login_msg").hide();
         jQuery.ajax({
             type: 'POST',
             dataType: 'json',
-            url: ajax_options.ajaxurl,
+            url: ajax_options.ajax_url,
             data: { 
                 'action': 'ajaxlogin', //calls wp_ajax_nopriv_ajaxlogin
-                'username': jQuery('form#login #username').val(), 
-                'password': jQuery('form#login #password').val(), 
-                'security': jQuery('form#login #security').val() },
+                'username': username.val(), 
+                'password': password.val(), 
+                'security': security.val() 
+            },
             success: function(data){
-                jQuery('form#login p.status').text(data.message);
+                form.find(".login_loader").hide();
+
                 if (data.loggedin == true){
-                    document.location.href = ajax_options.redirecturl;
+                    form.find(".login_msg.success").html(data.message).show();
+                    if ( data.redirect != false ) {
+                        window.location = data.redirect;
+                    } else {
+                        window.location.reload();
+                    }
+                } else {
+                    if(data.invalid_username == true){
+                        showerror( username );
+                    } else{
+                        hideerror(username);
+                    }
+                    if(data.incorrect_password == true){
+                        showerror( password );
+                    } else{
+                        hideerror(password);
+                    }
+                    form.find(".login_msg.fail").html(data.message).show();
                 }
-            }
+            },
+            error: function (jqXHR, exception) {
+                
+                var msg = '';
+                if (jqXHR.status === 0) {
+                    msg = 'Not connect.\n Verify Network.';
+                } else if (jqXHR.status == 404) {
+                    msg = 'Requested page not found. [404]';
+                } else if (jqXHR.status == 500) {
+                    msg = 'Internal Server Error [500].';
+                } else if (exception === 'parsererror') {
+                    msg = 'Requested JSON parse failed.';
+                } else if (exception === 'timeout') {
+                    msg = 'Time out error.';
+                } else if (exception === 'abort') {
+                    msg = 'Ajax request aborted.';
+                } else if (jqXHR.responseText === '-1') {
+                    msg = 'Please refresh page and try again.';
+                } else {
+                    msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                }
+                form.find(".login_loader").hide();
+                form.find(".login_msg.fail").hide();
+                form.find(".login_msg.fail").html(msg).show();
+            },
         });
-        e.preventDefault();
     });
-});
+
+
+    /*
+    * AJAX registration
+    */
+    jQuery('form#register').on('submit', function(e){
+        e.preventDefault();
+        var form = jQuery(this);
+        // validation 
+        var error;
+        var reg_username = form.find("#reg_username");
+        var reg_email = form.find("#reg_email");
+        var reg_password = form.find("#reg_password");
+        
+        if( reg_email.val() === '' ){
+            form.find(".register_msg.fail").text(ajax_options.required_message).show();
+            showerror( reg_email );
+            error = true;        
+        } else {
+            if( validateEmail( reg_email.val() ) ) {
+                hideerror( reg_email );                     
+            } else {
+                form.find(".register_msg.fail").text(ajax_options.valid_email).show();
+                showerror( reg_email );
+                error = true;            
+            }
+        }
+
+        if(reg_password.val() == '' ) {
+            form.find(".register_msg.fail").text(ajax_options.required_message).show();
+            showerror(reg_password);error = true;       
+        } else {
+            hideerror(reg_password);        
+        }
+        
+        if(error == true) {
+            return false;
+        }
+        
+        form.find(".register_loader").show();
+        form.find(".register_msg").hide();
+        jQuery.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: ajax_options.ajax_url,
+            data: { 
+                'action': 'ajaxregister', //calls wp_ajax_nopriv_ajaxlogin
+                'username': reg_username.val(), 
+                'email': reg_email.val(), 
+                'password': reg_password.val(), 
+                'security': jQuery('form#register #security').val() 
+            },
+            success: function(data){
+                form.find(".register_loader").hide();
+
+                if ( data.loggedin == true ) {
+                    form.find(".register_msg.success").text(data.message).show();
+                    if ( data.redirect != false ) {
+                        window.location = data.redirect;
+                    } else {
+                        window.location.reload();
+                    }
+                } else {
+                    form.find(".register_msg.fail").text(data.message).show();
+                }
+            },
+            error: function (jqXHR, exception) {
+                
+                var msg = '';
+                if (jqXHR.status === 0) {
+                    msg = 'Not connect.\n Verify Network.';
+                } else if (jqXHR.status === 404) {
+                    msg = 'Requested page not found. [404]';
+                } else if (jqXHR.status === 500) {
+                    msg = 'Internal Server Error [500].';
+                } else if (exception === 'parsererror') {
+                    msg = 'Requested JSON parse failed.';
+                } else if (exception === 'timeout') {
+                    msg = 'Time out error.';
+                } else if (exception === 'abort') {
+                    msg = 'Ajax request aborted.';
+                } else if (jqXHR.responseText === '-1') {
+                    msg = 'Please refresh page and try again.';
+                } else {
+                    msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                }
+
+                form.find(".register_loader").hide();
+                form.find(".register_msg.fail").hide();
+                form.find(".register_msg.fail").html(msg).show();
+            },
+        });
+    });
+}); 
+function validateEmail(value){
+    var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+    if (reg.test(value) == false) {
+        return false;
+    }
+    return true;
+}
+function showerror(element) {
+    element.css("border-color","red");
+}
+function hideerror(element) {
+    element.css("border-color","");
+}

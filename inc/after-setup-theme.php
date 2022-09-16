@@ -270,24 +270,123 @@ function my_account_loginout_link( $items, $args ) {
     return $items;
 }
 
+/*
+* Ajax LOGIN function
+*/
 add_action( 'wp_ajax_nopriv_ajaxlogin', 'ajax_login' );
-function ajax_login(){
+add_action( 'wp_ajax_ajaxlogin', 'ajax_login' );
+function ajax_login() {
 
     // First check the nonce, if it fails the function will break
     check_ajax_referer( 'ajax-login-nonce', 'security' );
 
-    // Nonce is checked, get the POST data and sign user on
-    $info = array();
-    $info['user_login'] = $_POST['username'];
-    $info['user_password'] = $_POST['password'];
-    $info['remember'] = true;
+    if ( ! empty( $_POST['username'] ) && ! empty( $_POST['password'] ) ) {
+        // Nonce is checked, get the POST data and sign user on
+        $info = array();
+        $info['user_login']     = isset($_POST['username']) ? $_POST['username'] : '';
+        $info['user_password']  = isset($_POST['password']) ? $_POST['password'] : '';
+        $info['remember']       = false;
 
-    $user_signon = wp_signon( $info, false );
-    if ( is_wp_error($user_signon) ){
-        echo json_encode(array('loggedin'=>false, 'message'=>__('Wrong username or password.')));
+        if( isset($_POST['rememberme'])) {
+            $info['remember'] = true;
+        }   
+        auth_user_login($info);
+
     } else {
-        echo json_encode(array('loggedin'=>true, 'message'=>__('Login successful, redirecting...')));
+        echo json_encode( array(
+            'loggedin' => false, 
+            // 'message' => $error_string,
+            'message'=>__('Please fill all required fields.'),
+            'invalid_username' => true,
+            'incorrect_password' => true,
+        ) );
+        die();
     }
+}
+    
+/*
+* Ajax register function
+*/
+add_action( 'wp_ajax_nopriv_ajaxregister', 'ajax_register' );
+add_action( 'wp_ajax_ajaxregister', 'ajax_register' );
+function ajax_register() {
 
+    // First check the nonce, if it fails the function will break
+    check_ajax_referer( 'ajax-register-nonce', 'security' );
+    
+    if ( ! empty( $_POST['email'] ) && ! empty( $_POST['password'] ) ) {
+
+        $info = array();
+        $info['user_login'] = isset($_POST['username']) ? sanitize_user($_POST['username']) : '' ;
+        $info['user_pass']  = isset($_POST['password']) ? sanitize_text_field($_POST['password']) : '';
+        $info['user_email'] = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
+    
+        $validation_error = new WP_Error();
+    
+        if ( $validation_error->get_error_code() ) {
+            //throw new Exception( $validation_error->get_error_message() );
+            $error_array = array(
+                'code' => $validation_error->get_error_code(),
+                'message' => $validation_error->get_error_message()
+            );
+        } else {
+            $user_register = wp_insert_user( $info );
+            if ( is_wp_error( $user_register ) ) {
+                $error_array = array(
+                    'code' => $user_register->get_error_code(),
+                    'message' => $user_register->get_error_message()
+                );
+            } else {
+                auth_user_login($info);
+            }
+        }
+    } else {
+        echo json_encode( array(
+            'loggedin' => false, 
+            // 'message' => $error_string,
+            'message'=>__('Please fill all required fields.'),
+            'invalid_username' => true,
+            'incorrect_password' => true,
+        ) );
+        die();
+    }
+}
+
+function auth_user_login($info) {
+
+    $user_signon = wp_signon( $info, false );    
+      
+    if ( is_wp_error($user_signon) ){
+        
+        if ( isset( $user_signon->errors[ 'invalid_username' ] ) ) {
+            $username_error = true;
+        } else{
+            $username_error = false;
+        }
+        if ( isset( $user_signon->errors[ 'incorrect_password' ] ) ) {
+            $password_error = true;
+        } else{
+            $password_error = false;
+        }               
+        $error_string = $user_signon->get_error_message();
+        
+        echo json_encode( array(
+            'loggedin' => false, 
+            // 'message' => $error_string,
+            'message'=>__('Wrong username or password.'),
+            'invalid_username' => $username_error,
+            'incorrect_password' => $password_error,
+        ) );
+    } else {
+        wp_set_current_user($user_signon->ID);
+        $args = array(
+            'loggedin'  => true,
+            'message'   => __( 'Login successful, redirecting...' ),
+            'redirect'  => apply_filters( "wcalr_login_redirect", false)
+        );  
+            
+        echo json_encode( $args );
+    }
+    
     die();
 }
