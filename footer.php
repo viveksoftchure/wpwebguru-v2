@@ -142,14 +142,13 @@ $subscribe = false;
                             <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
                             <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
                         </div>
-                        <span>or use your email for registration</span>
+                        <span class="mb-4">or use your email for registration</span>
                         <input type="text" id="reg_username" name="reg_username" placeholder="username">
                         <input type="text" id="reg_email" name="reg_email" placeholder="Email">
                         <input type="password" name="reg_password" id="reg_password" placeholder="Password" />
                         <button>Sign Up</button>
                         <?php wp_nonce_field( 'ajax-register-nonce', 'security' ); ?>
-            <div class="register_msg success" style="display:none"></div>
-            <div class="register_msg fail" style="display:none"></div>
+                        <div class="register_msg" style="display: none;"></div>
                     </form>
                 </div>
                 <div class="form-container sign-in-container">
@@ -160,16 +159,13 @@ $subscribe = false;
                             <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
                             <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
                         </div>
-                        <span>or use your account</span>
-                        <!-- <input type="email" placeholder="Email" /> -->
+                        <span class="mb-4">or use your account</span>
                         <input type="text" id="username" name="username" placeholder="username">
                         <input type="password" name="password" id="password" placeholder="Password" />
-                        <a href="<?php echo wp_lostpassword_url(); ?>">Forgot your password?</a>
-                        <button>Sign In</button>
+                        <a href="<?php echo wp_lostpassword_url(); ?>" class="lost-password">Forgot your password?</a>
+                        <button type="submit" class="">Sign In</button>
                         <?php wp_nonce_field( 'ajax-login-nonce', 'security' ); ?>
-                        <div class="login_msg success" style="display:none"></div>
-                        <div class="login_msg fail" style="display:none"></div>
-
+                        <div class="login_msg" style="display: none;"></div>
                     </form>
                 </div>
                 <div class="overlay-container">

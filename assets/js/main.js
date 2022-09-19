@@ -170,7 +170,7 @@
 
     //Copy to clipboard
     var loginBox = function() {
-        $('#site-login').on('click', function(event) {
+        $('.site-login').on('click', function(event) {
             event.preventDefault();
 
             $('.login-container').toggleClass('hidden');
@@ -305,7 +305,6 @@ jQuery(document).ready(function()
         var password = form.find("#password");
         var security = form.find("#security");
 
-        form.find(".login_loader").show();
         form.find(".login_msg").hide();
         jQuery.ajax({
             type: 'POST',
@@ -317,11 +316,9 @@ jQuery(document).ready(function()
                 'password': password.val(), 
                 'security': security.val() 
             },
-            success: function(data){
-                form.find(".login_loader").hide();
-
+            success: function(data) {
                 if (data.loggedin == true){
-                    form.find(".login_msg.success").html(data.message).show();
+                    form.find(".login_msg").html(data.message).removeClass('error').addClass('success').show();
                     if ( data.redirect != false ) {
                         window.location = data.redirect;
                     } else {
@@ -338,7 +335,7 @@ jQuery(document).ready(function()
                     } else{
                         hideerror(password);
                     }
-                    form.find(".login_msg.fail").html(data.message).show();
+                    form.find(".login_msg").text(data.message).removeClass('success').addClass('error').show();
                 }
             },
             error: function (jqXHR, exception) {
@@ -380,24 +377,34 @@ jQuery(document).ready(function()
         var reg_username = form.find("#reg_username");
         var reg_email = form.find("#reg_email");
         var reg_password = form.find("#reg_password");
-        
-        if( reg_email.val() === '' ){
-            form.find(".register_msg.fail").text(ajax_options.required_message).show();
+
+        console.log('Name:- '+reg_username.val());
+        console.log('Email:- '+reg_email.val());
+        console.log('Pwd:- '+reg_password.val());
+
+        form.find(".register_msg").text('').hide();
+            
+        if( reg_email.val() == '' ) {
+            console.log('Email is blank:-'+reg_email.val());
+            form.find(".register_msg").text('Email:- '+ajax_options.required_message).removeClass('success').addClass('error').show();
             showerror( reg_email );
             error = true;        
         } else {
             if( validateEmail( reg_email.val() ) ) {
                 hideerror( reg_email );                     
             } else {
-                form.find(".register_msg.fail").text(ajax_options.valid_email).show();
+                console.log('Not valid:-'+reg_email.val());
+                form.find(".register_msg").text('Valid:- '+ajax_options.valid_email).removeClass('success').addClass('error').show();
                 showerror( reg_email );
                 error = true;            
             }
         }
 
         if(reg_password.val() == '' ) {
-            form.find(".register_msg.fail").text(ajax_options.required_message).show();
-            showerror(reg_password);error = true;       
+            console.log('Password is blank:-'+reg_password.val());
+            form.find(".register_msg").text('Pwd:- '+ajax_options.required_message).removeClass('success').addClass('error').show();
+            showerror(reg_password);
+            error = true;       
         } else {
             hideerror(reg_password);        
         }
@@ -406,7 +413,6 @@ jQuery(document).ready(function()
             return false;
         }
         
-        form.find(".register_loader").show();
         form.find(".register_msg").hide();
         jQuery.ajax({
             type: 'POST',
@@ -419,18 +425,17 @@ jQuery(document).ready(function()
                 'password': reg_password.val(), 
                 'security': jQuery('form#register #security').val() 
             },
-            success: function(data){
-                form.find(".register_loader").hide();
-
+            success: function(data) {
+                console.log('Form is success');
                 if ( data.loggedin == true ) {
-                    form.find(".register_msg.success").text(data.message).show();
+                    form.find(".register_msg").text(data.message).removeClass('error').addClass('success').show();
                     if ( data.redirect != false ) {
                         window.location = data.redirect;
                     } else {
                         window.location.reload();
                     }
                 } else {
-                    form.find(".register_msg.fail").text(data.message).show();
+                    form.find(".register_msg").text(data.message).removeClass('success').addClass('error').show();
                 }
             },
             error: function (jqXHR, exception) {
@@ -453,10 +458,9 @@ jQuery(document).ready(function()
                 } else {
                     msg = 'Uncaught Error.\n' + jqXHR.responseText;
                 }
+                console.log('Form is Error:-'+msg);
 
-                form.find(".register_loader").hide();
-                form.find(".register_msg.fail").hide();
-                form.find(".register_msg.fail").html(msg).show();
+                form.find(".register_msg").text(msg).removeClass('success').addClass('error').show();
             },
         });
     });

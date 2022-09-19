@@ -2430,8 +2430,11 @@ section {
 ============== input styles
 ========================================================*/
 input[type="email"], 
+input[type="password"], 
 input[type="text"], 
 input[type="url"], 
+input[type="number"], 
+input[type="tel"], 
 textarea {
     background: var(--c-body-bg);
     border: 1px solid var(--c-border);
@@ -2443,24 +2446,33 @@ textarea {
     color: var(--c-text-main);
     border-radius: var(--size-1);
 }
-input[type="email"]:focus,
-input[type="text"]:focus,
-input[type="url"]:focus,
+input[type="email"]:focus, 
+input[type="password"]:focus, 
+input[type="text"]:focus, 
+input[type="url"]:focus, 
+input[type="number"]:focus, 
+input[type="tel"]:focus, 
 textarea:focus {
     border: 1px solid var(--c-primary-main);
     color: var(--c-text-main);
     outline: 0;
     box-shadow: none;
 }
-input[type="email"]::-moz-placeholder,
-input[type="text"]::-moz-placeholder,
-input[type="url"]::-moz-placeholder,
+input[type="email"]::-moz-placeholder, 
+input[type="password"]::-moz-placeholder, 
+input[type="text"]::-moz-placeholder, 
+input[type="url"]::-moz-placeholder, 
+input[type="number"]::-moz-placeholder, 
+input[type="tel"]::-moz-placeholder, 
 textarea::-moz-placeholder {
     color: var(--c-text-light);
 }
-input[type="email"]::placeholder,
-input[type="text"]::placeholder,
-input[type="url"]::placeholder,
+input[type="email"]::placeholder, 
+input[type="password"]::placeholder, 
+input[type="text"]::placeholder, 
+input[type="url"]::placeholder, 
+input[type="number"]::placeholder, 
+input[type="tel"]::placeholder, 
 textarea::placeholder {
     color: var(--c-text-light);
 }
@@ -6181,10 +6193,9 @@ ul.page-numbers li .page-numbers.current {
 /*========================================================
 ===================== login form css
 ========================================================*/
-@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
 
 
-button {
+.login-container button {
     border-radius: 20px;
     border: 1px solid #0057ff;
     background-color: #0057ff;
@@ -6195,22 +6206,23 @@ button {
     letter-spacing: 1px;
     text-transform: uppercase;
     transition: transform 80ms ease-in;
+    cursor: pointer;
 }
 
-button:active {
+.login-container button:active {
     transform: scale(0.95);
 }
 
-button:focus {
+.login-container button:focus {
     outline: none;
 }
 
-button.ghost {
+.login-container button.ghost {
     background-color: transparent;
     border-color: #FFFFFF;
 }
 
-form {
+.login-container form {
     background-color: #FFFFFF;
     display: flex;
     align-items: center;
@@ -6221,16 +6233,6 @@ form {
     text-align: center;
 }
 
-input {
-    background-color: #eee;
-    border: none;
-    padding: 12px 15px;
-    margin: 8px 0;
-    width: 100%;
-}
-
-
-
 .login-container {
     width: 100%;
     height: 100vh;
@@ -6239,10 +6241,10 @@ input {
     top: 0;
     left: 0;
     z-index: 9999;
-   position: fixed; 
-   overflow-y: scroll;
-   overscroll-behavior: contain;
-   top: 0; right: 0; bottom: 0; left: 0; 
+    position: fixed; 
+    overflow-y: scroll;
+    overscroll-behavior: contain;
+    top: 0; right: 0; bottom: 0; left: 0; 
 }
 .login-container .account-box {
     background-color: #fff;
@@ -6269,6 +6271,7 @@ input {
 
 .login-container .account-box h1 {
     font-size: 28px;
+    margin: 0;
 }
 .login-container .account-box p {
     font-size: 16px;
@@ -6284,6 +6287,11 @@ input {
 }
 .login-container .account-box.right-panel-active .sign-in-container {
     transform: translateX(100%);
+}
+.login-container .lost-password {
+    margin-bottom: 15px;
+    color: var(--c-text-main);
+    text-decoration: underline;
 }
 
 .login-container .sign-up-container {
@@ -6400,4 +6408,101 @@ input {
         opacity: 1;
         z-index: 5;
     }
+}
+
+
+.login_msg,
+.register_msg {
+    border: 1px solid #ececec;
+    border-left-width: 4px;
+    padding: 4px 12px;
+    font-size: 14px;
+    margin-top: 15px;
+    width: 100%;
+    text-align: left;
+}
+.login_msg.error,
+.register_msg.error {
+    border-left-color: red;
+    border-left-width: 4px;
+}
+.login_msg.success,
+.register_msg.success {
+    border-left-color: green;
+    border-left-width: 4px;
+}
+
+
+
+
+/*========================================================
+===================== user account css
+========================================================*/
+.wpwg-dashboard-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    position: relative;
+}
+.wpwg-dashboard-navigation {
+    display: block;
+    width: 230px;
+}
+.wpwg-dashboard-navigation ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: r;
+}
+.wpwg-dashboard-navigation ul .wpwg-menu-item {
+    margin-bottom: 10px;
+}
+.wpwg-dashboard-navigation ul .wpwg-menu-item a {
+    display: block;
+    border: 1px solid var(--c-border);
+    padding: 10px 15px;
+    border-radius: var(--size-2);
+    position: relative;
+    color: var(--c-text-main);
+}
+.wpwg-dashboard-navigation ul .wpwg-menu-item.active a {
+    background-color: var(--c-primary-main);
+    border: 1px solid var(--c-primary-main);
+    color: #fff;
+}
+
+
+
+.wpwg-dashboard-content {
+    width: calc(100% - 250px);
+    border: 1px solid var(--c-border);
+    padding: 30px;
+    border-radius: var(--size-2);
+    position: relative;
+}
+.account-notices-wrapper {
+    overflow: hidden;
+    width: 100%;
+    margin-bottom: 15px;
+}
+.account-notices-wrapper .alert {
+    padding: 10px 20px;
+    background: var(--c-gray-lighter);
+    color: var(--c-text-main);
+    border-top: 3px solid var(--c-gray-light);
+}
+.account-notices-wrapper .alert-danger {
+    border-color: #cd2653;
+}
+.account-notices-wrapper .alert-success {
+    border-color: #7ad03a;
+}
+.wpwg-dashboard-content fieldset {
+    border: 2px solid var(--c-primary-main);
+    padding: 30px;
+    margin: 0;
+    margin-bottom: 30px;
+}
+.wpwg-dashboard-content fieldset legend {
+    padding: 0 15px;
 }

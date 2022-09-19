@@ -5,81 +5,86 @@
  *
  * @package WpWebGuru
  */
+define( 'WWG_ROOT', __DIR__ );
 
 /**
  * Set up theme defaults and register support for various WordPress features
  */
-require get_template_directory() . '/inc/after-setup-theme.php';
+require WWG_ROOT . '/inc/after-setup-theme.php';
 
 /**
  * Enqueue scripts and styles.
  */
-require get_template_directory() . '/inc/enqueue-scripts.php';
+require WWG_ROOT . '/inc/enqueue-scripts.php';
 
 /**
  * Add preload for CDN
  */
-require get_template_directory() . '/inc/resource-hints.php';
+require WWG_ROOT . '/inc/resource-hints.php';
 
 /**
  * template Functions
  */
-require get_template_directory() . '/inc/template-functions.php';
+require WWG_ROOT . '/inc/template-functions.php';
 
 /**
  * Custom control
  */
-require get_template_directory() . '/inc/custom-controls/custom-control.php';
+require WWG_ROOT . '/inc/custom-controls/custom-control.php';
 
 /**
  * Customizer additions.
  */
-require get_template_directory() . '/inc/customizer.php';
+require WWG_ROOT . '/inc/customizer.php';
 
 /**
  * template tags
  */
-require get_template_directory() . '/inc/template-tags.php';
+require WWG_ROOT . '/inc/template-tags.php';
 
 /**
  * Register Custom Widget Area
  */
-require get_template_directory() . '/inc/widgets-init.php';
+require WWG_ROOT . '/inc/widgets-init.php';
 
 /**
  * custom WordPress nav walker
  */
-require get_template_directory() . '/inc/bootstrap_walker_nav_menu.php';
+require WWG_ROOT . '/inc/bootstrap_walker_nav_menu.php';
 
 /**
  * Register Custom Fonts
  */
-require get_template_directory() . '/inc/register-custom-fonts.php';
+require WWG_ROOT . '/inc/register-custom-fonts.php';
 
 /**
  * Register Custom widgets
  */
-require get_template_directory() . '/inc/widgets/custom-widget-register.php';
+require WWG_ROOT . '/inc/widgets/custom-widget-register.php';
 
 /**
  * Related Post
  */
-require get_template_directory() . '/template-parts/post-related-grid.php';
+require WWG_ROOT . '/template-parts/post-related-grid.php';
 
 /**
  * breadcrumb
  */
-require get_template_directory() . '/template-parts/title/breadcrumb.php';
+require WWG_ROOT . '/template-parts/title/breadcrumb.php';
 
 /**
  * allow svg
  */
-require get_template_directory() . '/inc/allow-svg.php';
+require WWG_ROOT . '/inc/allow-svg.php';
 
 /**
  * Customizer changes css
  */
-require get_template_directory() . '/inc/dynamic-css.php';
+require WWG_ROOT . '/inc/dynamic-css.php';
+
+
+// global classes/functions
+require WWG_ROOT . '/inc/class/frontend-account.php';
 
 
 
@@ -338,7 +343,7 @@ function more_post_ajax()
 
     $loop = new WP_Query($args);
 
-    $path = get_template_directory() .'/template-parts/post-card/post-card-2.php';
+    $path = WWG_ROOT .'/template-parts/post-card/post-card-2.php';
 
     if ($loop -> have_posts()) : 
 

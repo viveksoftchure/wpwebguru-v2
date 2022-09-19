@@ -253,3 +253,183 @@ function theme_get_post_navigation()
 }
 
 require get_template_directory() . '/inc/comment-form.php';
+
+
+/**
+ * Include a template file
+ *
+ * @param string $file file name or path to file
+ */
+function wpwg_load_template( $file, $args = [] ) {
+    if ( $args && is_array( $args ) ) {
+        extract( $args );
+    }
+
+    $template_dir = WWG_ROOT . '/template-parts/';
+
+    include $template_dir . $file;
+}
+
+/**
+ * Get account dashboard's sections
+ *
+ * @return array
+ */
+function wpwg_get_account_sections() {
+    $sections = [
+        'dashboard'     => __( 'Dashboard' ),
+        'post'          => __( 'Posts' ),
+        'edit-profile'  => __( 'Edit Profile' ),
+    ];
+
+    return apply_filters( 'wpwg_account_sections', $sections );
+}
+
+
+add_action('template_redirect', function () {
+    ob_start();
+});
+
+/**
+ * Save alert message to the current user session
+ *
+ * @param string $message
+ * @param string $type
+ * @return mixed
+ */
+function alert_push($message, $type = 'success') {
+    $_SESSION['alert'][$type] = $message;
+}
+
+/**
+ * Retrieve alert messages from current user session
+ *
+ * @return array
+ */
+function alert_shift() {
+    $result = [];
+    $types = ['success', 'info', 'warning', 'danger'];
+
+    foreach($types as $k => $type) {
+        if (isset($_SESSION['alert'][$type])) {
+            $result[$k] = $_SESSION['alert'][$type];
+            unset($_SESSION['alert'][$type]);
+        } else {
+            $result[$k] = '';
+        }
+    }
+    return array_combine($types, $result);
+}
+
+/**
+ * start and end session on login and logout
+ *
+ * @return array
+ */
+add_action('init', 'myStartSession', 1);
+add_action('wp_logout', 'myEndSession');
+add_action('wp_login', 'myEndSession');
+
+function myStartSession() {
+    if(!session_id()) {
+        session_start();
+    }
+}
+
+function myEndSession() {
+    session_destroy ();
+}
+
+/**
+* WP Custom Excerpt Length Function
+* Place in functions.php
+* This example returns ten words, then [...]
+* Manual excerpts will override this
+*/
+add_filter( 'excerpt_length', 'wp_custom_excerpt_length', 999 );
+function wp_custom_excerpt_length( $length ) 
+{
+    return 24;
+}
+
+/*
+* Get Excerpt length by count
+*/
+function get_excerpt( $count ) 
+{
+    $permalink = get_permalink($post->ID);
+    $excerpt = get_the_content();
+    $excerpt = strip_tags($excerpt);
+    $excerpt = substr($excerpt, 0, $count);
+    $excerpt = substr($excerpt, 0, strripos($excerpt, " "));
+    $excerpt = $excerpt.'...';
+    return $excerpt;
+}
+
+/**
+ * Retrieve user address
+ *
+ * @return mixed
+ */
+function wpwg_get_user_address( $user_id = 0 ) {
+    $user_id        = $user_id ? $user_id : get_current_user_id();
+    $address_fields = [];
+
+    if ( metadata_exists( 'user', $user_id, 'wpwg_address_fields' ) ) {
+        $address_fields = get_user_meta( $user_id, 'wpwg_address_fields', true );
+    } else {
+        $address_fields = array_fill_keys( [ 'add_line_1', 'add_line_2', 'city', 'state', 'zip_code', 'country' ], '' );
+
+        if ( class_exists( 'WooCommerce' ) ) {
+            $customer_id = get_current_user_id();
+            $woo_address = [];
+            $customer    = new WC_Customer( $customer_id );
+
+            $woo_address = $customer->get_billing();
+            unset( $woo_address['email'], $woo_address['tel'], $woo_address['phone'], $woo_address['company'] );
+
+            $countries_obj        = new WC_Countries();
+            $countries_array      = $countries_obj->get_countries();
+            $country_states_array = $countries_obj->get_states();
+            $woo_address['state'] = isset( $country_states_array[ $woo_address['country'] ][ $woo_address['state'] ] ) ? $country_states_array[ $woo_address['country'] ][ $woo_address['state'] ] : '';
+            $woo_address['state'] = strtolower( str_replace( ' ', '', $woo_address['state'] ) );
+
+            if ( ! empty( $woo_address ) ) {
+                $address_fields = [
+                    'add_line_1'    => $woo_address['address_1'],
+                    'add_line_2'    => $woo_address['address_2'],
+                    'city'          => $woo_address['city'],
+                    'state'         => $woo_address['state'],
+                    'zip_code'      => $woo_address['postcode'],
+                    'country'       => $woo_address['country'],
+                ];
+            }
+        }
+    }
+
+    return $address_fields;
+}
+
+/**
+ * Show/hide admin bar to the permitted user level
+ *
+ * @return void
+ */
+add_filter( 'show_admin_bar', 'show_admin_bar_user' );
+function show_admin_bar_user( $val ) {
+    if ( ! is_user_logged_in() ) {
+        return false;
+    }
+
+    $roles        = [ 'administrator', 'editor', 'author', 'contributor' ];
+    $roles        = $roles && is_string( $roles ) ? [ strtolower( $roles ) ] : $roles;
+    $current_user = wp_get_current_user();
+
+    if ( ! empty( $current_user->roles ) && ! empty( $current_user->roles[0] ) ) {
+        if ( ! in_array( $current_user->roles[0], $roles ) ) {
+            return false;
+        }
+    }
+
+    return $val;
+}
