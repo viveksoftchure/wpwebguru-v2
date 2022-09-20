@@ -231,7 +231,6 @@
 
 jQuery(document).ready(function()
 {
-    console.log(ajax_options);
     var ppp = ajax_options.js_option.load_more!='' ? parseInt(ajax_options.js_option.load_more) : parseInt(3); // Post per page
     var offset = ajax_options.js_option.posts_per_page!='' ? parseInt(ajax_options.js_option.posts_per_page) : parseInt(3); // offset
     // var offset = parseInt(0); // Post per page
@@ -295,6 +294,38 @@ jQuery(document).ready(function()
         
         load_posts(jQuery(this), newOffset, postBox, category, author);
         newOffset = offset+ppp;
+    });
+
+    jQuery('.bookmark-btn').on('click', function(e) {
+        e.preventDefault();
+        var el      = jQuery(this)
+        var id      = el.data("post");
+        var action  = el.attr("data-action");
+        var icon    = el.find("i");
+
+        jQuery.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: ajax_options.ajax_url,
+            data: { 
+                'action': action,
+                'id': id, 
+            },
+            success: function(data) {
+                if (action=='addbookmark') {
+                    el.addClass('bookmarked');
+                    el.attr('data-action', 'deletebookmark');
+                    icon.removeClass('fa-regular').addClass('fa-solid');
+                } else {
+                    el.removeClass('bookmarked');
+                    el.attr('data-action', 'addbookmark');
+                    icon.removeClass('fa-solid').addClass('fa-regular');
+                }
+            },
+            error: function (jqXHR, exception) {
+
+            },
+        });
     });
 
     jQuery('form#login').on('submit', function(e){
@@ -378,14 +409,9 @@ jQuery(document).ready(function()
         var reg_email = form.find("#reg_email");
         var reg_password = form.find("#reg_password");
 
-        console.log('Name:- '+reg_username.val());
-        console.log('Email:- '+reg_email.val());
-        console.log('Pwd:- '+reg_password.val());
-
         form.find(".register_msg").text('').hide();
             
         if( reg_email.val() == '' ) {
-            console.log('Email is blank:-'+reg_email.val());
             form.find(".register_msg").text('Email:- '+ajax_options.required_message).removeClass('success').addClass('error').show();
             showerror( reg_email );
             error = true;        
@@ -393,7 +419,6 @@ jQuery(document).ready(function()
             if( validateEmail( reg_email.val() ) ) {
                 hideerror( reg_email );                     
             } else {
-                console.log('Not valid:-'+reg_email.val());
                 form.find(".register_msg").text('Valid:- '+ajax_options.valid_email).removeClass('success').addClass('error').show();
                 showerror( reg_email );
                 error = true;            
@@ -401,7 +426,6 @@ jQuery(document).ready(function()
         }
 
         if(reg_password.val() == '' ) {
-            console.log('Password is blank:-'+reg_password.val());
             form.find(".register_msg").text('Pwd:- '+ajax_options.required_message).removeClass('success').addClass('error').show();
             showerror(reg_password);
             error = true;       
@@ -426,7 +450,6 @@ jQuery(document).ready(function()
                 'security': jQuery('form#register #security').val() 
             },
             success: function(data) {
-                console.log('Form is success');
                 if ( data.loggedin == true ) {
                     form.find(".register_msg").text(data.message).removeClass('error').addClass('success').show();
                     if ( data.redirect != false ) {
@@ -458,7 +481,6 @@ jQuery(document).ready(function()
                 } else {
                     msg = 'Uncaught Error.\n' + jqXHR.responseText;
                 }
-                console.log('Form is Error:-'+msg);
 
                 form.find(".register_msg").text(msg).removeClass('success').addClass('error').show();
             },

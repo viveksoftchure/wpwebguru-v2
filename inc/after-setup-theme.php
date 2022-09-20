@@ -197,6 +197,25 @@ endif;
 add_action('after_setup_theme', 'wpwebguru_setup');
 
 
+add_action("after_switch_theme", "create_bookmark_table");
+function create_bookmark_table() {
+    global $wpdb;
+
+    $table_name = $wpdb->prefix . "bookmarks";  //get the database table prefix to create my new table
+
+    $sql = "CREATE TABLE $table_name (
+        id int(11) NOT NULL AUTO_INCREMENT,
+        post_id int(11) NULL DEFAULT NULL,
+        user_id int(11) NULL DEFAULT NULL,
+        date_created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY  (id)
+    );";
+
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+    dbDelta( $sql );
+}
+
+
 /*
 * add custom count to post page
 */
@@ -225,6 +244,76 @@ function custom_columns_data( $column, $post_id )
     }
 }
 add_action( 'manage_posts_custom_column' , 'custom_columns_data', 10, 2 ); 
+
+/*
+* Ajax LOGIN function
+*/
+add_action( 'wp_ajax_nopriv_addbookmark', 'add_bookmark' );
+add_action( 'wp_ajax_addbookmark', 'add_bookmark' );
+function add_bookmark() {
+
+    if ( !empty($_POST['id']) ) {
+        // Nonce is checked, get the POST data and sign user on
+        global $current_user;
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'bookmarks';
+
+        $wpdb->insert($table_name, array(
+           "post_id"        => $_POST['id'],
+           "user_id"        => $current_user->ID,
+           "date_created"   => date('Y-m-d H:i'),
+        ));
+        echo json_encode( array(
+            'success' => true, 
+            // 'message' => $error_string,
+            'data'=>__('Please fill all required fields.'),
+        ) );
+        die();
+
+    } else {
+        echo json_encode( array(
+            'success' => false, 
+            // 'message' => $error_string,
+            'data'=>__('Please fill all required fields.'),
+        ) );
+        die();
+    }
+}
+
+/*
+* Ajax LOGIN function
+*/
+add_action( 'wp_ajax_nopriv_deletebookmark', 'delete_bookmark' );
+add_action( 'wp_ajax_deletebookmark', 'delete_bookmark' );
+function delete_bookmark() {
+
+    if ( !empty($_POST['id']) ) {
+        // Nonce is checked, get the POST data and sign user on
+        global $current_user;
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'bookmarks';
+
+        $post_id = isset($_POST['id']) ? $_POST['id'] : '';
+        $user_id = $current_user->ID;
+
+        $wpdb->query($wpdb->prepare("DELETE FROM $table_name WHERE post_id = $post_id and user_id = $user_id "));
+
+        echo json_encode( array(
+            'success' => true, 
+            // 'message' => $error_string,
+            'data'=>__('Please fill all required fields.'),
+        ) );
+        die();
+
+    } else {
+        echo json_encode( array(
+            'success' => false, 
+            // 'message' => $error_string,
+            'data'=>__('Please fill all required fields.'),
+        ) );
+        die();
+    }
+}
 
 
 /*

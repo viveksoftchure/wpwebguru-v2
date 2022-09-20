@@ -13,6 +13,7 @@ class WPWG_Frontend_Account {
         add_shortcode( 'wpwg_account', [ $this, 'shortcode' ] );
         add_action( 'wpwg_account_content_dashboard', [ $this, 'dashboard_section' ], 10, 2 );
         add_action( 'wpwg_account_content_post', [ $this, 'posts_section' ], 10, 2 );
+        add_action( 'wpwg_account_content_bookmark', [ $this, 'bookmark_section' ], 10, 2 );
         add_action( 'wpwg_account_content_edit-profile', [ $this, 'edit_profile_section' ], 10, 2 );
         add_action('wpwg_account_content_edit-profile', [ $this, 'update_profile' ]);
     }
@@ -72,6 +73,24 @@ class WPWG_Frontend_Account {
     public function dashboard_section( $sections, $current_section ) {
         wpwg_load_template(
             'dashboard/dashboard.php',
+            [
+                'sections' => $sections,
+                'current_section' => $current_section,
+            ]
+        );
+    }
+
+    /**
+     * Display the bookmark section
+     *
+     * @param array  $sections
+     * @param string $current_section
+     *
+     * @return void
+     */
+    public function bookmark_section( $sections, $current_section ) {
+        wpwg_load_template(
+            'dashboard/bookmark.php',
             [
                 'sections' => $sections,
                 'current_section' => $current_section,

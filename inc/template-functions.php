@@ -278,6 +278,7 @@ function wpwg_load_template( $file, $args = [] ) {
 function wpwg_get_account_sections() {
     $sections = [
         'dashboard'     => __( 'Dashboard' ),
+        'bookmark'      => __( 'Bookmarks' ),
         'post'          => __( 'Posts' ),
         'edit-profile'  => __( 'Edit Profile' ),
     ];
@@ -432,4 +433,33 @@ function show_admin_bar_user( $val ) {
     }
 
     return $val;
+}
+
+/**
+ * Check if post is bookmarked or not
+ *
+ * @return bool
+ */
+function is_bookmarked($post_id, $user_id) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'bookmarks';
+
+    $data = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE `post_id`= $post_id AND `user_id`= $user_id"), ARRAY_A); 
+          
+    return $data ? True : False;
+}
+
+/**
+ * get user bookmark list
+ *
+ * @return array
+ */
+function user_bookmarkes() {
+    global $current_user;
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'bookmarks';
+
+    $data = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE `user_id`= $current_user->ID"), ARRAY_A); 
+          
+    return $data;
 }

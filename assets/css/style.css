@@ -6506,3 +6506,9 @@ ul.page-numbers li .page-numbers.current {
 .wpwg-dashboard-content fieldset legend {
     padding: 0 15px;
 }
+
+
+.bookmark-btn {
+    font-size: 20px;
+    cursor: pointer;
+}

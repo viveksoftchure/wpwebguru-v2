@@ -312,6 +312,9 @@ function theme_postmeta()
 */
 function theme_singlepostmeta()
 {
+	global $current_user;
+	$post_id = get_the_id();
+	$is_bookmarked = is_bookmarked($post_id, $current_user->ID);
     ?>
     <div class="author-list flex">
     	<a class="author-image" href="<?= esc_url(get_author_posts_url(get_the_author_meta('ID', get_the_author_meta( 'ID' ) ))) ?>" aria-label="Harini Banerjee">
@@ -321,6 +324,14 @@ function theme_singlepostmeta()
     </div>
     <time class="post-date" datetime="2021-05-02"><?php echo get_the_time(get_option('date_format')); ?></time>
     <span class="read-time"><?php echo theme_content_estimated_reading_time(get_the_content()); ?></span>
+
+    <div class="add-bookmark">
+    	<?php if($is_bookmarked): ?>
+	    	<a href="#" class="bookmark-btn bookmarked" data-action="deletebookmark" data-post="<?= $post_id ?>" title="Delete Bookmark"><i class="fa-solid fa-bookmark"></i></a>
+	    <?php else: ?>
+	    	<a href="#" class="bookmark-btn" data-action="addbookmark" data-post="<?= $post_id ?>" title="Bookmark"><i class="fa-regular fa-bookmark"></i></a>
+		<?php endif; ?>
+	   </div>
 	<?php 
 }
 
