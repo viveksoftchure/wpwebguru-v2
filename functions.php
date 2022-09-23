@@ -84,7 +84,7 @@ require WWG_ROOT . '/inc/dynamic-css.php';
 
 
 // global classes/functions
-require WWG_ROOT . '/inc/class/frontend-account.php';
+require WWG_ROOT . '/inc/class/class-core-users.php';
 
 
 

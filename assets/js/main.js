@@ -350,11 +350,7 @@ jQuery(document).ready(function()
             success: function(data) {
                 if (data.loggedin == true){
                     form.find(".login_msg").html(data.message).removeClass('error').addClass('success').show();
-                    if ( data.redirect != false ) {
-                        window.location = data.redirect;
-                    } else {
-                        window.location.reload();
-                    }
+                    window.location.reload();
                 } else {
                     if(data.invalid_username == true){
                         showerror( username );
@@ -402,45 +398,13 @@ jQuery(document).ready(function()
     */
     jQuery('form#register').on('submit', function(e){
         e.preventDefault();
-        var form = jQuery(this);
-
-        var reg_username = form.find("#username");
-        var reg_email = form.find("#email");
-        var reg_password = form.find("#password");
-        var security = form.find("#register_security");
+        var form        = jQuery(this);
+        var username    = form.find("#username");
+        var email       = form.find("#email");
+        var password    = form.find("#password");
+        var register_security = form.find("#register_security");
 
         form.find(".register_msg").text('').hide();
-            
-        // if( reg_email.val() == '' ) {
-        //     form.find(".register_msg").text('Email:- '+ajax_options.required_message).removeClass('success').addClass('error').show();
-        //     showerror( reg_email );
-        //     error = true;        
-        // } else {
-        //     if( validateEmail( reg_email.val() ) ) {
-        //         hideerror( reg_email );                     
-        //     } else {
-        //         form.find(".register_msg").text('Valid:- '+ajax_options.valid_email).removeClass('success').addClass('error').show();
-        //         showerror( reg_email );
-        //         error = true;            
-        //     }
-        // }
-
-        // if(reg_password.val() == '' ) {
-        //     form.find(".register_msg").text('Pwd:- '+ajax_options.required_message).removeClass('success').addClass('error').show();
-        //     showerror(reg_password);
-        //     error = true;       
-        // } else {
-        //     hideerror(reg_password);        
-        // }
-        
-        // if(error == true) {
-        //     return false;
-        // }
-
-        console.log(reg_username.val());
-        console.log(reg_email.val());
-        console.log(reg_password.val());
-        console.log(security.val());
         
         form.find(".register_msg").hide();
         jQuery.ajax({
@@ -449,19 +413,15 @@ jQuery(document).ready(function()
             url: ajax_options.ajax_url,
             data: { 
                 'action': 'ajaxregister', //calls wp_ajax_nopriv_ajaxlogin
-                'username': reg_username.val(), 
-                'email': reg_email.val(), 
-                'password': reg_password.val(), 
-                'register_security': security 
+                'username': username.val(), 
+                'email': email.val(), 
+                'password': password.val(), 
+                'register_security': register_security.val(),
             },
             success: function(data) {
                 if ( data.registered == true ) {
                     form.find(".register_msg").text(data.message).removeClass('error').addClass('success').show();
-                    if ( data.redirect != false ) {
-                        window.location = data.redirect;
-                    } else {
-                        window.location.reload();
-                    }
+                    window.location.reload();
                 } else {
                     form.find(".register_msg").text(data.message).removeClass('success').addClass('error').show();
                 }
