@@ -143,11 +143,11 @@ $subscribe = false;
                             <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
                         </div>
                         <span class="mb-4">or use your email for registration</span>
-                        <input type="text" id="reg_username" name="reg_username" placeholder="username">
-                        <input type="text" id="reg_email" name="reg_email" placeholder="Email">
-                        <input type="password" name="reg_password" id="reg_password" placeholder="Password" />
+                        <input type="text" id="username" name="username" placeholder="username">
+                        <input type="text" id="email" name="email" placeholder="Email">
+                        <input type="password" name="password" id="password" placeholder="Password" />
                         <button>Sign Up</button>
-                        <?php wp_nonce_field( 'ajax-register-nonce', 'security' ); ?>
+                        <?php wp_nonce_field( 'ajax-register-nonce', 'register_security' ); ?>
                         <div class="register_msg" style="display: none;"></div>
                     </form>
                 </div>
@@ -160,11 +160,13 @@ $subscribe = false;
                             <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
                         </div>
                         <span class="mb-4">or use your account</span>
-                        <input type="text" id="username" name="username" placeholder="username">
-                        <input type="password" name="password" id="password" placeholder="Password" />
+                        <input type="text" id="user_login" name="user_login" placeholder="username">
+                        <input type="password" name="user_password" id="user_password" placeholder="Password" />
+                        <label for="rememberme" class="rememberme">
+                        <input name="rememberme" type="checkbox" id="rememberme" value="forever" /> <?php esc_html_e('Remember Me','listeo_core'); ?></label>
                         <a href="<?php echo wp_lostpassword_url(); ?>" class="lost-password">Forgot your password?</a>
                         <button type="submit" class="">Sign In</button>
-                        <?php wp_nonce_field( 'ajax-login-nonce', 'security' ); ?>
+                        <?php wp_nonce_field( 'ajax-login-nonce', 'login_security' ); ?>
                         <div class="login_msg" style="display: none;"></div>
                     </form>
                 </div>

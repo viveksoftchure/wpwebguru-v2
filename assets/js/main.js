@@ -332,9 +332,9 @@ jQuery(document).ready(function()
         e.preventDefault();
         var form = jQuery(this);
         var error;
-        var username = form.find("#username");
-        var password = form.find("#password");
-        var security = form.find("#security");
+        var username = form.find("#user_login");
+        var password = form.find("#user_password");
+        var security = form.find("#login_security");
 
         form.find(".login_msg").hide();
         jQuery.ajax({
@@ -345,7 +345,7 @@ jQuery(document).ready(function()
                 'action': 'ajaxlogin', //calls wp_ajax_nopriv_ajaxlogin
                 'username': username.val(), 
                 'password': password.val(), 
-                'security': security.val() 
+                'login_security': security.val() 
             },
             success: function(data) {
                 if (data.loggedin == true){
@@ -403,39 +403,44 @@ jQuery(document).ready(function()
     jQuery('form#register').on('submit', function(e){
         e.preventDefault();
         var form = jQuery(this);
-        // validation 
-        var error;
-        var reg_username = form.find("#reg_username");
-        var reg_email = form.find("#reg_email");
-        var reg_password = form.find("#reg_password");
+
+        var reg_username = form.find("#username");
+        var reg_email = form.find("#email");
+        var reg_password = form.find("#password");
+        var security = form.find("#register_security");
 
         form.find(".register_msg").text('').hide();
             
-        if( reg_email.val() == '' ) {
-            form.find(".register_msg").text('Email:- '+ajax_options.required_message).removeClass('success').addClass('error').show();
-            showerror( reg_email );
-            error = true;        
-        } else {
-            if( validateEmail( reg_email.val() ) ) {
-                hideerror( reg_email );                     
-            } else {
-                form.find(".register_msg").text('Valid:- '+ajax_options.valid_email).removeClass('success').addClass('error').show();
-                showerror( reg_email );
-                error = true;            
-            }
-        }
+        // if( reg_email.val() == '' ) {
+        //     form.find(".register_msg").text('Email:- '+ajax_options.required_message).removeClass('success').addClass('error').show();
+        //     showerror( reg_email );
+        //     error = true;        
+        // } else {
+        //     if( validateEmail( reg_email.val() ) ) {
+        //         hideerror( reg_email );                     
+        //     } else {
+        //         form.find(".register_msg").text('Valid:- '+ajax_options.valid_email).removeClass('success').addClass('error').show();
+        //         showerror( reg_email );
+        //         error = true;            
+        //     }
+        // }
 
-        if(reg_password.val() == '' ) {
-            form.find(".register_msg").text('Pwd:- '+ajax_options.required_message).removeClass('success').addClass('error').show();
-            showerror(reg_password);
-            error = true;       
-        } else {
-            hideerror(reg_password);        
-        }
+        // if(reg_password.val() == '' ) {
+        //     form.find(".register_msg").text('Pwd:- '+ajax_options.required_message).removeClass('success').addClass('error').show();
+        //     showerror(reg_password);
+        //     error = true;       
+        // } else {
+        //     hideerror(reg_password);        
+        // }
         
-        if(error == true) {
-            return false;
-        }
+        // if(error == true) {
+        //     return false;
+        // }
+
+        console.log(reg_username.val());
+        console.log(reg_email.val());
+        console.log(reg_password.val());
+        console.log(security.val());
         
         form.find(".register_msg").hide();
         jQuery.ajax({
@@ -447,10 +452,10 @@ jQuery(document).ready(function()
                 'username': reg_username.val(), 
                 'email': reg_email.val(), 
                 'password': reg_password.val(), 
-                'security': jQuery('form#register #security').val() 
+                'register_security': security 
             },
             success: function(data) {
-                if ( data.loggedin == true ) {
+                if ( data.registered == true ) {
                     form.find(".register_msg").text(data.message).removeClass('error').addClass('success').show();
                     if ( data.redirect != false ) {
                         window.location = data.redirect;

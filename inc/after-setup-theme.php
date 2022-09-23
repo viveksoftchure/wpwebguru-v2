@@ -335,33 +335,65 @@ function my_account_loginout_link( $items, $args ) {
 */
 add_action( 'wp_ajax_nopriv_ajaxlogin', 'ajax_login' );
 add_action( 'wp_ajax_ajaxlogin', 'ajax_login' );
-function ajax_login() {
+function ajax_login(){
 
     // First check the nonce, if it fails the function will break
-    check_ajax_referer( 'ajax-login-nonce', 'security' );
+    //check_ajax_referer( 'ajax-login-nonce', 'security' );
+    if( !check_ajax_referer( 'ajax-login-nonce', 'login_security', false) ) :
+        echo json_encode(
+            array(
+                'loggedin'=>false, 
+                'message'=> __('Session token has expired, please reload the page and try again', 'listeo_core')
+            )
+        );
+        die();
+    endif;
 
-    if ( ! empty( $_POST['username'] ) && ! empty( $_POST['password'] ) ) {
-        // Nonce is checked, get the POST data and sign user on
-        $info = array();
-        $info['user_login']     = isset($_POST['username']) ? $_POST['username'] : '';
-        $info['user_password']  = isset($_POST['password']) ? $_POST['password'] : '';
-        $info['remember']       = false;
+    // Nonce is checked, get the POST data and sign user on
+    $info = array();
+    $info['user_login'] = sanitize_text_field(trim($_POST['username']));
+    $info['user_password'] = sanitize_text_field(trim($_POST['password']));
+    $info['remember'] = isset($_POST['remember-me']) ? true : false;
 
-        if( isset($_POST['rememberme'])) {
-            $info['remember'] = true;
-        }   
-        auth_user_login($info['user_login'], $info['user_password'], $info['remember']);
+    if(empty($info['user_login'])) {
+         echo json_encode(
+            array(
+                'loggedin'=>false, 
+                'message'=> esc_html__( 'You do have an email address, right?', 'listeo_core' )
+            )
+         );
+         die();
+    } 
+    if(empty($info['user_password'])) {
+         echo json_encode(array('loggedin'=>false, 'message'=> esc_html__( 'You need to enter a password to login.', 'listeo_core' )));
+         die();
+    }
+
+    // $user_signon = wp_signon( $info, is_ssl() );
+    $user_signon = wp_signon( $info, '' );
+    if ( is_wp_error($user_signon) ){
+        
+        echo json_encode(
+            array(
+                'loggedin'=>false, 
+                'message'=>esc_html__('Wrong username or password.','listeo_core')
+            )
+        );
 
     } else {
-        echo json_encode( array(
-            'loggedin' => false, 
-            // 'message' => $error_string,
-            'message'=>__('Please fill all required fields.'),
-            'invalid_username' => true,
-            'incorrect_password' => true,
-        ) );
-        die();
+        wp_clear_auth_cookie();
+        wp_set_current_user($user_signon->ID);
+        wp_set_auth_cookie($user_signon->ID, true);
+        echo json_encode(
+            array(
+                'loggedin'  =>  true, 
+                'message'   =>  esc_html__('Login successful, redirecting...','listeo_core'),
+            
+            )
+        );
     }
+
+    die();
 }
     
 /*
@@ -371,46 +403,146 @@ add_action( 'wp_ajax_nopriv_ajaxregister', 'ajax_register' );
 add_action( 'wp_ajax_ajaxregister', 'ajax_register' );
 function ajax_register() {
 
-    // First check the nonce, if it fails the function will break
-    check_ajax_referer( 'ajax-register-nonce', 'security' );
-    
-    if ( ! empty( $_POST['email'] ) && ! empty( $_POST['password'] ) ) {
 
-        $info = array();
-        $info['user_nicename']  = $info['nickname'] = $info['display_name'] = $info['first_name'] = $info['user_login'] = isset($_POST['username']) ? sanitize_user($_POST['username']) : '' ;
-        $info['user_pass']      = isset($_POST['password']) ? sanitize_text_field($_POST['password']) : '';
-        $info['user_email']     = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
-        $info['remember']       = true;
-        
-        // Register the user
-        $user_register = wp_insert_user($info);
-        if ( is_wp_error($user_register) ) {
-            echo json_encode( array(
-                'loggedin' => false, 
-                'message'=>$user_register->get_error_message(),
-            ));
-        } else {
-            auth_user_login($info['nickname'], $info['user_pass'], $info['remember']); 
+          echo '<pre>'; print_r($_POST); echo '</pre>'; exit;
+    
+          
+
+    if ( !get_option('users_can_register') ) :
+            echo json_encode(
+            array(
+                'registered'=>false, 
+                'message'=> esc_html__( 'Registration is disabled', 'listeo_core' ),
+            )
+        );
+        die();
+    endif;
+
+    if( !check_ajax_referer( 'ajax-register-nonce', 'register_security', false) ) :
+        echo json_encode(
+            array(
+                'registered'=>false, 
+                'message'=> __('Session token has expired, please reload the page and try again', 'listeo_core')
+            )
+        );
+        die();
+    endif;
+
+    //get email
+    $email = sanitize_email($_POST['email']);
+    if ( !$email ) {
+        echo json_encode(
+            array(
+                'registered'=>false, 
+                'message'=> __('Please fill email address', 'listeo_core')
+            )
+        );
+        die();
+    }       
+    if ( !is_email($email)  ) {
+        echo json_encode(
+            array(
+                'registered'=>false, 
+                'message'=> __('This is not valid email address', 'listeo_core')
+            )
+        );
+        die();
+    }
+
+    $user_login = sanitize_user(trim($_POST['username']));
+    if(empty($user_login)) {
+        echo json_encode(
+            array(
+                'registered'=>false, 
+                'message'=> esc_html__( 'Please provide your username', 'listeo_core' )
+            )
+        );
+        die();
+    }  
+
+    $password = sanitize_text_field(trim($_POST['password']));
+    if(empty($password)) {
+        echo json_encode(
+            array(
+                'registered'=>false, 
+                'message'=> esc_html__( 'Please provide password', 'listeo_core' )
+            )
+        );
+        die();
+    } 
+    if(get_option('listeo_strong_password')){
+        $uppercase = preg_match('@[A-Z]@', $password);
+        $lowercase = preg_match('@[a-z]@', $password);
+        $number    = preg_match('@[0-9]@', $password);
+        $specialChars = preg_match('@[^\w]@', $password);
+
+        if(!$uppercase || !$lowercase || !$number || !$specialChars || strlen($password) < 8) {
+            
+            echo json_encode(
+            array(
+                'registered'=>false, 
+                'message'=> esc_html__( 'Password should be at least 8 characters in length and should include at least one upper case letter, one number, and one special character.', 'listeo_core' )
+            )
+        );
+        die();
         }
-        
+    }
+
+    $result = register_user( $email, $user_login, $password );
+
+    if ( is_wp_error($result) ){
+        echo json_encode(array('registered'=>false, 'message'=> $result->get_error_message()));
     } else {
-        echo json_encode( array(
-            'loggedin' => false, 
-            // 'message' => $error_string,
-            'message'=>__('Please fill all required fields.'),
-            'invalid_username' => true,
-            'incorrect_password' => true,
-        ) );
+        echo json_encode(array('registered'=>true, 'message'=>esc_html__('You have been successfully registered, you will be logged in a moment.','listeo_core')));
     }
 
     die();
+}
+
+function register_user( $email, $user_login, $password ) {
+    $errors = new WP_Error();
+ 
+    // Email address is used as both username and email. It is also the only
+    // parameter we need to validate
+    if ( ! is_email( $email ) ) {
+        $errors->add( 'email', $this->get_error_message( 'email' ) );
+        return $errors;
+    }
+ 
+    if ( email_exists( $email ) ) {
+        $errors->add( 'email_exists', $this->get_error_message( 'email_exists') );
+        return $errors;
+    }
+
+    if ( username_exists( $user_login ) ) {
+        $errors->add( 'username_exists', $this->get_error_message( 'username_exists') );
+        return $errors;
+    }
+
+    $user_data = array(
+        'user_login'    => $user_login,
+        'user_email'    => $email,
+        'user_pass'     => $password,
+    );
+ 
+    $user_id = wp_insert_user( $user_data );
+
+    if ( ! is_wp_error( $user_id ) ) {
+        wp_new_user_notification( $user_id, $password,'both' );
+        if(get_option('listeo_autologin')){
+            wp_set_current_user($user_id); // set the current wp user
+            wp_set_auth_cookie($user_id);   
+        }
+    }
+    
+    return $user_id;
 }
 
     
 /*
 * Auth user login
 */
-function auth_user_login($user_login, $password, $remember) {
+function auth_user_login($user_login, $password, $remember, $from) {
     $info = array();
     $info['user_login']     = $user_login;
     $info['user_password']  = $password;
@@ -441,6 +573,7 @@ function auth_user_login($user_login, $password, $remember) {
         ) );
     } else {
         wp_set_current_user($user_signon->ID);
+
         $args = array(
             'loggedin'  => true,
             'message'   => __( 'Login successful, redirecting...' ),
