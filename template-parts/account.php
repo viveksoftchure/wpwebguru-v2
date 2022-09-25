@@ -1,15 +1,13 @@
 <div class="wpwg-dashboard-container">
     <nav class="wpwg-dashboard-navigation">
+        <?php //echo '<pre>'; print_r($sections); echo '</pre>'; exit; ?>
         <ul>
             <?php
                 if ( is_user_logged_in() ) {
-                    foreach ( $sections as $section => $label ) {
+                    foreach ( $sections as $section => $item ) {
                         // backward compatibility
-                        if ( is_array( $label ) ) {
-                            $section = $label['slug'];
-                            $label   = $label['label'];
-                        }
-
+                        $label  = $item['label'];
+                        $icon   = $item['icon'];
 
                         $default_active_tab = 'dashboard' ;
                         $active_tab         = false;
@@ -20,14 +18,15 @@
 
                         $active = $active_tab ? $section . ' active' : $section;
                         echo sprintf(
-                            '<li class="wpwg-menu-item %s"><a href="%s">%s</a></li>',
+                            '<li class="wpwg-menu-item %s"><a href="%s"><i class="%s"></i>%s</a></li>',
                             esc_attr( $active ),
                             esc_attr( add_query_arg( [ 'section' => $section ], get_permalink() ) ),
+                            esc_attr( $icon ),
                             esc_attr( $label )
                          );
                     }
                     echo sprintf(
-                        '<li class="wpwg-menu-item"><a href="%s">%s</a></li>',
+                        '<li class="wpwg-menu-item"><a href="%s"><i class="fa-solid fa-right-from-bracket"></i>%s</a></li>',
                         esc_url( wp_logout_url(get_permalink()) ),
                         esc_attr( 'Logout' )
                      );

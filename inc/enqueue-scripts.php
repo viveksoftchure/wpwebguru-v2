@@ -38,6 +38,7 @@ function wpwebguru_enqueue_scripts()
 		'loading_text' => __('Loading...'),
 		'plugin_dir_url' => plugin_dir_url( __FILE__ ),	
 		'redirecturl' => home_url(),
+		'get_favorites' => wp_create_nonce('get_favorites'),
 	));
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) 

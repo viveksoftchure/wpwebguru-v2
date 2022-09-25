@@ -7,11 +7,9 @@ ob_start();
 
 <form class="wpwg-form wpwg-update-profile-form" action="" method="post">
 
-    <div style="display: none;" class="wpwg-success">
-        <?php esc_html_e( 'Profile updated successfully!', 'wp-user-frontend' ); ?>
-    </div>
-    <div style="display: none;" class="wpwg-error">
-        <?php esc_html_e( 'Something went wrong!', 'wp-user-frontend' ); ?>
+    <div class="form-group">
+        <label for="username"><?php esc_html_e( 'Username', 'wp-user-frontend' ); ?></label>
+        <input type="text" class="form-control" name="username" id="username" value="<?php echo esc_attr( $current_user->user_login ); ?>" disabled="disabled">
     </div>
 
     <div class="form-group">
@@ -26,35 +24,31 @@ ob_start();
 
     <div class="form-group">
         <label for="email"><?php esc_html_e( 'Email Address ', 'wp-user-frontend' ); ?><span class="required">*</span></label>
-        <input type="email" class="input-text" name="email" id="email" value="<?php echo esc_attr( $current_user->user_email ); ?>" required>
+        <input type="email" class="input-text" name="email" id="email" value="<?php echo esc_attr( $current_user->user_email ); ?>">
     </div>
 
-    <fieldset>
-        <legend>Password change</legend>
-        <div class="form-group">
-            <label for="current_password"><?php esc_html_e( 'Current Password', 'wp-user-frontend' ); ?></label>
-            <input type="password" class="input-text" name="current_password" id="current_password" size="16" value="" autocomplete="off" />
-            <span class="wpwg-help"><?php esc_html_e( 'Leave this field empty to keep your password unchanged.', 'wp-user-frontend' ); ?></span>
-        </div>
+    <div class="form-group">
+        <label for="username"><?php esc_html_e( 'Nickname (Display Name)', 'wp-user-frontend' ); ?><span class="required">*</span></label>
+        <input type="text" class="form-control" name="username" id="username" value="<?php echo esc_attr( $current_user->nickname ); ?>" required>
+    </div>
 
-        <div class="form-group">
-            <label for="pass1"><?php esc_html_e( 'New Password', 'wp-user-frontend' ); ?></label>
-            <input type="password" class="input-text" name="pass1" id="pass1" size="16" value="" autocomplete="off" />
-        </div>
+    <div class="form-group">
+        <label for="user_birth"><?php esc_html_e( 'Date of birth', 'wp-user-frontend' ); ?><span class="required">*</span></label>
+        <input type="date" class="form-control" name="user_birth" id="user_birth" value="<?php echo esc_attr( $current_user->user_birth ); ?>">
+    </div>
 
-        <div class="form-group">
-            <label for="pass2"><?php esc_html_e( 'Confirm New Password', 'wp-user-frontend' ); ?></label>
-            <input type="password" class="input-text" name="pass2" id="pass2" size="16" value="" autocomplete="off" />
-        </div>
-    </fieldset>
+    <div class="form-group">
+        <label for="user_phone"><?php esc_html_e( 'User Phone', 'wp-user-frontend' ); ?><span class="required">*</span></label>
+        <input type="text" class="form-control" name="user_phone" id="user_phone" value="<?php echo esc_attr( $current_user->user_phone ); ?>">
+    </div>
+
+    <div class="form-group">
+        <label for="description"><?php esc_html_e( 'Biographical Info:', 'wp-user-frontend' ); ?><span class="required">*</span></label>
+        <textarea name="description" class="textarea mini no-resize" id="description"><?php echo esc_attr( $current_user->description ); ?></textarea>
+    </div>
 
     <?php wp_nonce_field( 'wpwg-account-update-profile' ); ?>
     <input type="hidden" name="action" value="wpwg_account_update_profile">
     <button type="submit" name="update_profile" id="wpwg-account-update-profile" class="btn btn-primary"><?php esc_html_e( 'Update Profile', 'wp-user-frontend' ); ?></button>
 
 </form>
-
-<?php
-    $output = apply_filters( 'wpwg_account_edit_profile_content', ob_get_clean() );
-    echo $output; // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped
-?>

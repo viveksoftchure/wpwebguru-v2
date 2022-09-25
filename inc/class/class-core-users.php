@@ -5,6 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+
 /**
  * Dashboard class
  *
@@ -20,9 +21,9 @@ class WPWG_Core_Users {
         add_action( 'wpwg_account_content_post', array( $this, 'posts_section' ), 10, 2 );
         add_action( 'wpwg_account_content_bookmark', array( $this, 'bookmark_section' ), 10, 2 );
         add_action( 'wpwg_account_content_edit-profile', array( $this, 'edit_profile_section' ), 10, 2 );
+        add_action( 'wpwg_account_content_change-password', array( $this, 'change_password_section' ), 10, 2 );
         add_action( 'wpwg_account_content_edit-profile', array( $this, 'update_profile' ));
 
-        add_action( 'init', array( $this, 'submit_my_account_form' ), 10 );
         add_action( 'init', array( $this, 'submit_change_password_form' ), 10 );
         add_action( 'init',  array( $this, 'remove_filter_lostpassword' ), 10 );
 
@@ -67,9 +68,9 @@ class WPWG_Core_Users {
      * Display the login form
      */
     public function login_form() {
-        if( !is_page_template( 'template-account.php' ) ) :
+        // if( !is_page_template( 'template-account.php' ) ) :
             get_template_part( 'template-parts/account/login-form' ); 
-        endif;
+        // endif;
     } 
 
     /**
@@ -181,6 +182,24 @@ class WPWG_Core_Users {
     public function edit_profile_section( $sections, $current_section ) {
         wpwg_load_template(
             'dashboard/edit-profile.php',
+            [
+                'sections' => $sections,
+                'current_section' => $current_section,
+            ]
+        );
+    }
+
+    /**
+     * Display the change password section
+     *
+     * @param array  $sections
+     * @param string $current_section
+     *
+     * @return void
+     */
+    public function change_password_section( $sections, $current_section ) {
+        wpwg_load_template(
+            'dashboard/change-password.php',
             [
                 'sections' => $sections,
                 'current_section' => $current_section,
@@ -770,9 +789,9 @@ class WPWG_Core_Users {
     }
 
     /**
-     * Update profile via Ajax
+     * Save user account info
      *
-     * @return json
+     * @return void
      */
     public function update_profile() {
         $nonce = isset( $_REQUEST['_wpnonce'] ) ? sanitize_key( wp_unslash( $_REQUEST['_wpnonce'] ) ) : '';
@@ -783,30 +802,40 @@ class WPWG_Core_Users {
 
         global $current_user;
 
-        $first_name       = ! empty( $_POST['first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['first_name'] ) ) : '';
-        $last_name        = ! empty( $_POST['last_name'] ) ? sanitize_text_field( wp_unslash( $_POST['last_name'] ) ) : '';
-        $email            = ! empty( $_POST['email'] ) ? sanitize_text_field( wp_unslash( $_POST['email'] ) ) : '';
-        $current_password = ! empty( $_POST['current_password'] ) ? sanitize_text_field( wp_unslash( $_POST['current_password'] ) ) : '';
-        $pass1            = ! empty( $_POST['pass1'] ) ? sanitize_text_field( wp_unslash( $_POST['pass1'] ) ) : '';
-        $pass2            = ! empty( $_POST['pass2'] ) ? sanitize_text_field( wp_unslash( $_POST['pass2'] ) ) : '';
-        $save_pass        = true;
+        $first_name   = ! empty( $_POST['first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['first_name'] ) ) : '';
+        $last_name    = ! empty( $_POST['last_name'] ) ? sanitize_text_field( wp_unslash( $_POST['last_name'] ) ) : '';
+        $email        = ! empty( $_POST['email'] ) ? sanitize_text_field( wp_unslash( $_POST['email'] ) ) : '';
+        $nickname     = ! empty( $_POST['username'] ) ? sanitize_text_field( wp_unslash( $_POST['username'] ) ) : '';
+        $user_birth   = ! empty( $_POST['user_birth'] ) ? sanitize_text_field( ( $_POST['user_birth'] ) ) : '';
+        $user_phone   = ! empty( $_POST['user_phone'] ) ? sanitize_text_field( ( $_POST['user_phone'] ) ) : '';
+        $description  = ! empty( $_POST['description'] ) ? sanitize_textarea_field( wp_unslash( $_POST['description'] ) ) : '';
+
+        $save_profile = true;
 
         if ( empty( $first_name ) ) {
             alert_push('First Name is a required field.', 'danger');
+            $save_profile = false;
         }
 
         if ( empty( $last_name ) ) {
             alert_push('Last Name is a required field.', 'danger');
+            $save_profile = false;
         }
 
-        if ( empty( $email ) ) {
-            alert_push('Email is a required field.', 'danger');
+        if ( empty( $nickname ) ) {
+            alert_push('Nickname is a required field.', 'danger');
+            $save_profile = false;
         }
 
-        $user             = new stdClass();
-        $user->ID         = $current_user->ID;
-        $user->first_name = $first_name;
-        $user->last_name  = $last_name;
+        $user               = new stdClass();
+        $user->ID           = $current_user->ID;
+        $user->first_name   = $first_name;
+        $user->last_name    = $last_name;
+        $user->nickname     = $nickname;
+        $user->display_name = $nickname;
+        $user->user_birth   = $user_birth;
+        $user->user_phone   = $user_phone;
+        $user->description  = $description;
 
         if ( $email ) {
             $email = sanitize_email( $email );
@@ -819,116 +848,26 @@ class WPWG_Core_Users {
             $user->user_email = $email;
         }
 
-        if ( ! empty( $current_password ) && empty( $pass1 ) && empty( $pass2 ) ) {
-            alert_push('Please fill out all password fields.', 'danger');
-            $save_pass = false;
-        } elseif ( ! empty( $pass1 ) && empty( $current_password ) ) {
-            alert_push('Please enter your current password.', 'danger');
-            $save_pass = false;
-        } elseif ( ! empty( $pass1 ) && empty( $pass2 ) ) {
-            alert_push('Please re-enter your password.', 'danger');
-            $save_pass = false;
-        } elseif ( ( ! empty( $pass1 ) || ! empty( $pass2 ) ) && $pass1 !== $pass2 ) {
-            alert_push('New passwords do not match.', 'danger');
-            $save_pass = false;
-        } elseif ( ! empty( $pass1 ) && ! wp_check_password( $current_password, $current_user->user_pass, $current_user->ID ) ) {
-            alert_push('Your current password is incorrect.', 'danger');
-            $save_pass = false;
-        }
-
-        if ( $pass1 && $save_pass ) {
-            $user->user_pass = $pass1;
-        }
-
         $result = wp_update_user( $user );
 
+        if ($user_birth) 
+        {
+            update_user_meta($current_user->ID, 'user_birth', $user_birth);
+        }
+        if ($user_phone) 
+        {
+            update_user_meta($current_user->ID, 'user_phone', $user_phone);
+        }
+
         if ( is_wp_error( $result ) ) {
-            alert_push('Your current password is incorrect.', 'danger');
-        } 
-        if ( !is_wp_error( $result ) && $save_pass ) {
+            alert_push($result, 'danger');
+        }
+        if ( !is_wp_error( $result ) && $save_profile ) {
             alert_push('Profile updated successfully!');
         }
 
+
         wp_safe_redirect( get_permalink( get_page_by_path( 'account' ) ).'?section=edit-profile' );
-    }
-
-    /**
-     * Save user account info
-     *
-     * @return void
-     */
-    function submit_my_account_form() {
-        global $blog_id, $wpdb;
-        if ( isset( $_POST['my-account-submission'] ) && '1' == $_POST['my-account-submission'] ) {
-            $current_user = wp_get_current_user();
-            $error = array();  
-
-            if ( !empty( $_POST['url'] ) ) {
-                wp_update_user( array ('ID' => $current_user->ID, 'user_url' => esc_attr( $_POST['url'] )));
-            }
-
-            if ( isset( $_POST['email'] ) ){
-
-                if (!is_email(esc_attr( $_POST['email'] ))) {
-                    $error = 'error_1'; // __('The Email you entered is not valid.  please try again.', 'profile');
-                    
-                } else {
-                    if(email_exists(esc_attr( $_POST['email'] ) ) ) {
-                        if(email_exists(esc_attr( $_POST['email'] ) ) != $current_user->ID) {
-                            $error = 'error_2'; // __('This email is already used by another user.  try a different one.', 'profile');  
-                        }
-                        
-                    } else {
-                    $user_id = wp_update_user( 
-                        array (
-                            'ID' => $current_user->ID, 
-                            'user_email' => esc_attr( $_POST['email'] )
-                        )
-                    );
-                    }
-                }
-            }
-
-            if ( isset( $_POST['first-name'] ) ) {
-                update_user_meta( $current_user->ID, 'first_name', esc_attr( $_POST['first-name'] ) );
-            }
-            
-            if ( isset( $_POST['last-name'] ) ){
-                update_user_meta($current_user->ID, 'last_name', esc_attr( $_POST['last-name'] ) );
-            }           
-
-            if ( isset( $_POST['phone'] ) ){
-                update_user_meta($current_user->ID, 'phone', esc_attr( $_POST['phone'] ) );
-            }                               
-
-            
-            
-            if ( isset( $_POST['display_name'] ) ) {
-                wp_update_user(array('ID' => $current_user->ID, 'display_name' => esc_attr( $_POST['display_name'] )));
-                update_user_meta($current_user->ID, 'display_name' , esc_attr( $_POST['display_name'] ));
-            }
-            if ( !empty( $_POST['description'] ) ) {
-                update_user_meta( $current_user->ID, 'description', sanitize_textarea_field( $_POST['description'] ) );
-            }
-
-            if ( isset( $_POST['listeo_core_avatar_id'] ) ) {
-                update_user_meta( $current_user->ID, 'listeo_core_avatar_id', esc_attr( $_POST['listeo_core_avatar_id'] ) );
-            }
-            
-
-
-            if ( count($error) == 0 ) {
-                //action hook for plugins and extra fields saving
-                //do_action('edit_user_profile_update', $current_user->ID);
-                wp_redirect( get_permalink().'?updated=true' ); 
-                exit;
-            } else {
-                wp_redirect( get_permalink().'?user_err_pass='.$error ); 
-                exit;
-                 
-            } 
-        } // end if
-
     }
 
     /**
@@ -938,7 +877,7 @@ class WPWG_Core_Users {
      */
     public function submit_change_password_form(){
         $error = false;
-        if ( isset( $_POST['listeo_core-password-change'] ) && '1' == $_POST['listeo_core-password-change'] ) {
+        if ( isset( $_POST['password-change'] ) && '1' == $_POST['password-change'] ) {
             $current_user = wp_get_current_user();
             if ( !empty($_POST['current_pass']) && !empty($_POST['pass1'] ) && !empty( $_POST['pass2'] ) ) {
 
@@ -963,24 +902,24 @@ class WPWG_Core_Users {
                     } else {
                         $error = false;
                         do_action('edit_user_profile_update', $current_user->ID);
-                        wp_redirect( get_permalink().'?updated_pass=true' ); 
+                        wp_redirect( get_permalink().'?section=change-password&updated_pass=true' ); 
                         exit;
                     }
                 }
             
                 if ( !$error ) {
                     do_action('edit_user_profile_update', $current_user->ID);
-                    wp_redirect( get_permalink().'?updated_pass=true' ); 
+                    wp_redirect( get_permalink().'?section=change-password&updated_pass=true' ); 
                     exit;
                 } else {
-                    wp_redirect( get_permalink().'?err_pass='.$error ); 
+                    wp_redirect( get_permalink().'?section=change-password&err_pass='.$error ); 
                     exit;
                      
                 }
                 
             } else {
                 $error = 'error_6';
-                wp_redirect( get_permalink().'?err_pass='.$error ); 
+                wp_redirect( get_permalink().'?section=change-password&err_pass='.$error ); 
                     exit;
             }
         } // end if
@@ -1046,16 +985,16 @@ class WPWG_Core_Users {
             ));
             echo json_encode( array(
                 'success' => true, 
-                // 'message' => $error_string,
-                'data'=>__('Please fill all required fields.'),
+                'active' => true,
+                'title' => 'Remove from Favorites',
             ) );
             die();
 
         } else {
             echo json_encode( array(
                 'success' => false, 
-                // 'message' => $error_string,
-                'data'=>__('Please fill all required fields.'),
+                'active' => false,
+                'title' => 'Remove from Favorites',
             ) );
             die();
         }
@@ -1067,6 +1006,8 @@ class WPWG_Core_Users {
      * @return json
      */
     public function delete_bookmark() {
+
+    	check_ajax_referer( 'get_favorites', 'security');
 
         if ( !empty($_POST['id']) ) {
             // Nonce is checked, get the POST data and sign user on
@@ -1081,16 +1022,16 @@ class WPWG_Core_Users {
 
             echo json_encode( array(
                 'success' => true, 
-                // 'message' => $error_string,
-                'data'=>__('Please fill all required fields.'),
+                'active' => false,
+                'title' => 'Add to Favorites',
             ) );
             die();
 
         } else {
             echo json_encode( array(
                 'success' => false, 
-                // 'message' => $error_string,
-                'data'=>__('Please fill all required fields.'),
+                'active' => false,
+                'title' => 'Add to Favorites',
             ) );
             die();
         }
