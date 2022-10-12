@@ -57,5 +57,11 @@ function wpwebguru_enqueue_scripts()
 	wp_deregister_script('wp-embed');
 	// wp_deregister_script('jquery');
 
+	if(!is_page('contact-us') )    
+	{		
+		wp_dequeue_script('contact-form-7'); // Dequeue JS Script file.
+		wp_dequeue_style('contact-form-7');  // Dequeue CSS file. 
+	}
+
 }
 add_action('wp_enqueue_scripts', 'wpwebguru_enqueue_scripts');

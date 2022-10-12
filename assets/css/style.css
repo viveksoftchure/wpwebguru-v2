@@ -2641,7 +2641,7 @@ code {
     overflow: hidden;
 }
 [data-nav="sticky"] .site-wrap {
-    margin-top: 88px;
+    margin-top: 40px;
     padding-top: 40px;
 }
 .main {
@@ -3583,7 +3583,9 @@ pre[class*="language-"] {
 }
 .post-card .post-title {
     margin-top: 8px;
-    min-height: 72px;
+    margin-bottom: 0;
+    /* min-height: 72px; */
+    font-size: 20px;
 }
 .post-card .post-title a {
     color: var(--c-text-main);
@@ -3734,7 +3736,6 @@ pre[class*="language-"] {
 
 @media (max-width: 575px)
 {
-
     .featured-post-layout-one .post-card.post-small {
         flex-wrap: nowrap;
         margin-bottom: 2.5rem;
@@ -3811,6 +3812,15 @@ pre[class*="language-"] {
     }
     .post-list .post-info-wrap {
         margin-top: 30px;
+    }
+}
+
+@media (max-width: 767px) {
+    .post-list .post-title {
+        font-size: 24px;
+    }
+    .post-list .post-excerpt {
+        font-size: 16px;
     }
 }
 /*========================================================
@@ -5358,6 +5368,7 @@ pre[class*="language-"] {
 .related-post-card .post-title {
     margin-top: 0;
     margin-bottom: 1rem;
+    font-size: 20px;
 }
 .related-post-card .post-title a {
     color: var(--c-text-main);
@@ -5925,10 +5936,10 @@ input[type="text"].search-input {
 
 @media (max-width: 767px) {
     h1, .h1 {
-        font-size: 2.5rem; //48px
+        font-size: 2rem; //32px
     }
     h2, .h2 {
-        font-size: 2rem; //40px
+        font-size: 1.5rem; //24px
     }
     h3, .h3 {
         font-size: 1.5rem; //32px
@@ -6053,7 +6064,7 @@ ul.page-numbers li .page-numbers.current {
 ===================== Social icons css
 ========================================================*/
 .social-wrapper {
-    display: inline-flex;
+    display: contents;
     list-style: none;
     margin: auto;
     padding: 0;

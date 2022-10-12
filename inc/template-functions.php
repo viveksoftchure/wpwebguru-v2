@@ -506,10 +506,9 @@ function setting_my_first_cookie() {
             return '';
         }
 
-        $user_email = $cookie_parts[ 0 ];
+        $username = $cookie_parts[ 0 ];
         
         if(!is_user_logged_in()){
-            $username = $decrypted;
             $user = get_user_by('login', $username );
 
             clean_user_cache($user->ID);
