@@ -36,6 +36,7 @@ function wpwebguru_enqueue_scripts()
 	{
 		wp_enqueue_script( 'comment-reply' );
 	}
+	
 
 	if (is_home() && is_front_page()) {
 		wp_dequeue_style('post-views-counter-frontend');

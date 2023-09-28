@@ -186,7 +186,7 @@ if (!function_exists('wpwebguru_setup')) :
 		 * If you're building a theme based on WpWebGuru, use a find and replace
 		 * to change 'wpwebguru' to the name of your theme in all the template files.
 		 */
-		load_theme_textdomain('wpwebguru', get_template_directory() . '/languages');
+		load_theme_textdomain('wpwebguru', WWG_ROOT . '/languages');
 
         // Disables the block editor from managing widgets in the Gutenberg plugin.
         add_filter( 'gutenberg_use_widgets_block_editor', '__return_false' );
@@ -196,31 +196,23 @@ if (!function_exists('wpwebguru_setup')) :
 endif;
 add_action('after_setup_theme', 'wpwebguru_setup');
 
-/**
-* WP Custom Excerpt Length Function
-* Place in functions.php
-* This example returns ten words, then [...]
-* Manual excerpts will override this
-*/
-function wp_custom_excerpt_length( $length ) 
-{
-    return 24;
-}
-add_filter( 'excerpt_length', 'wp_custom_excerpt_length', 999 );
 
+add_action("after_switch_theme", "create_bookmark_table");
+function create_bookmark_table() {
+    global $wpdb;
 
-/*
-* Get Excerpt length by count
-*/
-function get_excerpt( $count ) 
-{
-    $permalink = get_permalink($post->ID);
-    $excerpt = get_the_content();
-    $excerpt = strip_tags($excerpt);
-    $excerpt = substr($excerpt, 0, $count);
-    $excerpt = substr($excerpt, 0, strripos($excerpt, " "));
-    $excerpt = $excerpt.'...';
-    return $excerpt;
+    $table_name = $wpdb->prefix . "bookmarks";  //get the database table prefix to create my new table
+
+    $sql = "CREATE TABLE $table_name (
+        id int(11) NOT NULL AUTO_INCREMENT,
+        post_id int(11) NULL DEFAULT NULL,
+        user_id int(11) NULL DEFAULT NULL,
+        date_created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY  (id)
+    );";
+
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+    dbDelta( $sql );
 }
 
 
@@ -252,3 +244,18 @@ function custom_columns_data( $column, $post_id )
     }
 }
 add_action( 'manage_posts_custom_column' , 'custom_columns_data', 10, 2 ); 
+
+
+/*
+* add login and logout to menu
+*/
+add_filter( 'wp_nav_menu_items', 'my_account_loginout_link', 10, 2 );
+function my_account_loginout_link( $items, $args ) {
+    if (is_user_logged_in() && $args->theme_location == 'menu-1') { 
+        $items .= '<li><a class="nav-link" href="'. wp_logout_url(get_permalink()) .'">Logout</a></li>'; 
+    } elseif (!is_user_logged_in() && $args->theme_location == 'menu-1') {
+        $items .= '<li><a class="nav-link site-login" id="site-login" href="#">Login</a></li>';
+    }
+
+    return $items;
+}

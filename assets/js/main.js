@@ -168,6 +168,30 @@
         //return false;
     });
 
+    //Copy to clipboard
+    var loginBox = function() {
+        $('.site-login').on('click', function(event) {
+            event.preventDefault();
+
+            $('.login-container').toggleClass('hidden');
+        });
+    }
+
+    //Copy to clipboard
+    var loginSlide = function() {
+
+        $('#signUp').on('click', function(event) {
+            $('.account-box').addClass('right-panel-active');
+        });
+        $('#signIn').on('click', function(event) {
+            $('.account-box').removeClass('right-panel-active');
+        });
+        $('.close-form').on('click', function(event) {
+            $('.login-container').toggleClass('hidden');
+        });
+
+    }
+
 	/*
 	* add prettyprint on pre
 	*/
@@ -195,6 +219,8 @@
         scrollProgress();
         coptToClipboard();
         scrollToTop();
+        loginBox();
+        loginSlide();
     });
 
 })(jQuery);
@@ -205,9 +231,8 @@
 
 jQuery(document).ready(function()
 {
-    console.log(ajax_posts);
-    var ppp = ajax_posts.js_option.load_more!='' ? parseInt(ajax_posts.js_option.load_more) : parseInt(3); // Post per page
-    var offset = ajax_posts.js_option.posts_per_page!='' ? parseInt(ajax_posts.js_option.posts_per_page) : parseInt(3); // offset
+    var ppp = ajax_options.js_option.load_more!='' ? parseInt(ajax_options.js_option.load_more) : parseInt(3); // Post per page
+    var offset = ajax_options.js_option.posts_per_page!='' ? parseInt(ajax_options.js_option.posts_per_page) : parseInt(3); // offset
     // var offset = parseInt(0); // Post per page
 
     var pageNumber = 1;
@@ -225,7 +250,7 @@ jQuery(document).ready(function()
         jQuery.ajax({
             type: "POST",
             dataType: "html",
-            url: ajax_posts.ajaxurl,
+            url: ajax_options.ajax_url,
             data: str,
             success: function(data)
             {
@@ -270,4 +295,238 @@ jQuery(document).ready(function()
         load_posts(jQuery(this), newOffset, postBox, category, author);
         newOffset = offset+ppp;
     });
-});
+
+    jQuery('form#login').on('submit', function(e){
+        e.preventDefault();
+        var form = jQuery(this);
+        var error;
+        var username = form.find("#user_login");
+        var password = form.find("#user_password");
+        var security = form.find("#login_security");
+
+        form.find(".login_msg").removeClass('error').addClass('notice').show().text(ajax_options.loadingmessage)
+        jQuery.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: ajax_options.ajax_url,
+            data: { 
+                'action': 'ajaxlogin', //calls wp_ajax_nopriv_ajaxlogin
+                'username': username.val(), 
+                'password': password.val(), 
+                'login_security': security.val() 
+            },
+            success: function(data) {
+                if (data.loggedin == true){
+                    form.find(".login_msg").html(data.message).removeClass('error').addClass('success').show();
+                    window.location.reload();
+                } else {
+                    if(data.invalid_username == true){
+                        showerror( username );
+                    } else{
+                        hideerror(username);
+                    }
+                    if(data.incorrect_password == true){
+                        showerror( password );
+                    } else{
+                        hideerror(password);
+                    }
+                    form.find(".login_msg").text(data.message).removeClass('success').addClass('error').show();
+                }
+            },
+            error: function (jqXHR, exception) {
+                
+                var msg = '';
+                if (jqXHR.status === 0) {
+                    msg = 'Not connect.\n Verify Network.';
+                } else if (jqXHR.status == 404) {
+                    msg = 'Requested page not found. [404]';
+                } else if (jqXHR.status == 500) {
+                    msg = 'Internal Server Error [500].';
+                } else if (exception === 'parsererror') {
+                    msg = 'Requested JSON parse failed.';
+                } else if (exception === 'timeout') {
+                    msg = 'Time out error.';
+                } else if (exception === 'abort') {
+                    msg = 'Ajax request aborted.';
+                } else if (jqXHR.responseText === '-1') {
+                    msg = 'Please refresh page and try again.';
+                } else {
+                    msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                }
+                form.find(".login_loader").hide();
+                form.find(".login_msg.fail").hide();
+                form.find(".login_msg.fail").html(msg).show();
+            },
+        });
+    });
+
+
+    /*
+    * AJAX registration
+    */
+    jQuery('form#register').on('submit', function(e){
+        e.preventDefault();
+        var form        = jQuery(this);
+        var username    = form.find("#username");
+        var email       = form.find("#email");
+        var password    = form.find("#password");
+        var register_security = form.find("#register_security");
+
+        form.find(".register_msg").removeClass('error').addClass('notice').show().text(ajax_options.loadingmessage);
+        jQuery.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: ajax_options.ajax_url,
+            data: { 
+                'action': 'ajaxregister', //calls wp_ajax_nopriv_ajaxlogin
+                'username': username.val(), 
+                'email': email.val(), 
+                'password': password.val(), 
+                'register_security': register_security.val(),
+            },
+            success: function(data) {
+                if ( data.registered == true ) {
+                    form.find(".register_msg").text(data.message).removeClass('error').addClass('success').show();
+                    window.location.reload();
+                } else {
+                    form.find(".register_msg").text(data.message).removeClass('success').addClass('error').show();
+                }
+            },
+            error: function (jqXHR, exception) {
+                
+                var msg = '';
+                if (jqXHR.status === 0) {
+                    msg = 'Not connect.\n Verify Network.';
+                } else if (jqXHR.status === 404) {
+                    msg = 'Requested page not found. [404]';
+                } else if (jqXHR.status === 500) {
+                    msg = 'Internal Server Error [500].';
+                } else if (exception === 'parsererror') {
+                    msg = 'Requested JSON parse failed.';
+                } else if (exception === 'timeout') {
+                    msg = 'Time out error.';
+                } else if (exception === 'abort') {
+                    msg = 'Ajax request aborted.';
+                } else if (jqXHR.responseText === '-1') {
+                    msg = 'Please refresh page and try again.';
+                } else {
+                    msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                }
+
+                form.find(".register_msg").text(msg).removeClass('success').addClass('error').show();
+            },
+        });
+    });
+
+    jQuery('.bookmark-btn').on('click', function(e) {
+        e.preventDefault();
+        var el      = jQuery(this)
+        var id      = el.data("post");
+        var action  = el.attr("data-action");
+        var item    = el.attr("data-item") ? el.attr("data-item") : '';
+        var icon    = el.find("i");
+
+        if (item=='') {
+            icon.removeClass('fa-heart').addClass('fa-spinner fa-spin');
+        }
+
+        jQuery.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: ajax_options.ajax_url,
+            data: { 
+                'action': action,
+                'id': id, 
+                'security': ajax_options.get_favorites,
+            },
+            success: function(data) {
+
+                if (item!='') {
+                    el.closest('tr').remove();
+                } else {
+                    if (action=='addbookmark') {
+                        el.addClass('bookmarked');
+                        el.attr('data-action', 'deletebookmark');
+                        el.attr('data-bookmark-active', data.active);
+                        el.attr('title', data.title);
+                        // icon.removeClass('fa-regular').addClass('fa-solid');
+                    } else {
+                        el.removeClass('bookmarked');
+                        el.attr('data-action', 'addbookmark');
+                        el.attr('data-bookmark-active', data.active);
+                        el.attr('title', data.title);
+                        // icon.removeClass('fa-solid').addClass('fa-regular');
+                    }
+                }
+            },
+            complete:function(){
+                icon.removeClass('fa-spinner fa-spin').addClass('fa-heart');
+            },
+            error: function (jqXHR, exception) {
+
+            },
+        });
+    });
+
+    // $('body').on('click','.pf-favorites-link',function(){
+    //     $.maindivfav = $(this);
+
+    //     $.maindivfav.children('i').switchClass('fa-heart','fa-spinner fa-spin');
+
+    //     setTimeout(function(){
+    //         $.ajax({
+    //             type: 'POST',
+    //             dataType: 'json',
+    //             url: ajax_options.ajaxurl,
+    //             data: {
+    //                 'action': 'pfget_favorites',
+    //                 'item': $.maindivfav.attr('data-pf-num'),
+    //                 'active':$.maindivfav.attr('data-pf-active'),
+    //                 'security': ajax_options.pfget_favorites
+    //             },
+    //             success:function(data){
+    //                 var obj = [];
+    //                 $.each(data, function(index, element) {
+    //                     obj[index] = element;
+    //                 });
+
+    //                 if (!$.isEmptyObject(obj)) {
+
+    //                     if (obj.user == 0) {
+    //                         $.pfOpenLogin('open','login');
+    //                     }else{
+    //                         if (obj.active == 'true') {
+    //                             var datatextfv = 'true';
+    //                         }else{
+    //                             var datatextfv = 'false';
+    //                         };
+    //                         $.maindivfav.attr('data-pf-active',datatextfv);
+    //                         $.maindivfav.attr('title',obj.favtext);
+                            
+    //                         if ($.maindivfav.data('pf-item') == true) {
+    //                             $.maindivfav.children('#itempage-pffav-text').html(obj.favtext);
+    //                         };
+    //                     };
+    //                 };
+
+    //             },
+    //             complete:function(){
+    //                 $.maindivfav.children('i').removeClass('fa-spinner fa-spin').addClass('fa-heart');
+    //             }
+    //         });
+    //     },1000);
+    // });
+}); 
+function validateEmail(value){
+    var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+    if (reg.test(value) == false) {
+        return false;
+    }
+    return true;
+}
+function showerror(element) {
+    element.css("border-color","red");
+}
+function hideerror(element) {
+    element.css("border-color","");
+}

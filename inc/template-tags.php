@@ -300,10 +300,21 @@ function theme_all_category_meta($show = true)
  */
 function theme_postmeta()
 {
-	?>
+	global $current_user;
+	$post_id = get_the_id();
+	$is_bookmarked = is_bookmarked($post_id, $current_user->ID);
+    ?>
     <time class="post-date" datetime="2021-05-02"><?php echo get_the_time(get_option('date_format')); ?></time>
     <span class="read-time"><?php echo theme_content_estimated_reading_time(get_the_content()); ?></span>
     <span class="post-meta-comments"><?php comments_popup_link(esc_html__('No Comments', 'blogar'), esc_html__('1 Comment', 'blogar'), esc_html__('% Comments', 'blogar'), 'post-comment', esc_html__('Comments off', 'blogar')); ?></span>
+
+    <div class="add-bookmark">
+    	<?php if($is_bookmarked): ?>
+	    	<a href="#" class="bookmark-btn bookmarked" data-action="deletebookmark" data-post="<?= $post_id ?>" data-bookmark-active="true" title="Remove from Favorites" aria-label="Remove from Favorites"><i class="fa-solid fa-heart"></i></a>
+	    <?php else: ?>
+	    	<a href="#" class="bookmark-btn" data-action="addbookmark" data-post="<?= $post_id ?>" data-bookmark-active="false" title="Add to Favorites" aria-label="Add to Favorites"><i class="fa-solid fa-heart"></i></a>
+		<?php endif; ?>
+	</div>
     <?php
 }
 
@@ -312,6 +323,9 @@ function theme_postmeta()
 */
 function theme_singlepostmeta()
 {
+	global $current_user;
+	$post_id = get_the_id();
+	$is_bookmarked = is_bookmarked($post_id, $current_user->ID);
     ?>
     <div class="author-list flex">
     	<a class="author-image" href="<?= esc_url(get_author_posts_url(get_the_author_meta('ID', get_the_author_meta( 'ID' ) ))) ?>" aria-label="Harini Banerjee">
@@ -321,6 +335,14 @@ function theme_singlepostmeta()
     </div>
     <time class="post-date" datetime="2021-05-02"><?php echo get_the_time(get_option('date_format')); ?></time>
     <span class="read-time"><?php echo theme_content_estimated_reading_time(get_the_content()); ?></span>
+
+    <div class="add-bookmark">
+    	<?php if($is_bookmarked): ?>
+	    	<a href="#" class="bookmark-btn bookmarked" data-action="deletebookmark" data-post="<?= $post_id ?>" data-bookmark-active="true" title="Remove from Favorites" aria-label="Remove from Favorites"><i class="fa-solid fa-heart"></i></a>
+	    <?php else: ?>
+	    	<a href="#" class="bookmark-btn" data-action="addbookmark" data-post="<?= $post_id ?>" data-bookmark-active="false" title="Add to Favorites" aria-label="Add to Favorites"><i class="fa-solid fa-heart"></i></a>
+		<?php endif; ?>
+	</div>
 	<?php 
 }
 
@@ -329,7 +351,10 @@ function theme_singlepostmeta()
  */
 function theme_card_authormeta()
 {
-	?>
+	global $current_user;
+	$post_id = get_the_id();
+	$is_bookmarked = is_bookmarked($post_id, $current_user->ID);
+    ?>
 	<div class="author-avatar-wrap">
         <a href="<?= esc_url(get_author_posts_url(get_the_author_meta('ID', get_the_author_meta( 'ID' ) ))) ?>" class="author-image">
             <?php echo get_avatar(get_the_author_meta('ID'), 50); ?>
@@ -343,6 +368,14 @@ function theme_card_authormeta()
             <time class="post-date" datetime="2021-05-02"><?php echo get_the_time(get_option('date_format')); ?></time>
             <span class="read-time"><?php echo theme_content_estimated_reading_time(get_the_content()); ?></span>
         </div>
+
+	    <div class="add-bookmark">
+	    	<?php if($is_bookmarked): ?>
+		    	<a href="#" class="bookmark-btn bookmarked" data-action="deletebookmark" data-post="<?= $post_id ?>" data-bookmark-active="true" title="Remove from Favorites" aria-label="Remove from Favorites"><i class="fa-solid fa-heart"></i></a>
+		    <?php else: ?>
+		    	<a href="#" class="bookmark-btn" data-action="addbookmark" data-post="<?= $post_id ?>" data-bookmark-active="false" title="Add to Favorites" aria-label="Add to Favorites"><i class="fa-solid fa-heart"></i></a>
+			<?php endif; ?>
+		</div>
     </div>
     <?php
 }
