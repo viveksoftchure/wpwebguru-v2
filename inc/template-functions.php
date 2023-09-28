@@ -183,7 +183,8 @@ if ( ! function_exists('post_sharing_icon_links2') )
         $facebook_url = 'https://www.facebook.com/sharer/sharer.php?u='. get_the_permalink();
         $twitter_url = 'https://twitter.com/share?'. esc_url(get_permalink()) .'&amp;text='. get_the_title();
         $pinterest_url = 'http://pinterest.com/pin/create/button/?url='. esc_url(get_permalink()) .'&amp;media='.$image[0].'&amp;description='. get_the_excerpt();
-        $whatsapp_url = 'whatsapp://send?text='. esc_url(get_permalink());$twitter_url = 'https://twitter.com/share?'. esc_url(get_permalink()) .'&amp;text='. get_the_title();
+        $whatsapp_url = 'whatsapp://send?text='. esc_url(get_permalink());
+		$twitter_url = 'https://twitter.com/share?'. esc_url(get_permalink()) .'&amp;text='. get_the_title();
         $linkedin_url = 'http://www.linkedin.com/shareArticle?url='. esc_url(get_permalink()) .'&amp;title='. get_the_title();
         $mail_url = 'mailto:?subject='. get_the_title().'&amp;body='. esc_url(get_permalink());
         $instagram_url = '';
@@ -191,48 +192,48 @@ if ( ! function_exists('post_sharing_icon_links2') )
         $youtube_url = '';
         ?>
 
-        <ul class="social-wrapper">
-            <li class="icon social-link facebook" data-link="<?= esc_url( $facebook_url ) ?>" data-target="_blank">
+        <div class="social-wrapper">
+            <a class="icon social-link facebook" href="<?= esc_url( $facebook_url ) ?>" target="_blank">
                 <span class="tooltip">Facebook</span>
                 <span><i class="fab fa-facebook-f"></i></span>
-            </li>
-            <li class="icon social-link twitter" data-link="<?= esc_url( $twitter_url ) ?>" data-target="_blank">
+            </a>
+            <a class="icon social-link twitter" href="<?= esc_url( $twitter_url ) ?>" target="_blank">
                 <span class="tooltip">Twitter</span>
                 <span><i class="fab fa-twitter"></i></span>
-            </li>
-            <li class="icon social-link pinterest" data-link="<?= esc_url( $pinterest_url ) ?>" data-target="_blank">
+            </a>
+<!--             <a class="icon social-link pinterest" href="<?php //esc_url( $pinterest_url ) ?>" target="_blank">
                 <span class="tooltip">Pinterest</span>
                 <span><i class="fa-brands fa-pinterest"></i></span>
-            </li>
-            <li class="icon social-link whatsapp" data-link="<?= esc_url( $whatsapp_url ) ?>" data-target="_blank">
+            </a> -->
+            <a class="icon social-link whatsapp" href="<?= $whatsapp_url ?>"  data-action="share/whatsapp/share" target="_blank">
                 <span class="tooltip">Whatsapp</span>
                 <span><i class="fa-brands fa-whatsapp"></i></span>
-            </li>
-            <li class="icon social-link linkedin" data-link="<?= esc_url( $linkedin_url ) ?>" data-target="_blank">
+            </a>
+            <a class="icon social-link linkedin" hrefk="<?= esc_url( $linkedin_url ) ?>" target="_blank">
                 <span class="tooltip">Linkdin</span>
                 <span><i class="fa-brands fa-linkedin-in"></i></span>
-            </li>
-            <li class="icon social-link email" data-link="<?= esc_url( $mail_url ) ?>" data-target="_blank">
+            </a>
+            <a class="icon social-link email" href="<?= esc_url( $mail_url ) ?>" target="_blank">
                 <span class="tooltip">Email</span>
                 <span><i class="fa-regular fa-envelope"></i></span>
-            </li>
-            <li class="icon copy js-copy-link" data-clipboard-text="<?= esc_url(get_permalink()) ?>">
+            </a>
+            <a class="icon copy js-copy-link" data-clipboard-text="<?= esc_url(get_permalink()) ?>">
                 <span class="tooltip">Copy</span>
                 <span><i class="fa-solid fa-copy"></i></span>
-            </li>
-            <!-- <li class="icon instagram">
+            </a>
+            <!-- <a class="icon instagram" href="">
                 <span class="tooltip">Instagram</span>
                 <span><i class="fab fa-instagram"></i></span>
-            </li>
-            <li class="icon github">
+            </a>
+            <a class="icon github" href="">
                 <span class="tooltip">Github</span>
                 <span><i class="fab fa-github"></i></span>
-            </li>
-            <li class="icon youtube">
+            </a>
+            <a class="icon youtube" href="">
                 <span class="tooltip">Youtube</span>
                 <span><i class="fab fa-youtube"></i></span>
-            </li> -->
-        </ul>
+            </a> -->
+        </div>
         <div class="js-notification-copy-link text-center">
             <span>The link has been Copied to clipboard!</span>
         </div>
@@ -252,3 +253,30 @@ function theme_get_post_navigation()
 }
 
 require get_template_directory() . '/inc/comment-form.php';
+
+
+
+/**
+* Social sharing icons
+*/
+if ( ! function_exists('convert_image_to_base64') ) 
+{
+    function convert_image_to_base64($img_url) {
+
+        // Read the image file into a variable
+        $imageData = file_get_contents($img_url);
+
+        // Encode the image data as base64
+        $base64Image = base64_encode($imageData);
+
+        // Create a data URI with the appropriate MIME type (e.g., image/jpeg)
+        // $mime = mime_content_type($img_url);
+        // $dataUri = 'data:' . $mime . ';base64,' . $base64Image;
+        $dataUri = 'data:image/jpeg;base64,' . $base64Image;
+
+        // echo '<img src="' . $dataUri . '" alt="Base64 Image">';
+
+        // Output the data URI
+        return $dataUri;
+    }
+}

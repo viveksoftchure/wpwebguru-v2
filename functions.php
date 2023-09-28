@@ -320,25 +320,27 @@ add_action('wp_ajax_nopriv_more_post_ajax', 'more_post_ajax');
 add_action('wp_ajax_more_post_ajax', 'more_post_ajax');
 function more_post_ajax()
 {
-    $ppp = isset($_POST["ppp"])&&!empty($_POST["ppp"]) ? $_POST["ppp"] : 3;
+    // echo '<pre>'; print_r($_POST); echo '</pre>'; exit;
+    
+    // $ppp = isset($_POST["ppp"])&&!empty($_POST["ppp"]) ? $_POST["ppp"] : 3;
     $offset = isset($_POST["offset"])&&!empty($_POST["offset"]) ? $_POST["offset"] : 3;
     $page = isset($_POST['pageNumber'])&&!empty($_POST['pageNumber']) ? $_POST['pageNumber'] : 0;
-    $category = isset($_POST['category'])&&!empty($_POST['category']) ? $_POST['category'] : '';
-    $author = isset($_POST['author'])&&!empty($_POST['author']) ? $_POST['author'] : '';
+    // $category = isset($_POST['category'])&&!empty($_POST['category']) ? $_POST['category'] : '';
+    // $author = isset($_POST['author'])&&!empty($_POST['author']) ? $_POST['author'] : '';
     
     $args = array(
         'post_type' => 'post',
-        'posts_per_page' => $ppp,
+        'posts_per_page' => 3,
         'paged'    => $page,
         'offset' => $offset,
-        'author' => $author,
-        'category_name' => $category,
+        // 'author' => $author,
+        // 'category_name' => $category,
         'post_status' => 'publish',
     );
 
     $loop = new WP_Query($args);
 
-    $path = get_template_directory() .'/template-parts/post/content.php';
+    $path = get_template_directory() .'/template-parts/post-card/post-card-2.php';
 
     if ($loop -> have_posts()) : 
 

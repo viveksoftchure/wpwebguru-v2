@@ -168,13 +168,20 @@
         //return false;
     });
 
-   
-    $(".social-link").on("click", function(e) {
-        var url = $(this).data('link');
-        var target = $(this).data('target');
+	/*
+	* add prettyprint on pre
+	*/
+	jQuery(".prettyprint").each(function(){
+		jQuery(this).html( PR.prettyPrintOne(jQuery(this).html()) );
+	});
 
-        window.open(url, target);
-    });
+   
+    // $(".social-link").on("click", function(e) {
+    //     var url = $(this).data('link');
+    //     var target = $(this).data('target');
+
+    //     window.open(url, target);
+    // });
 
     //Load functions
     $(document).ready(function() 
@@ -208,12 +215,13 @@ jQuery(document).ready(function()
     var canBeLoaded = true, // this param allows to initiate the AJAX call only if necessary
         bottomOffset = 2000; // the distance (in px) from the page bottom when you want to load more posts
 
-    function load_posts(newOffset, postBox, category, author)
+    function load_posts(button, newOffset, postBox, category, author)
     {
         pageNumber++;
         // console.log(offset);
         var str = '&author='+author+'&category='+category+'&offset='+newOffset+'&pageNumber='+pageNumber+'&ppp='+ppp+'&action=more_post_ajax';
         
+        button.addClass('loading');
         jQuery.ajax({
             type: "POST",
             dataType: "html",
@@ -234,6 +242,7 @@ jQuery(document).ready(function()
                     jQuery("#more_posts").attr("disabled",true);
                     jQuery('#more_posts').hide();
                 }
+                button.removeClass('loading');
             },
             beforeSend: function() 
             {
@@ -252,16 +261,13 @@ jQuery(document).ready(function()
         return false;
     }
 
-    jQuery("#more_posts").on("click",function()
-    { 
+    jQuery("#more_posts").on("click",function() { 
         var newOffset = offset;
         var postBox = jQuery(this).data('post-box');
         var category = jQuery(this).data('category');
         var author = jQuery(this).data('author');
-
-        jQuery(this).addClass('loading');
-        load_posts(newOffset, postBox, category, author);
+        
+        load_posts(jQuery(this), newOffset, postBox, category, author);
         newOffset = offset+ppp;
-        jQuery(this).removeClass('loading');
     });
 });
