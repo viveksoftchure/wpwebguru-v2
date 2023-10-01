@@ -184,7 +184,7 @@ if ( ! function_exists('post_sharing_icon_links2') )
         $twitter_url = 'https://twitter.com/share?'. esc_url(get_permalink()) .'&amp;text='. get_the_title();
         $pinterest_url = 'http://pinterest.com/pin/create/button/?url='. esc_url(get_permalink()) .'&amp;media='.$image[0].'&amp;description='. get_the_excerpt();
         $whatsapp_url = 'whatsapp://send?text='. esc_url(get_permalink());
-		$twitter_url = 'https://twitter.com/share?'. esc_url(get_permalink()) .'&amp;text='. get_the_title();
+        $twitter_url = 'https://twitter.com/share?'. esc_url(get_permalink()) .'&amp;text='. get_the_title();
         $linkedin_url = 'http://www.linkedin.com/shareArticle?url='. esc_url(get_permalink()) .'&amp;title='. get_the_title();
         $mail_url = 'mailto:?subject='. get_the_title().'&amp;body='. esc_url(get_permalink());
         $instagram_url = '';
@@ -254,6 +254,216 @@ function theme_get_post_navigation()
 
 require get_template_directory() . '/inc/comment-form.php';
 
+
+/**
+ * Include a template file
+ *
+ * @param string $file file name or path to file
+ */
+function wpwg_load_template( $file, $args = [] ) {
+    if ( $args && is_array( $args ) ) {
+        extract( $args );
+    }
+
+    $template_dir = WWG_ROOT . '/template-parts/';
+
+    include $template_dir . $file;
+}
+
+/**
+ * Get account dashboard's sections
+ *
+ * @return array
+ */
+function wpwg_get_account_sections() {
+    $sections = [
+        'dashboard'         => ['label' => __( 'Dashboard' ), 'icon' => 'fa-solid fa-house'],
+        'bookmark'          => ['label' => __( 'Bookmarks' ), 'icon' => 'fa-solid fa-bookmark'],
+        'post'              => ['label' => __( 'Posts' ), 'icon' => 'fa-solid fa-file'],
+        'edit-profile'      => ['label' => __( 'Edit Profile' ), 'icon' => 'fa-solid fa-user-pen'],
+        'change-password'   => ['label' => __( 'Change Password' ), 'icon' => 'fa-solid fa-key'],
+    ];
+
+    return apply_filters( 'wpwg_account_sections', $sections );
+}
+
+
+add_action('template_redirect', function () {
+    ob_start();
+});
+
+/**
+ * Save alert message to the current user session
+ *
+ * @param string $message
+ * @param string $type
+ * @return mixed
+ */
+function alert_push($message, $type = 'success') {
+    $_SESSION['alert'][$type] = $message;
+}
+
+/**
+ * Retrieve alert messages from current user session
+ *
+ * @return array
+ */
+function alert_shift() {
+    $result = [];
+    $types = ['success', 'info', 'warning', 'danger'];
+
+    foreach($types as $k => $type) {
+        if (isset($_SESSION['alert'][$type])) {
+            $result[$k] = $_SESSION['alert'][$type];
+            unset($_SESSION['alert'][$type]);
+        } else {
+            $result[$k] = '';
+        }
+    }
+    return array_combine($types, $result);
+}
+
+/**
+ * start and end session on login and logout
+ *
+ * @return array
+ */
+// add_action('init', 'myStartSession', 1);
+// add_action('wp_logout', 'myEndSession');
+// add_action('wp_login', 'myEndSession');
+
+function myStartSession() {
+    if(!session_id()) {
+        session_start();
+    }
+}
+
+function myEndSession() {
+    session_destroy();
+}
+
+/**
+* WP Custom Excerpt Length Function
+* Place in functions.php
+* This example returns ten words, then [...]
+* Manual excerpts will override this
+*/
+add_filter( 'excerpt_length', 'wp_custom_excerpt_length', 999 );
+function wp_custom_excerpt_length( $length ) 
+{
+    return 24;
+}
+
+/*
+* Get Excerpt length by count
+*/
+function get_excerpt( $count ) 
+{
+    $permalink = get_permalink($post->ID);
+    $excerpt = get_the_content();
+    $excerpt = strip_tags($excerpt);
+    $excerpt = substr($excerpt, 0, $count);
+    $excerpt = substr($excerpt, 0, strripos($excerpt, " "));
+    $excerpt = $excerpt.'...';
+    return $excerpt;
+}
+
+/**
+ * Retrieve user address
+ *
+ * @return mixed
+ */
+function wpwg_get_user_address( $user_id = 0 ) {
+    $user_id        = $user_id ? $user_id : get_current_user_id();
+    $address_fields = [];
+
+    if ( metadata_exists( 'user', $user_id, 'wpwg_address_fields' ) ) {
+        $address_fields = get_user_meta( $user_id, 'wpwg_address_fields', true );
+    } else {
+        $address_fields = array_fill_keys( [ 'add_line_1', 'add_line_2', 'city', 'state', 'zip_code', 'country' ], '' );
+
+        if ( class_exists( 'WooCommerce' ) ) {
+            $customer_id = get_current_user_id();
+            $woo_address = [];
+            $customer    = new WC_Customer( $customer_id );
+
+            $woo_address = $customer->get_billing();
+            unset( $woo_address['email'], $woo_address['tel'], $woo_address['phone'], $woo_address['company'] );
+
+            $countries_obj        = new WC_Countries();
+            $countries_array      = $countries_obj->get_countries();
+            $country_states_array = $countries_obj->get_states();
+            $woo_address['state'] = isset( $country_states_array[ $woo_address['country'] ][ $woo_address['state'] ] ) ? $country_states_array[ $woo_address['country'] ][ $woo_address['state'] ] : '';
+            $woo_address['state'] = strtolower( str_replace( ' ', '', $woo_address['state'] ) );
+
+            if ( ! empty( $woo_address ) ) {
+                $address_fields = [
+                    'add_line_1'    => $woo_address['address_1'],
+                    'add_line_2'    => $woo_address['address_2'],
+                    'city'          => $woo_address['city'],
+                    'state'         => $woo_address['state'],
+                    'zip_code'      => $woo_address['postcode'],
+                    'country'       => $woo_address['country'],
+                ];
+            }
+        }
+    }
+
+    return $address_fields;
+}
+
+/**
+ * Show/hide admin bar to the permitted user level
+ *
+ * @return void
+ */
+add_filter( 'show_admin_bar', 'show_admin_bar_user' );
+function show_admin_bar_user( $val ) {
+    if ( ! is_user_logged_in() ) {
+        return false;
+    }
+
+    $roles        = [ 'administrator', 'editor', 'author', 'contributor' ];
+    $roles        = $roles && is_string( $roles ) ? [ strtolower( $roles ) ] : $roles;
+    $current_user = wp_get_current_user();
+
+    if ( ! empty( $current_user->roles ) && ! empty( $current_user->roles[0] ) ) {
+        if ( ! in_array( $current_user->roles[0], $roles ) ) {
+            return false;
+        }
+    }
+
+    return $val;
+}
+
+/**
+ * Check if post is bookmarked or not
+ *
+ * @return bool
+ */
+function is_bookmarked($post_id, $user_id) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'bookmarks';
+
+    $data = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE `post_id`= $post_id AND `user_id`= $user_id"), ARRAY_A); 
+          
+    return $data ? True : False;
+}
+
+/**
+ * get user bookmark list
+ *
+ * @return array
+ */
+function user_bookmarkes() {
+    global $current_user;
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'bookmarks';
+
+    $data = $wpdb->get_results($wpdb->prepare("SELECT * FROM $table_name WHERE `user_id`= $current_user->ID"), ARRAY_A); 
+          
+    return $data;
+}
 
 
 /**

@@ -12,8 +12,6 @@
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<?php wp_head(); ?>
-	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8344711357375505"
-     crossorigin="anonymous"></script>
 </head>
 <?php
 if(get_theme_mod('sticky_header', true )) :
@@ -33,9 +31,9 @@ endif;
 	                	$logo_url = wp_get_attachment_image_src( $logo , 'full' );
 	                	if ( has_custom_logo() )
 	                	{
-	                		echo '<img src="' . esc_url( $logo_url[0] ) . '" alt="' . get_bloginfo( 'name' ) . '">';
+	                		echo '<img src="' . esc_url( $logo_url[0] ) . '" alt="' . get_bloginfo( 'name' ) . '" width="198" height="40">';
 	                	} else {
-	                		echo '<img src="'.get_template_directory_uri().'/assets/images/logo-blue.svg" >';
+	                		echo '<img src="'.get_template_directory_uri().'/assets/images/logo-blue.svg" width="198" height="40">';
 	                	}
 	                	?>
 		        	</a>

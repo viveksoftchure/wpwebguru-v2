@@ -87,6 +87,17 @@ require WWG_ROOT . '/inc/dynamic-css.php';
 require WWG_ROOT . '/inc/class/class-core-users.php';
 
 
+// global classes/functions
+require WWG_ROOT . '/lib/minify/vendor/autoload.php';
+
+
+// require_once WWG_ROOT . '/lib/minify/vendor/matthiasmullie/minify/src/Minify.php';
+// require_once WWG_ROOT . '/lib/minify/vendor/matthiasmullie/minify/src/CSS.php';
+// require_once WWG_ROOT . '/lib/minify/vendor/matthiasmullie/minify/src/JS.php';
+
+// use MatthiasMullie\Minify;
+
+
 
 
 
@@ -330,6 +341,7 @@ function more_post_ajax()
     // $ppp = isset($_POST["ppp"])&&!empty($_POST["ppp"]) ? $_POST["ppp"] : 3;
     $offset = isset($_POST["offset"])&&!empty($_POST["offset"]) ? $_POST["offset"] : 3;
     $page = isset($_POST['pageNumber'])&&!empty($_POST['pageNumber']) ? $_POST['pageNumber'] : 0;
+    $counts = isset($_POST['counts'])&&!empty($_POST['counts']) ? $_POST['counts'] : 9;
     // $category = isset($_POST['category'])&&!empty($_POST['category']) ? $_POST['category'] : '';
     // $author = isset($_POST['author'])&&!empty($_POST['author']) ? $_POST['author'] : '';
     
@@ -345,15 +357,239 @@ function more_post_ajax()
 
     $loop = new WP_Query($args);
 
-    $path = get_template_directory() .'/template-parts/post/content.php';
+    $found_posts = $loop->found_posts;
 
-    if ($loop -> have_posts()) : 
+    // $path = WWG_ROOT .'/template-parts/post-card/post-card-2.php';
 
-        while ($loop -> have_posts()) : $loop -> the_post();
-            include($path);
+    $html = '';
+    if ($loop->have_posts() && $counts <= $found_posts) : 
+
+        while ($loop->have_posts()) : $loop->the_post();
+            $list_class = 'post-card post-small '.$item_class;
+            $featured_img_url = get_the_post_thumbnail_url($post->ID, 'full');
+            $base64_image = convert_image_to_base64($featured_img_url);
+            $class = get_post_class($list_class);
+            $categories = get_the_category();
+
+            $html.= '<article id="post-'.get_the_ID().'" class="'.$list_class.'">';
+                $html.= '<a href="'.get_the_permalink().'" class="post-img-wrap">';
+                    $html.= '<img src="'.$base64_image.'" class="" alt="'.get_the_title().'" loading="lazy">';
+                $html.= '</a>';
+                $html.= '<div class="post-info-wrap">';
+                    $html.= '<div class="tag-wrap">';
+                        if (!empty($categories)) {
+                            foreach( $categories as $category ) { 
+                                $t_id = $category->term_id;
+                                $cat_meta = get_option("category_$t_id");
+
+                                $html.= '<a class="" href="'. esc_url( get_category_link( $category->term_id ) ).'" title="" style="background: '.$cat_meta['color'].';">';
+                                    $html.= ($category->name);
+                                $html.= '</a>';
+                            }
+                        }
+                        // $html.= theme_post_category_meta();
+                    $html.= '</div>';
+                    $html.= '<h2 class="h5 post-title"><a href="'.get_the_permalink().'" title="'.get_the_title().'">'.get_the_title().'</a></h2>';
+                $html.= '</div>';
+            $html.= '</article>';
         endwhile;
 
+    else:
+
+        $html.= 'No More Posts!';
+
     endif;
+
     wp_reset_postdata();
+
+    echo json_encode(['html' => $html, 'found_posts' => $found_posts]);
     die();
+}
+
+
+function custom_minify_assets($content) {
+
+    echo '<pre>'; print_r($content); echo '</pre>';
+    
+    $file_extension = pathinfo($_SERVER['REQUEST_URI'], PATHINFO_EXTENSION);
+    $minify = new Minify\JS();
+
+    if ($file_extension === 'css') {
+        // Minify CSS
+        $minify = new Minify\CSS();
+        $minify->add($content);
+    } elseif ($file_extension === 'js') {
+        // Minify JavaScript
+        $minify->add($content);
+    }
+
+    return $minify->minify();
+}
+
+function custom_minify_init() {
+    // echo '<pre>'; print_r($_GET); echo '</pre>';
+    
+    if (isset($_GET['custom_minify'])) {
+        ob_start('custom_minify_assets');
+    }
+}
+
+// add_action('init', 'custom_minify_init');
+
+// function custom_minify_init() {
+//     $sourcePath = WWG_ROOT . '/assets/css/style.css';
+//     $minifier = new Minify\CSS($sourcePath);
+
+//     // we can even add another file, they'll then be
+//     // joined in 1 output file
+//     // $sourcePath2 = '/path/to/second/source/css/file.css';
+//     // $minifier->add($sourcePath2);
+
+//     // or we can just add plain CSS
+//     // $css = 'body { color: #000000; }';
+//     // $minifier->add($css);
+
+//     // save minified file to disk
+//     $minifiedPath = WWG_ROOT . '/assets/css/style.min.css';
+//     $minifier->minify($minifiedPath);
+
+//     // or just output the content
+//     // echo $minifier->minify();
+// }
+
+
+
+
+
+function minify_html($content) {
+    $search = array(
+        '/\>[^\S ]+/s',  // Remove whitespaces after tags
+        '/[^\S ]+\</s',  // Remove whitespaces before tags
+        '/(\s)+/s'       // Shorten multiple whitespace sequences
+    );
+
+    $replace = array(
+        '>',
+        '<',
+        '\\1'
+    );
+
+    return preg_replace($search, $replace, $content);
+}
+
+function activate_minify_html() {
+    ob_start('minify_html');
+}
+
+function deactivate_minify_html() {
+    ob_end_flush();
+}
+
+// add_action('get_header', 'activate_minify_html');
+// add_action('wp_footer', 'deactivate_minify_html');
+
+
+
+// function teckel_init_minify_html() {
+//     ob_start('teckel_minify_html_output');
+// }
+// if ( !is_admin() ) {
+//     add_action( 'init', 'teckel_init_minify_html', 1 );
+// }
+
+function teckel_minify_html_output($buffer) {
+    if ( substr( ltrim( $buffer ), 0, 5) == '<?xml' ) {
+        return ( $buffer );
+    }
+
+    $minify_javascript = 'yes';
+    $minify_html_comments = 'yes';
+    $minify_html_utf8 = 'yes';
+
+    if ( $minify_html_utf8 == 'yes' && mb_detect_encoding($buffer, 'UTF-8', true) ) {
+        $mod = '/u';
+    } else {
+        $mod = '/s';
+    }
+
+    $buffer = str_replace(array (chr(13) . chr(10), chr(9)), array (chr(10), ''), $buffer);
+    $buffer = str_ireplace(array ('<script', '/script>', '<pre', '/pre>', '<textarea', '/textarea>', '<style', '/style>'), array ('M1N1FY-ST4RT<script', '/script>M1N1FY-3ND', 'M1N1FY-ST4RT<pre', '/pre>M1N1FY-3ND', 'M1N1FY-ST4RT<textarea', '/textarea>M1N1FY-3ND', 'M1N1FY-ST4RT<style', '/style>M1N1FY-3ND'), $buffer);
+    $split = explode('M1N1FY-3ND', $buffer);
+    $buffer = ''; 
+
+    for ( $i=0; $i<count($split); $i++ ) {
+        $ii = strpos($split[$i], 'M1N1FY-ST4RT');
+        if ( $ii !== false ) {
+            $process = substr($split[$i], 0, $ii);
+            $asis = substr($split[$i], $ii + 12);
+            if ( substr($asis, 0, 7) == '<script' ) {
+                $split2 = explode(chr(10), $asis);
+                $asis = '';
+
+                for ( $iii = 0; $iii < count($split2); $iii ++ ) {
+                    if ( $split2[$iii] ) {
+                        $asis .= trim($split2[$iii]) . chr(10);
+                    }
+
+                    if ( $minify_javascript != 'no' ) {
+                        $last = substr(trim($split2[$iii]), -1);
+                        if ( strpos($split2[$iii], '//') !== false && ($last == ';' || $last == '>' || $last == '{' || $last == '}' || $last == ',') ) {
+                            $asis .= chr(10);
+                        }
+                    }
+                }
+
+                if ( $asis ) {
+                    $asis = substr($asis, 0, -1);
+                }
+
+                if ( $minify_html_comments != 'no' ) {
+                    $asis = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $asis);
+                }
+                
+                if ( $minify_javascript != 'no' ) {
+                    $asis = str_replace(array (';' . chr(10), '>' . chr(10), '{' . chr(10), '}' . chr(10), ',' . chr(10)), array(';', '>', '{', '}', ','), $asis);
+                }
+            } else if ( substr($asis, 0, 6) == '<style' ) {
+                $asis = preg_replace(array ('/\>[^\S ]+' . $mod, '/[^\S ]+\<' . $mod, '/(\s)+' . $mod), array('>', '<', '\\1'), $asis);
+
+                if ( $minify_html_comments != 'no' ) {
+                    $asis = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $asis);
+                }
+
+                $asis = str_replace(array (chr(10), ' {', '{ ', ' }', '} ', '( ', ' )', ' :', ': ', ' ;', '; ', ' ,', ', ', ';}'), array('', '{', '{', '}', '}', '(', ')', ':', ':', ';', ';', ',', ',', '}'), $asis);
+            }
+        } else {
+            $process = $split[$i];
+            $asis = '';
+        }
+
+        $process = preg_replace(array ('/\>[^\S ]+' . $mod, '/[^\S ]+\<' . $mod, '/(\s)+' . $mod), array('>', '<', '\\1'), $process);
+
+        if ( $minify_html_comments != 'no' ) {
+            $process = preg_replace('/<!--(?!\s*(?:\[if [^\]]+]|<!|>))(?:(?!-->).)*-->' . $mod, '', $process);
+        }
+
+        $buffer .= $process.$asis;
+    }
+
+    $buffer = str_replace(array (chr(10) . '<script', chr(10) . '<style', '*/' . chr(10), 'M1N1FY-ST4RT'), array('<script', '<style', '*/', ''), $buffer);
+
+    $minify_html_xhtml = 'yes';
+    $minify_html_relative = 'yes';
+    $minify_html_scheme = 'yes';
+
+    if ( $minify_html_xhtml == 'yes' && strtolower( substr( ltrim( $buffer ), 0, 15 ) ) == '<!doctype html>' ) {
+        $buffer = str_replace( ' />', '>', $buffer );
+    }
+
+    if ( $minify_html_relative == 'yes' ) {
+        $buffer = str_replace( array ( 'https://' . $_SERVER['HTTP_HOST'] . '/', 'http://' . $_SERVER['HTTP_HOST'] . '/', '//' . $_SERVER['HTTP_HOST'] . '/' ), array( '/', '/', '/' ), $buffer );
+    }
+    
+    if ( $minify_html_scheme == 'yes' ) {
+        $buffer = str_replace( array( 'http://', 'https://' ), '//', $buffer );
+    }
+    
+    return ( $buffer );
 }

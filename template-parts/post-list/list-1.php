@@ -15,8 +15,8 @@ $base64_image = convert_image_to_base64($featured_img_url);
 
 <!-- Start Post List  -->
 <article id="post-<?php the_ID(); ?>" <?php post_class($article_class); ?>>
-    <a href="<?php the_permalink(); ?>" class="post-img-wrap">
-        <img src="<?= $base64_image ?>" class="" alt="<?= the_title(); ?>">
+    <a href="<?php the_permalink(); ?>" class="post-img-wrap skeleton">
+        <img data-src="<?= $base64_image ?>" src="#" class="" alt="<?= the_title(); ?>">
         <?php //the_post_thumbnail() ?>
     </a>
     <div class="post-info-wrap">

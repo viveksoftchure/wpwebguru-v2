@@ -250,32 +250,48 @@ $subscribe = false;
 
             document.addEventListener("DOMContentLoaded", function () {
                 var button = document.getElementById("more_posts");
+                var postList = document.getElementById("default-posts");
+
                 var ppp = 3;
                 var offset = 9;
                 var newOffset = offset;
+                var counts = offset;
                 var pageNumber = 1;
-                var postList = document.getElementById("default-posts");
 
                 button.addEventListener("click", function () {
+                    counts = counts+ppp;
+                    button.disabled = true;
+                    button.classList.add("disabled-button", "loading");
+
                     var xhr = new XMLHttpRequest();
                     xhr.open("POST", '<?= admin_url( 'admin-ajax.php' ) ?>', true);
                     // xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    // xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
 
                     xhr.onload = function () {
                         if (xhr.status === 200) {
-                            // var response = JSON.parse(xhr.responseText);
-                            var response = (xhr.responseText);
+                            var response = JSON.parse(xhr.responseText);
+                            // var response = (xhr.responseText);
                             // postList.innerHTML = ""; // Clear previous list
 
                             // console.log(response);
 
-                            postList.insertAdjacentHTML('beforeend', response);
+                            postList.insertAdjacentHTML('beforeend', response.html);
+
+                            if (counts>response.found_posts) {
+                                button.classList.remove("loading");
+                                button.innerHTML = "No More Posts!";
+                            } else {
+                                button.disabled = false;
+                                button.classList.remove("disabled-button", "loading");
+                            }
                         }
                     };
 
                     // Create an object with multiple data parameters
                     var data = {
                         action: "more_post_ajax", // Action name
+                        counts: counts, // Additional parameter 2
                         offset: newOffset, // Additional parameter 2
                         pageNumber: pageNumber, // Additional parameter 2
                     };
@@ -293,6 +309,56 @@ $subscribe = false;
                 });
             });
 
+            document.addEventListener('DOMContentLoaded', function () {
+                let lazyImages = document.querySelectorAll('img[data-src]');
+
+                const lazyLoad = function () {
+                    lazyImages.forEach(function (img) {
+                        if (img.getBoundingClientRect().top <= window.innerHeight && img.getBoundingClientRect().bottom >= 0) {
+                            img.src = img.getAttribute('data-src');
+                            // img.removeAttribute('data-src');
+                        }
+                    });
+                };
+
+                // Attach the lazyLoad function to the scroll event and initial load
+                window.addEventListener('scroll', lazyLoad);
+                window.addEventListener('load', lazyLoad);
+            });
+
+
+            // window.addEventListener('DOMContentLoaded', (event) => {
+            //     //get all images
+            //     var allImages = [].slice.call(document.querySelectorAll("img"));
+
+            //     //check if the intersection observer is available (not all browsers do)
+            //     if ("IntersectionObserver" in window) {
+            //         let imageObserver = new IntersectionObserver(function(i, observer) {
+            //             i.forEach(function(img) {
+            //                 if (img.isIntersecting) {
+            //                     let lazyElement = img.target;
+
+            //                     //set the src
+            //                     lazyElement.src = lazyElement.dataset.src;
+
+            //                     //unobserve the element
+            //                     observer.unobserve(lazyElement);
+
+            //                     //remove the skeleton class
+            //                     let skeleton = el.parentElement;
+            //                     skeleton.classList.remove("skeleton");
+            //                 }
+            //             });
+            //         });
+
+            //         //observe all the images
+            //         allImages.forEach(function(lazyElement) {
+            //             imageObserver.observe(lazyElement);
+            //         });
+            //     } else {
+            //         // a fall back method for compatiblity
+            //     }
+            // });
 
         </script>
 	</body>

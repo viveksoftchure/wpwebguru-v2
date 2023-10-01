@@ -6,7 +6,7 @@ function theme_dynamic_css()
         'theme-style',
         get_stylesheet_uri(),
         array(),
-        time()
+        '1.0.0'
     );
     $site_title_color = get_theme_mod( 'bs_site_title_color_option', '#222' );
     $site_title_size = get_theme_mod( 'bs_site_title_size', '30' );

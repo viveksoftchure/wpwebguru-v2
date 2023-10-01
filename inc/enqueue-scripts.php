@@ -13,7 +13,7 @@ function wpwebguru_enqueue_scripts()
     $site_identity_font_family = esc_attr( get_theme_mod( 'bs_site_identity_font_family', 'Merriweather' ) );
 
 	// Style CSS
-	wp_enqueue_style('style', get_template_directory_uri() . '/assets/css/style.css', array(), time());
+	wp_enqueue_style('style', get_template_directory_uri() . '/assets/css/style.css?custom_minify', array(), '1.0.0');
 
 	// Google Font - Rubik
 	//wp_enqueue_style('rubik', 'https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap', array());
@@ -21,7 +21,7 @@ function wpwebguru_enqueue_scripts()
 	// wp_enqueue_style('font-awesome', get_template_directory_uri() . '/assets/css/all.min.css', array(), time());
 
 	if( is_singular() ) {
-		wp_enqueue_style( 'prettify', get_template_directory_uri() . '/assets/css/prettify/desert.css' );
+		wp_enqueue_style( 'prettify', get_template_directory_uri() . '/assets/css/prettify/desert.css', array(), '1.0.0');
 		wp_enqueue_script( 'prettify', get_template_directory_uri() . '/assets/js/prettify/prettify.js', array( 'jquery' ), '1.0.0', true );
 	}
 	
@@ -32,18 +32,16 @@ function wpwebguru_enqueue_scripts()
 	// 	'ajaxurl' => admin_url( 'admin-ajax.php' ), // WordPress AJAX
 	// ));
 
-	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) 
-	{
+	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
 	
+	wp_enqueue_script( 'jquery' );
 
 	if (is_home() && is_front_page()) {
 		wp_dequeue_style('post-views-counter-frontend');
+		wp_deregister_script('jquery');
 	}
-	
-
-	wp_enqueue_script( 'jquery' );
 
 	// Remove Block Styles
 	wp_dequeue_style('wp-block-library');
@@ -52,15 +50,13 @@ function wpwebguru_enqueue_scripts()
 	wp_dequeue_style('classic-theme-styles');
 	// wp_dequeue_script('wp-embed');
 	wp_deregister_script('wp-embed');
-	wp_deregister_script('jquery');
 	
-	if(!is_page('contact-us') )    
-	{		
+	if(!is_page('contact-us') ) {		
 		wp_dequeue_script('contact-form-7'); // Dequeue JS Script file.
 		wp_dequeue_style('contact-form-7');  // Dequeue CSS file. 
 	}
 
-	wp_enqueue_style( 'theme-googlefonts', 'https://fonts.googleapis.com/css?family=' . esc_attr( $body_font_family ) . ':200,300,400,500,600,700,800,900|' . esc_attr( $heading_font_family ) . ':200,300,400,500,600,700,800,900|' . esc_attr( $site_identity_font_family ) . ':200,300,400,500,600,700,800,900|' );
+	// wp_enqueue_style( 'theme-googlefonts', 'https://fonts.googleapis.com/css?family=' . esc_attr( $body_font_family ) . ':200,300,400,500,600,700,800,900|' . esc_attr( $heading_font_family ) . ':200,300,400,500,600,700,800,900|' . esc_attr( $site_identity_font_family ) . ':200,300,400,500,600,700,800,900&display=swap' );
 
 }
 add_action('wp_enqueue_scripts', 'wpwebguru_enqueue_scripts');
